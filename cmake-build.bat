@@ -2,7 +2,7 @@
 setlocal
 
 cmake --version
-if %ERRORLEVEL% equ 1 (
+if %ERRORLEVEL% equ 0 (
     echo CMake is already installed.
 ) else (
 	echo Installing CMake...
