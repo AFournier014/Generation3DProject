@@ -2,18 +2,16 @@
 setlocal
 
 cmake --version
-if %ERRORLEVEL% equ 0 (
+if %ERRORLEVEL% equ 1 (
     echo CMake is already installed.
 ) else (
-	echo CMake is not installed. Installing CMake...
-	powershell -Command "& {
-		$url = 'https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.msi'
-		$output = 'cmake_installer.msi'
-		Invoke-WebRequest -Uri $url -OutFile $output
-		Start-Process msiexec.exe -ArgumentList '/i', $output, '/quiet', '/norestart' -NoNewWindow -Wait
-		Remove-Item -Force $output
-	}"
-	echo CMake installation complete.
+	echo Installing CMake...
+	powershell -Command "& {$url = 'https://github.com/Kitware/CMake/releases/download/v3.29.2/cmake-3.29.2-windows-x86_64.msi'; $output = 'cmake_installer.msi'; Invoke-WebRequest -Uri $url -OutFile $output; Start-Process msiexec.exe -ArgumentList '/i', $output, '/quiet', '/norestart' -Wait; Remove-Item -Force $output;}"
+	if %ERRORLEVEL% neq 0 (
+		echo Failed to install CMake.
+		exit /b 1
+	)
+	echo CMake installed successfully.
 )
 
 :: Chemin vers le répertoire racine de votre projet
