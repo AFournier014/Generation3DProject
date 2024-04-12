@@ -31,6 +31,8 @@ set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
 set(ASSET_DIR "${RESOURCE_DIR}/assets")
 set(SHADER_DIR "${RESOURCE_DIR}/shaders")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # Configurer les sous-projets
 add_subdirectory(src/lib)
 add_subdirectory(src/app)
