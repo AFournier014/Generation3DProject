@@ -10,10 +10,12 @@ set(LIB_SOURCES
 find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
+find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 
 add_library(lib ${LIB_SOURCES})
 target_include_directories(lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include/lib)
 target_link_libraries(lib PRIVATE GLEW::GLEW glfw imgui::imgui)
+target_link_libraries(lib PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 
 
 

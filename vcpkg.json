@@ -4,6 +4,7 @@
   "dependencies": [
     "imgui",
     "glew",
-	"glfw3"
+	"glfw3",
+	"sfml"
   ]
 }
