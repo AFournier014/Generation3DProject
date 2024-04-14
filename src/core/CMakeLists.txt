@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.18)
 project(core)
 
-file(GLOB_RECURSE CPP_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-file(GLOB_RECURSE H_HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.h")
+file(GLOB_RECURSE CPP_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*")
+file(GLOB_RECURSE H_HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*")
+file(GLOB_RECURSE SHADER_FILES "${CMAKE_SOURCE_DIR}/ressources/shaders/*")
 
-add_library(core ${CPP_SOURCE_FILES} ${H_HEADER_FILES})
+add_library(core ${CPP_SOURCE_FILES} ${H_HEADER_FILES} ${SHADER_FILES})
 
 target_include_directories(core PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
-foreach(FILE IN LISTS CPP_SOURCE_FILES H_HEADER_FILES) 
+foreach(FILE IN LISTS CPP_SOURCE_FILES H_HEADER_FILES SHADER_FILES)
     get_filename_component(PARENT_DIR "${FILE}" DIRECTORY)
     
     # Construire le chemin relatif en fonction du type de fichier
@@ -29,6 +30,8 @@ foreach(FILE IN LISTS CPP_SOURCE_FILES H_HEADER_FILES)
     # Affecter le fichier au groupe dans Visual Studio
     source_group("${GROUP}" FILES "${FILE}")
 endforeach()
+
+source_group("Shaders" FILES ${SHADER_FILES})
 
 find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)

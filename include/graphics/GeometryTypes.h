@@ -4,6 +4,24 @@
 #include <GL/glew.h>
 #include <Shader.h>
 #include <MathHelper.h>
+#include <utils/Paths.h>
+#include <iostream>
+#include <direct.h>
+
+template <typename T>
+struct Point2D
+{
+	Point2D(const T& x_ = 0, const T& y_ = 0)
+		: x(x_), y(y_)
+	{}
+
+	Point2D(const Point2D& pt)
+		: x(pt.x), y(pt.y)
+	{}
+
+	T x;
+	T y;
+};
 
 template <typename T>
 struct Point3D
@@ -38,10 +56,28 @@ struct Color3
 };
 
 template <typename T>
+struct Color4
+{
+	Color4(const T& r_ = 0, const T& g_ = 0, const T& b_ = 0, const T& a_ = 0)
+		: r(r_), g(g_), b(b_), a(a_)
+	{}
+
+	Color4(const Color4& c)
+		: r(c.r), g(c.g), b(c.b), a(c.a)
+	{}
+
+	T r;
+	T g;
+	T b;
+	T a;
+};
+
+
+template <typename T>
 struct Vertex
 {
 	Point3D<T> position;
-	Color3<T> color;
+	Color4<T> color;
 };
 
 template <typename T>
@@ -54,6 +90,7 @@ public:
 		: m_points{ p0, p1, p2 }
 		, m_vao(0)
 		, m_vbo(0)
+		, m_programId(0)
 	{
 		load();
 	}
@@ -69,9 +106,13 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(m_points), m_points.data(), GL_STATIC_DRAW);
 
+		// Shader path à changer
+		std::string vertPath = SHADER_PATH + "triangle.vert";
+		std::string fragPath = SHADER_PATH + "triangle.frag";
+
 		ShaderInfo shaders[] = {
-			{ GL_VERTEX_SHADER, "resources/shaders/triangle.vert" }, // Chemins des fichiers potentiellement erroné
-			{ GL_FRAGMENT_SHADER, "shaders/triangle.frag" },
+			{ GL_VERTEX_SHADER, vertPath.c_str()}, // Chemins des fichiers potentiellement erroné
+			{ GL_FRAGMENT_SHADER, fragPath.c_str() },
 			{ GL_NONE, nullptr }
 		};
 

@@ -13,10 +13,10 @@ find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 target_link_libraries(app PRIVATE GLEW::GLEW glfw imgui::imgui)
 target_link_libraries(app PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 
-add_custom_command(TARGET app POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/ressources/shaders" "$<TARGET_FILE_DIR:app>/shaders"
-    COMMENT "Copying shaders to the build directory"
+file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+set_target_properties(app PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
 )
  
 # Appliquer les options de compilation

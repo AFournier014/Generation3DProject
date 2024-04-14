@@ -3,26 +3,24 @@
 #include <SFML/OpenGL.hpp>
 #include <graphics/GeometryTypes.h>
 
-Mat4<float> InitFirstTriangle() {
-	Mat4<float> M;
-	Mat4<float> V;
-	Mat4<float> P;
+Mat4<float> InitFirstTriangle()
+{
+	using Mat4f = Mat4<float>;
 
-	P = Mat4<float>::Identity();
+	Mat4f M;
+	Mat4f V = Mat4f::Identity();
+	Mat4f P = Mat4f::Identity();
 
 	float aspect = 1.0f;
 	float fov = 45.0f / 180.0f * 3.141592f;
 	float n = 0.01f;
-	float f = 100.0f;
+	float f = 10.0f;
 
 	P(0, 0) = 1.0f / (aspect * std::tan(fov / 2.0f));
 	P(1, 1) = 1.0f / std::tan(fov / 2.0f);
-	P(2, 2) = -(f + n) / (n - f);
+	P(2, 2) = -(f + n) / (f - n);
 	P(2, 3) = -(2.0f * f * n) / (f - n);
 	P(3, 2) = -1.0f;
-
-	V = Mat4<float>::Identity();
-	M = Mat4<float>::Identity();
 
 	auto MVP = P * V * M;
 	MVP = P;
@@ -51,9 +49,9 @@ int main() {
 	using Vertexf = Vertex<float>;
 	using Trianglef = Triangle<float>;
 
-	Vertexf p0{ {-0.9f, -0.9f, -5.0f}, {1.0f, 0.0f, 0.0f} };
-	Vertexf p1{ {0.9f, -0.9f, -5.0f}, {0.0f, 1.0f, 0.0f} };
-	Vertexf p2{ {0.0f, 0.9f, -5.0f}, {0.0f, 0.0f, 1.0f} };
+	Vertexf p0{ {-0.9f, -0.9f, -5.0f}, {1.0f, 0.0f, 0.0f, 1.0f} };
+	Vertexf p1{ {0.9f, -0.9f, -5.0f}, {0.0f, 1.0f, 0.0f, 1.0f} };
+	Vertexf p2{ {0.9f, 0.9f, -5.0f}, {0.0f, 0.0f, 1.0f, 1.0f} };
 
 	Trianglef triangle{ p0, p1, p2 };
 

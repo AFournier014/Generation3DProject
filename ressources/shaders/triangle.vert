@@ -1,15 +1,15 @@
-#version 420 core
+#version 430
 
 layout (location = 0) in vec4 vertexPosition;
 layout (location = 1) in vec4 vertexColor;
 
 uniform mat4 MVP;
 
-out vec3 vColor;
+out vec4 inputFragColor;
 
 void main()
 {
 	gl_Position = MVP * vertexPosition;
 
-	vColor = vertexColor;
+	inputFragColor = vertexColor;
 }

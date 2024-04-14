@@ -46,11 +46,12 @@ Mat4<T> operator*(const Mat4<T>& op1, const Mat4<T>& op2)
 	{
 		for (int col = 0; col < 4; ++col)
 		{
-			result(row, col) = 0;
+			T temp = 0;
 			for (int k = 0; k < 4; ++k)
 			{
-				result(row, col) += op1(row, k) * op2(k, col);
+				temp += op1(row, k) * op2(k, col);
 			}
+			result(row, col) = temp;
 		}
 	}
 	return result;
