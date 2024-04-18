@@ -7,41 +7,16 @@
 #include <utils/Paths.h>
 #include <iostream>
 #include <direct.h>
-
-template <typename T>
-struct Point2D
-{
-	Point2D(const T& x_ = 0, const T& y_ = 0)
-		: x(x_), y(y_)
-	{}
-
-	Point2D(const Point2D& pt)
-		: x(pt.x), y(pt.y)
-	{}
-
-	T x;
-	T y;
-};
-
-template <typename T>
-struct Point3D
-{
-	Point3D(const T& x_ = 0, const T& y_ = 0, const T& z_ = 0)
-		: x(x_), y(y_), z(z_)
-	{}
-
-	Point3D(const Point3D& pt)
-		: x(pt.x), y(pt.y), z(pt.z)
-	{}
-
-	T x;
-	T y;
-	T z;
-};
+#include <MathHelper.h>
+#include <filesystem>
+#include <SFML/Graphics.hpp>
+#include <Paths.h>
 
 template <typename T>
 struct Color3
 {
+	static constexpr int ndim = 3;
+
 	Color3(const T& r_ = 0, const T& g_ = 0, const T& b_ = 0)
 		: r(r_), g(g_), b(b_)
 	{}
@@ -74,10 +49,40 @@ struct Color4
 
 
 template <typename T>
-struct Vertex
+struct Vertex // possible de templater pour gerer opengl en sachant ce qu'il contient (pas tout compris)
 {
 	Point3D<T> position;
-	Color4<T> color;
+	Point2D<T> texture;
+};
+
+struct Texture
+{
+	explicit Texture(const std::filesystem::path& path)
+	{
+		glGenTextures(1, &m_texture);
+		glBindTexture(GL_TEXTURE_2D, m_texture);
+
+		sf::Image image;
+		image.loadFromFile(path.generic_string());
+
+		auto size = image.getSize();
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+
+	void Bind()
+	{
+		glBindTexture(GL_TEXTURE_2D, m_texture);
+	}
+
+private:
+	GLuint m_texture;
 };
 
 template <typename T>
@@ -87,10 +92,11 @@ public:
 	using vertex_type = Vertex<T>;
 
 	Triangle(const vertex_type& p0, const vertex_type& p1, const vertex_type& p2)
-		: m_points{ p0, p1, p2 }
+		: m_points{ p0, p1, p2 } // Initialisation de m_points, doit etre possible de faire autrement sans stocker le point
 		, m_vao(0)
 		, m_vbo(0)
-		, m_programId(0)
+		, m_programId(0),
+		m_texture(TEXTURES_PATH + "texture.png")
 	{
 		load();
 	}
@@ -120,21 +126,37 @@ public:
 		glUseProgram(m_programId);
 
 		/*
-		* WARNING: Ne fonctionne que pour les types T = float
+		* WARNING: Ne fonctionne que pour les types T = float, a changer pour les autres types
 		*/
 
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
+		glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
 		glEnableVertexAttribArray(0);
 
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
+		glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
 		glEnableVertexAttribArray(1);
 	}
 
-	void render(const Mat4<float>& MVP)
+	void Update()
 	{
+		m_angle += 0.025f;
+	}
+
+	void render(const Mat4<float>& VP)
+	{
+		Mat4<float> rot = Mat4<float>::RotationY(m_angle);
+
+		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
+
+		Mat4<float> M = trans * rot;
+
+		// Matrice de transformation
+		Mat4<float> MVP = VP * M;
+
 		glBindVertexArray(m_vao);
 		GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP");
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, MVP.data());
+
+		m_texture.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, int(m_points.size())); // C'est pas fou le cast en int ici, TODO: fix le cast
 	}
 
@@ -143,4 +165,107 @@ private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_programId;
+	float m_angle = 0.f;
+	Texture m_texture;
+};
+
+template<typename T>
+struct CubeVertex
+{
+	Point3D<T> position;
+	Color3<T> color;
+};
+
+template <typename T>
+class Cube
+{
+public:
+	using vertex_type = CubeVertex<T>;
+
+	Cube()
+		: m_vao(0)
+		, m_vbo(0)
+		, m_programId(0)
+	{
+		load();
+	}
+
+	~Cube() {}
+
+	void load()
+	{
+		glGenVertexArrays(1, &m_vao);
+		glBindVertexArray(m_vao);
+
+		glGenBuffers(1, &m_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+		// Allocate storage size units of OpenGL
+		// Copy data from client to server
+
+		static std::array<vertex_type, 36> points = {
+			vertex_type{ {-1.f, -1.f, -1.f}, {1.f, 0.f, 0.f}}, vertex_type{ {+1.f, -1.f, -1.f}, {1., 0., 0.}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 0., 0.}}
+		  , vertex_type{ {-1.f, -1.f, -1.f}, {1.f, 0.f, 0.f}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 0., 0.}}, vertex_type{ {-1.f, +1.f, -1.f}, {1., 0., 0.}}
+		  , vertex_type{ {-1.f, -1.f, +1.f}, {0.f, 1.f, 1.f}}, vertex_type{ {+1.f, -1.f, +1.f}, {0., 1., 1.}}, vertex_type{ {+1.f, +1.f, +1.f}, {0., 1., 1.}}
+		  , vertex_type{ {-1.f, -1.f, +1.f}, {0.f, 1.f, 1.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {0., 1., 1.}}, vertex_type{ {-1.f, +1.f, +1.f}, {0., 1., 1.}}
+
+		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 1.f, 0.f}}, vertex_type{ {+1.f, -1.f, -1.f}, {0., 1., 0.}}, vertex_type{ {+1.f, -1.f, +1.f}, {0., 1., 0.}}
+		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 1.f, 0.f}}, vertex_type{ {+1.f, -1.f, +1.f}, {0., 1., 0.}}, vertex_type{ {-1.f, -1.f, +1.f}, {0., 1., 0.}}
+		  , vertex_type{ {-1.f, +1.f, -1.f}, {1.f, 0.f, 1.f}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 0., 1.}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 0., 1.}}
+		  , vertex_type{ {-1.f, +1.f, -1.f}, {1.f, 0.f, 1.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 0., 1.}}, vertex_type{ {-1.f, +1.f, +1.f}, {1., 0., 1.}}
+
+		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 0.f, 1.f}}, vertex_type{ {-1.f, +1.f, -1.f}, {0., 0., 1.}}, vertex_type{ {-1.f, +1.f, +1.f}, {0., 0., 1.}}
+		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 0.f, 1.f}}, vertex_type{ {-1.f, +1.f, +1.f}, {0., 0., 1.}}, vertex_type{ {-1.f, -1.f, +1.f}, {0., 0., 1.}}
+		  , vertex_type{ {+1.f, -1.f, -1.f}, {1.f, 1.f, 0.f}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 1., 0.}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 1., 0.}}
+		  , vertex_type{ {+1.f, -1.f, -1.f}, {1.f, 1.f, 0.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 1., 0.}}, vertex_type{ {+1.f, -1.f, +1.f}, {1., 1., 0.}}
+		};
+
+		glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW);
+
+		std::string vertPath = SHADER_PATH + "cube.vert";
+		std::string fragPath = SHADER_PATH + "cube.frag";
+
+		ShaderInfo shaders[] = {
+			{ GL_VERTEX_SHADER, vertPath.c_str() },
+			{ GL_FRAGMENT_SHADER, fragPath.c_str() },
+			{ GL_NONE, nullptr }
+		};
+
+		m_programId = Shader::LoadShaders(shaders);
+		glUseProgram(m_programId);
+
+		// /!\ Attention, ca ne marche que si T=float : c'est un peu dommage.
+		glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
+		glEnableVertexAttribArray(1);
+	}
+
+	void Update()
+	{
+		m_angle += 0.025f;
+	}
+
+	void render(const Mat4<float>& VP)
+	{
+		Mat4<float> rot = Mat4<float>::RotationY(m_angle);
+
+		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
+
+		Mat4<float> M = trans * rot;
+		Mat4<float> MVP = VP * M;
+
+		glBindVertexArray(m_vao);
+
+		GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP");
+		glUniformMatrix4fv(mvpLocation, 1, 0, MVP.data());
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+
+private:
+	GLuint m_vao;
+	GLuint m_vbo;
+	GLuint m_programId;
+	float m_angle = 0.f;
 };

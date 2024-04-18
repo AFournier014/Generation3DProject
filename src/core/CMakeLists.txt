@@ -3,7 +3,7 @@ project(core)
 
 file(GLOB_RECURSE CPP_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*")
 file(GLOB_RECURSE H_HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*")
-file(GLOB_RECURSE SHADER_FILES "${CMAKE_SOURCE_DIR}/ressources/shaders/*")
+file(GLOB_RECURSE SHADER_FILES "${CMAKE_SOURCE_DIR}/resources/shaders/*")
 
 add_library(core ${CPP_SOURCE_FILES} ${H_HEADER_FILES} ${SHADER_FILES})
 

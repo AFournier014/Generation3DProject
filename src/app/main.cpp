@@ -7,25 +7,15 @@ Mat4<float> InitFirstTriangle()
 {
 	using Mat4f = Mat4<float>;
 
-	Mat4f M;
-	Mat4f V = Mat4f::Identity();
-	Mat4f P = Mat4f::Identity();
-
-	float aspect = 1.0f;
+	float aspect = 800.0f / 600.0f; // Largeur / Hauteur de la fenêtre, à gerer autrement
 	float fov = 45.0f / 180.0f * 3.141592f;
-	float n = 0.01f;
-	float f = 10.0f;
+	float n = 0.1f;
+	float f = 100.0f;
 
-	P(0, 0) = 1.0f / (aspect * std::tan(fov / 2.0f));
-	P(1, 1) = 1.0f / std::tan(fov / 2.0f);
-	P(2, 2) = -(f + n) / (f - n);
-	P(2, 3) = -(2.0f * f * n) / (f - n);
-	P(3, 2) = -1.0f;
+	// Matrice de projection
+	Mat4f P = Mat4f::Projection(fov, aspect, n, f);
 
-	auto MVP = P * V * M;
-	MVP = P;
-
-	return MVP;
+	return P;
 }
 
 int main() {
@@ -46,17 +36,25 @@ int main() {
 	}
 
 	// TODO: Temporaire, à retirer
-	using Vertexf = Vertex<float>;
-	using Trianglef = Triangle<float>;
+	using VertexF = Vertex<float>;
+	using TriangleF = Triangle<float>;
+	using CubeF = Cube<float>;
 
-	Vertexf p0{ {-0.9f, -0.9f, -5.0f}, {1.0f, 0.0f, 0.0f, 1.0f} };
-	Vertexf p1{ {0.9f, -0.9f, -5.0f}, {0.0f, 1.0f, 0.0f, 1.0f} };
-	Vertexf p2{ {0.9f, 0.9f, -5.0f}, {0.0f, 0.0f, 1.0f, 1.0f} };
+	VertexF p0{ {-0.9f, -0.9f, 0.0f}, {-0.9f, 0.9f} };
+	VertexF p1{ {0.9f, -0.9f, 0.0f}, {0.9f, 0.9f} };
+	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
 
-	Trianglef triangle{ p0, p1, p2 };
+	TriangleF triangle{ p0, p1, p2 };
+	CubeF cube;
 
-	auto MVP = InitFirstTriangle();
+	auto P = InitFirstTriangle();
 	// Fin du code temporaire
+
+	float alpha = 0.f;
+	float beta = 0.f;
+
+	sf::Mouse::setPosition({ 400, 300 }, window); // Centre la souris, c'est degueu a changer
+	bool setCameraOn = true;
 
 	// Boucle principale
 	bool running = true;
@@ -73,13 +71,49 @@ int main() {
 				// On redimensionne le viewport
 				glViewport(0, 0, event.size.width, event.size.height);
 			}
+			else if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					running = false;
+				}
+				if (event.key.code == sf::Keyboard::Space)
+				{
+					setCameraOn = !setCameraOn;
+				}
+			}
+			else if (event.type == sf::Event::MouseMoved)
+			{
+				if (!setCameraOn)
+					break;
+				// On récupère le déplacement de la souris
+				float dx = event.mouseMove.x - 400.f;
+				float dy = event.mouseMove.y - 300.f;
+
+				sf::Mouse::setPosition({ 400, 300 }, window); // Centre la souris, c'est degueu a changer
+
+				// On met à jour les angles
+				float coef = 0.001f;
+				alpha += coef * dx;
+				beta += -coef * dy;
+
+				// EN GROS CAMERA ICI
+			}
 		}
 
-		// Nettoyage de la fenêtre
+		// Nettoyage de la fenêtre (efface les tampons de couleur et de profondeur)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha);
+		auto VP = P * V;
+
 		// Affichage du contenu
-		triangle.render(MVP);
+		triangle.Update();
+		triangle.render(VP);
+
+		cube.Update();
+		cube.render(VP);
+
 		glFlush();
 
 		// Termine la trame en cours (en interne, échange les deux tampons de rendu)

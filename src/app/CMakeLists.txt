@@ -13,7 +13,7 @@ find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 target_link_libraries(app PRIVATE GLEW::GLEW glfw imgui::imgui)
 target_link_libraries(app PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 
-file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+file(COPY ${RESOURCE_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 set_target_properties(app PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"

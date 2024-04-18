@@ -18,8 +18,8 @@ namespace
 
 		std::stringstream buffer;
 		buffer << inputFile.rdbuf();
-		inputFile.close();
 
+		inputFile.close();
 		return buffer.str();
 	}
 
@@ -48,6 +48,7 @@ unsigned int Shader::LoadShaders(ShaderInfo* shaderInfo)
 
 	auto programId = glCreateProgram();
 	auto* entry = shaderInfo;
+
 	while (entry->type != GL_NONE)
 	{
 		auto shaderId = glCreateShader(entry->type);
