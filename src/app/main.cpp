@@ -3,17 +3,21 @@
 #include <SFML/OpenGL.hpp>
 #include <graphics/GeometryTypes.h>
 
+constexpr auto windowWidth = 800;
+constexpr auto windowHeight = 600;
+
 Mat4<float> InitFirstTriangle()
 {
 	using Mat4f = Mat4<float>;
 
-	float aspect = 800.0f / 600.0f; // Largeur / Hauteur de la fenêtre, à gerer autrement
-	float fov = 45.0f / 180.0f * 3.141592f;
+	// Paramètres de la caméra, à gérer autrement
+	float aspect = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
+	float fov = 45.f / 180.f * 3.141592f;
 	float n = 0.1f;
-	float f = 100.0f;
+	float f = 100.f;
 
 	// Matrice de projection
-	Mat4f P = Mat4f::Projection(fov, aspect, n, f);
+	Mat4f P = Mat4f::Projection(aspect, fov, n, f);
 
 	return P;
 }
@@ -23,7 +27,7 @@ int main() {
 	const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
 
 	// Mise en place d'une fenêtre de rendu SFML
-	sf::Window window(sf::VideoMode(800, 600), "OpenGL", sf::Style::Default, contextSettings);
+	sf::Window window(sf::VideoMode(windowWidth, windowHeight), "OpenGL", sf::Style::Default, contextSettings);
 	window.setVerticalSyncEnabled(true);
 
 	// Activation de la fenêtre
@@ -40,11 +44,13 @@ int main() {
 	using TriangleF = Triangle<float>;
 	using CubeF = Cube<float>;
 
+	// Création d'un triangle (temporaire)
 	VertexF p0{ {-0.9f, -0.9f, 0.0f}, {-0.9f, 0.9f} };
 	VertexF p1{ {0.9f, -0.9f, 0.0f}, {0.9f, 0.9f} };
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
-
 	TriangleF triangle{ p0, p1, p2 };
+
+	// Création d'un cube (temporaire)
 	CubeF cube;
 
 	auto P = InitFirstTriangle();
@@ -53,8 +59,8 @@ int main() {
 	float alpha = 0.f;
 	float beta = 0.f;
 
-	sf::Mouse::setPosition({ 400, 300 }, window); // Centre la souris, c'est degueu a changer
-	bool setCameraOn = true;
+	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
+	bool setCameraOn = true; // Pour savoir si on doit bouger la camera
 
 	// Boucle principale
 	bool running = true;
