@@ -32,7 +32,7 @@ int main() {
 
 	// Activation de la fenêtre
 	window.setActive(true);
-
+	
 	// Lignes de code pour initialiser GLEW (apparemment c'est nécessaire)
 	glewExperimental = GL_TRUE;
 	if (glewInit()) {

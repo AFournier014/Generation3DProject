@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <OpenGL/Renderer.h>
 
 namespace
 {
@@ -26,10 +27,10 @@ namespace
 	void ThrowException(auto& shaderId, const char* filename, const char* message)
 	{
 		GLint infoLogSize;
-		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogSize);
+		GLCall(glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogSize));
 
 		GLchar* logBuffer = new GLchar[infoLogSize + 1];
-		glGetShaderInfoLog(shaderId, infoLogSize, &infoLogSize, logBuffer);
+		GLCall(glGetShaderInfoLog(shaderId, infoLogSize, &infoLogSize, logBuffer));
 
 		std::cerr << logBuffer << std::endl;
 
@@ -46,42 +47,46 @@ unsigned int Shader::LoadShaders(ShaderInfo* shaderInfo)
 		throw std::runtime_error("Aucun shader à charger");
 	}
 
-	auto programId = glCreateProgram();
+	GLCall(auto programId = glCreateProgram());
 	auto* entry = shaderInfo;
 
 	while (entry->type != GL_NONE)
 	{
-		auto shaderId = glCreateShader(entry->type);
+		GLCall(auto shaderId = glCreateShader(entry->type));
 		entry->shaderId = shaderId;
 
 		auto str = ReadShader(entry->filename);
 
 		const char* cstr = str.c_str();
 
-		glShaderSource(shaderId, 1, &cstr, nullptr);
-		glCompileShader(shaderId);
+		GLCall(glShaderSource(shaderId, 1, &cstr, nullptr));
+		GLCall(glCompileShader(shaderId));
 
 		GLint hasCompiled;
-		glGetShaderiv(shaderId, GL_COMPILE_STATUS, &hasCompiled);
+		GLCall(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &hasCompiled));
 
 		if (!hasCompiled)
 		{
 			ThrowException(shaderId, entry->filename, "Erreur de compilation du shader: ");
 		}
 
-		glAttachShader(programId, shaderId);
+		GLCall(glAttachShader(programId, shaderId));
 		++entry;
+
+		GLCall(glDeleteShader(shaderId));
 	}
 
-	glLinkProgram(programId);
+	GLCall(glLinkProgram(programId));
 
 	GLint isLinked;
-	glGetProgramiv(programId, GL_LINK_STATUS, &isLinked);
+	GLCall(glGetProgramiv(programId, GL_LINK_STATUS, &isLinked));
 
 	if (!isLinked)
 	{
 		ThrowException(programId, entry->filename, "Erreur de linkage du programme de shaders: ");
 	}
 
+	GLCall(glValidateProgram(programId));
+	
 	return programId;
 }

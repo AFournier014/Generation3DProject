@@ -11,6 +11,7 @@
 #include <filesystem>
 #include <SFML/Graphics.hpp>
 #include <Paths.h>
+#include <OpenGL/Renderer.h>
 
 template <typename T>
 struct Color3
@@ -59,26 +60,26 @@ struct Texture
 {
 	explicit Texture(const std::filesystem::path& path)
 	{
-		glGenTextures(1, &m_texture);
-		glBindTexture(GL_TEXTURE_2D, m_texture);
+		GLCall(glGenTextures(1, &m_texture));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_texture));
 
 		sf::Image image;
 		image.loadFromFile(path.generic_string());
 
 		auto size = image.getSize();
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-		glGenerateMipmap(GL_TEXTURE_2D);
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()));
+		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 	}
 
 	void Bind()
 	{
-		glBindTexture(GL_TEXTURE_2D, m_texture);
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_texture));
 	}
 
 private:
@@ -96,7 +97,7 @@ public:
 		, m_vao(0)
 		, m_vbo(0)
 		, m_programId(0),
-		m_texture(TEXTURES_PATH + "texture.png")
+		m_texture(TEXTURES_PATH + "texture2.png")
 	{
 		load();
 	}
@@ -105,12 +106,12 @@ public:
 
 	void load()
 	{
-		glGenVertexArrays(1, &m_vao);
-		glBindVertexArray(m_vao);
+		GLCall(glGenVertexArrays(1, &m_vao));
+		GLCall(glBindVertexArray(m_vao));
 
-		glGenBuffers(1, &m_vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(m_points), m_points.data(), GL_STATIC_DRAW);
+		GLCall(glGenBuffers(1, &m_vbo));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(m_points), m_points.data(), GL_STATIC_DRAW));
 
 		// Shader path à changer
 		std::string vertPath = SHADER_PATH + "triangle.vert";
@@ -123,17 +124,17 @@ public:
 		};
 
 		m_programId = Shader::LoadShaders(shaders);
-		glUseProgram(m_programId);
+		GLCall(glUseProgram(m_programId));
 
 		/*
 		* WARNING: Ne fonctionne que pour les types T = float, a changer pour les autres types
 		*/
 
-		glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
-		glEnableVertexAttribArray(0);
+		GLCall(glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0));
+		GLCall(glEnableVertexAttribArray(0));
 
-		glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
-		glEnableVertexAttribArray(1);
+		GLCall(glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position)));
+		GLCall(glEnableVertexAttribArray(1));
 	}
 
 	void Update()
@@ -152,16 +153,16 @@ public:
 		// Matrice de transformation
 		Mat4<float> MVP = VP * M;
 
-		glBindVertexArray(m_vao);
-		GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP");
-		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, MVP.data());
+		GLCall(glBindVertexArray(m_vao));
+		GLCall(GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP"));
+		GLCall(glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, MVP.data()));
 
 		m_texture.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, int(m_points.size())); // C'est pas fou le cast en int ici, TODO: fix le cast
+		GLCall(glDrawArrays(GL_TRIANGLES, 0, int(m_points.size()))); // C'est pas fou le cast en int ici, TODO: fix le cast
 	}
 
 private:
-	std::array<Vertex<T>, 3> m_points;
+	std::array<vertex_type, 3> m_points;
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_programId;
@@ -194,11 +195,11 @@ public:
 
 	void load()
 	{
-		glGenVertexArrays(1, &m_vao);
-		glBindVertexArray(m_vao);
+		GLCall(glGenVertexArrays(1, &m_vao));
+		GLCall(glBindVertexArray(m_vao));
 
-		glGenBuffers(1, &m_vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		GLCall(glGenBuffers(1, &m_vbo));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
 
 		// Allocate storage size units of OpenGL
 		// Copy data from client to server
@@ -220,7 +221,7 @@ public:
 		  , vertex_type{ {+1.f, -1.f, -1.f}, {1.f, 1.f, 0.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 1., 0.}}, vertex_type{ {+1.f, -1.f, +1.f}, {1., 1., 0.}}
 		};
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW);
+		GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW));
 
 		std::string vertPath = SHADER_PATH + "cube.vert";
 		std::string fragPath = SHADER_PATH + "cube.frag";
@@ -232,13 +233,13 @@ public:
 		};
 
 		m_programId = Shader::LoadShaders(shaders);
-		glUseProgram(m_programId);
+		GLCall(glUseProgram(m_programId));
 
 		// /!\ Attention, ca ne marche que si T=float : c'est un peu dommage.
-		glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
-		glEnableVertexAttribArray(1);
+		GLCall(glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0));
+		GLCall(glEnableVertexAttribArray(0));
+		GLCall(glVertexAttribPointer(1, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position)));
+		GLCall(glEnableVertexAttribArray(1));
 	}
 
 	void Update()
@@ -255,12 +256,14 @@ public:
 		Mat4<float> M = trans * rot;
 		Mat4<float> MVP = VP * M;
 
-		glBindVertexArray(m_vao);
+		GLCall(glBindVertexArray(m_vao));
 
-		GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP");
-		glUniformMatrix4fv(mvpLocation, 1, 0, MVP.data());
+		GLCall(GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP"));
+		ASSERT(mvpLocation != -1);
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		GLCall(glUniformMatrix4fv(mvpLocation, 1, 0, MVP.data()));
+
+		GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 	}
 
 private:
