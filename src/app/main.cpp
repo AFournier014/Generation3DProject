@@ -39,6 +39,8 @@ int main() {
 		throw std::runtime_error("Failed to initialize GLEW");
 	}
 
+	glEnable(GL_DEPTH_TEST); // Activation du test de profondeur, pour gérer les faces cachées
+
 	// TODO: Temporaire, à retirer
 	using VertexF = Vertex<float>;
 	using TriangleF = Triangle<float>;
@@ -61,6 +63,7 @@ int main() {
 
 	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = true; // Pour savoir si on doit bouger la camera
+	bool leftMouseButtonPressed = false; // Pour savoir si on doit bouger le cube
 
 	// Boucle principale
 	bool running = true;
@@ -90,20 +93,33 @@ int main() {
 			}
 			else if (event.type == sf::Event::MouseMoved)
 			{
-				if (!setCameraOn)
-					break;
-				// On récupère le déplacement de la souris
 				float dx = event.mouseMove.x - 400.f;
 				float dy = event.mouseMove.y - 300.f;
 
-				sf::Mouse::setPosition({ 400, 300 }, window); // Centre la souris, c'est degueu a changer
+				sf::Mouse::setPosition({ 400, 300 }, window);
 
-				// On met à jour les angles
 				float coef = 0.001f;
-				alpha += coef * dx;
-				beta += -coef * dy;
 
-				// EN GROS CAMERA ICI
+				if (!leftMouseButtonPressed && setCameraOn)
+				{
+					alpha += coef * dx;
+					beta += -coef * dy;
+				}
+				else
+				{
+					cube.alpha += coef * dx;
+					cube.beta += -coef * dy;
+				}
+			}
+			else if (event.type == sf::Event::MouseButtonPressed)
+			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+					leftMouseButtonPressed = true;
+			}
+			else if (event.type == sf::Event::MouseButtonReleased)
+			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+					leftMouseButtonPressed = false;
 			}
 		}
 
