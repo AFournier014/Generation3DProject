@@ -9,10 +9,12 @@ uniform mat4 model;
 
 out vec4 materialColor;
 out vec3 normalWorld;
+out vec3 positionWorld;
 
 void main()
 {
 	gl_Position = MVP * position;
+	positionWorld = (MVP * position).xyz;
 
 	normalWorld = mat3(model) * normalModel;
 	materialColor = color;

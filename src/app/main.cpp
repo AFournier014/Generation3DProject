@@ -62,7 +62,7 @@ int main() {
 	float beta = 0.f;
 
 	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
-	bool setCameraOn = true; // Pour savoir si on doit bouger la camera
+	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
 	bool leftMouseButtonPressed = false; // Pour savoir si on doit bouger le cube
 
 	// Boucle principale
@@ -134,7 +134,7 @@ int main() {
 		triangle.render(VP);
 
 		cube.Update();
-		cube.render(VP);
+		cube.render(VP, { 0.f, 0.f, 0.f });
 
 		glFlush();
 

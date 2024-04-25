@@ -4,6 +4,7 @@ layout(location = 0) out vec4 outFragColor;
 
 in vec4 materialColor;
 in vec3 normalWorld;
+in vec3 positionWorld;
 
 struct Material
 {
@@ -21,11 +22,16 @@ struct DirectionalLight
 
 uniform Material material;
 uniform DirectionalLight light;
+uniform vec4 cameraPositionWorld;
 
 void main()
 {
 	vec4 ambiant = material.ambient * materialColor;
 	vec4 diffuse = material.diffuse * max(0, -dot(light.direction, normalWorld.xyz)) * materialColor;
-	vec4 specular = vec4(0);
+
+	vec3 dc = normalize(positionWorld - cameraPositionWorld.xyz);
+	vec3 dcprime = 2. * dot(dc, normalWorld) * normalWorld - dc;
+
+	vec4 specular = pow(max(0, -dot( light.direction, dcprime)), material.shininess) * material.specular * materialColor;
 	outFragColor = ambiant + diffuse + specular;
 }

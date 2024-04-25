@@ -250,13 +250,15 @@ public:
 		
 	}
 
-	void render(const Mat4<float>& VP)
+	void render(const Mat4<float>& VP, Point3D<T> cameraPositionWorld)
 	{
 
 		struct OpticalProperties
 		{
 			float ambient = 0.3f;
 			float diffuse = 0.7f;
+			float specular = 70.f;
+			float shininess = 1.f;
 		} opticalProperties;
 
 		struct DirectionalLight
@@ -281,11 +283,20 @@ public:
 		GLuint modelLocation = glGetUniformLocation(m_programId, "model");
 		glUniformMatrix4fv(modelLocation, 1, 0, M.data());
 
+		GLuint cameraPositionWorldLoc = glGetUniformLocation(m_programId, "cameraPositionWorld");
+		glUniform3fv(cameraPositionWorldLoc, 1, reinterpret_cast<float*>(&cameraPositionWorld));
+
 		GLuint ambient = glGetUniformLocation(m_programId, "material.ambient");
 		glUniform1fv(ambient, 1, &opticalProperties.ambient);
 
 		GLuint diffuse = glGetUniformLocation(m_programId, "material.diffuse");
 		glUniform1fv(diffuse, 1, &opticalProperties.diffuse);
+
+		GLuint specular = glGetUniformLocation(m_programId, "material.specular");
+		glUniform1fv(specular, 1, &opticalProperties.specular);
+
+		GLuint shininess = glGetUniformLocation(m_programId, "material.shininess");
+		glUniform1fv(shininess, 1, &opticalProperties.shininess);
 
 		GLuint lightLocation = glGetUniformLocation(m_programId, "light.direction");
 		glUniform3fv(lightLocation, 1, reinterpret_cast<float*>(&directionalLight.direction));
