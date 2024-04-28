@@ -2,7 +2,6 @@
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <graphics/GeometryTypes.h>
-#include <utils/MathHelper.h>
 
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
@@ -53,37 +52,16 @@ int main() {
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
 	TriangleF triangle{ p0, p1, p2 };
 
-	
-
-	// Points du cube et couleurs associées (en dur)
-	Point3D<float> P000 = { -1, -1, -1 }; Point3D<float> P100 = { +1, -1, -1 }; Point3D<float> P010 = { -1, +1, -1 }; Point3D<float> P110 = { +1, +1, -1 };
-	Point3D<float> P001 = { -1, -1, +1 }; Point3D<float> P101 = { +1, -1, +1 }; Point3D<float> P011 = { -1, +1, +1 }; Point3D<float> P111 = { +1, +1, +1 };
-	Color3<float> c100 = { +1, +0, +0 }; Color3<float> c010 = { +0, +1, +0 }; Color3<float> c001 = { +0, +0, +1 };
-	Color3<float> c011 = { +0, +1, +1 }; Color3<float> c101 = { +1, +0, +1 }; Color3<float> c110 = { +1, +1, +0 };
-	Point3D<float> nxn = { -1, 0, 0 }; Point3D<float> nyn = { 0, -1, 0 }; Point3D<float> nzn = { 0, 0, -1 };
-	Point3D<float> nxp = { +1, 0, 0 }; Point3D<float> nyp = { 0, +1, 0 }; Point3D<float> nzp = { 0, 0, +1 };
-
-	// Vertex du cube
-	using vt = Vertex<float>;
-	static std::vector<Vertex<float>> points = {
-	   vt{P000, nzn, c100}, vt{P100, nzn, c100}, vt{P110, nzn, c100}, vt{P000, nzn, c100}, vt{P110, nzn, c100}, vt{P010, nzn, c100}
-	 , vt{P001, nzp, c011}, vt{P101, nzp, c011}, vt{P111, nzp, c011}, vt{P001, nzp, c011}, vt{P111, nzp, c011}, vt{P011, nzp, c011}
-	 , vt{P000, nyn, c010}, vt{P100, nyn, c010}, vt{P101, nyn, c010}, vt{P000, nyn, c010}, vt{P101, nyn, c010}, vt{P001, nyn, c010}
-	 , vt{P010, nyp, c101}, vt{P110, nyp, c101}, vt{P111, nyp, c101}, vt{P010, nyp, c101}, vt{P111, nyp, c101}, vt{P011, nyp, c101}
-	 , vt{P000, nxn, c001}, vt{P010, nxn, c001}, vt{P011, nxn, c001}, vt{P000, nxn, c001}, vt{P011, nxn, c001}, vt{P001, nxn, c001}
-	 , vt{P100, nxp, c110}, vt{P110, nxp, c110}, vt{P111, nxp, c110}, vt{P100, nxp, c110}, vt{P111, nxp, c110}, vt{P101, nxp, c110}
-	};
-
 	// Création d'un cube (temporaire)
-	CubeF cube(points);
-
-	Point3D<float> cameraPosition{ 0.f, 0.f, 0.f };
+	CubeF cube;
 
 	auto P = InitFirstTriangle();
 	// Fin du code temporaire
 
 	float alpha = 0.f;
 	float beta = 0.f;
+
+	Point3D<float> cameraPos{ 0.f, 0.f, 0.f };
 
 	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
@@ -158,7 +136,7 @@ int main() {
 		triangle.render(VP);
 
 		cube.Update();
-		cube.render(VP, cameraPosition);
+		cube.render(VP, cameraPos);
 
 		glFlush();
 

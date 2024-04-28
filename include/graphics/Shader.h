@@ -25,6 +25,5 @@ struct Shader
 {
 	static unsigned int LoadShaders(ShaderInfo* shaders);
 
-
 private:
 };
