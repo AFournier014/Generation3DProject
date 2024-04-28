@@ -144,7 +144,7 @@ public:
 	{
 		Mat4<float> rot = Mat4<float>::RotationY(m_angle);
 
-		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
+		Mat4<float> trans = Mat4<float>::Translation({ 2.f, 0.f, -5.f });
 
 		Mat4<float> M = trans * rot;
 
@@ -201,9 +201,7 @@ public:
 		glGenBuffers(1, &m_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-		// Allocate storage size units of OpenGL
-		// Copy data from client to server
-
+		// Points du cube et couleurs associées (en dur)
 		Point3D<T> P000 = { -1, -1, -1 }; Point3D<T> P100 = { +1, -1, -1 }; Point3D<T> P010 = { -1, +1, -1 }; Point3D<T> P110 = { +1, +1, -1 };
 		Point3D<T> P001 = { -1, -1, +1 }; Point3D<T> P101 = { +1, -1, +1 }; Point3D<T> P011 = { -1, +1, +1 }; Point3D<T> P111 = { +1, +1, +1 };
 		Color3<T> c100 = { +1, +0, +0 }; Color3<T> c010 = { +0, +1, +0 }; Color3<T> c001 = { +0, +0, +1 };
@@ -211,6 +209,7 @@ public:
 		Point3D<T> nxn = { -1, 0, 0 }; Point3D<T> nyn = { 0, -1, 0 }; Point3D<T> nzn = { 0, 0, -1 };
 		Point3D<T> nxp = { +1, 0, 0 }; Point3D<T> nyp = { 0, +1, 0 }; Point3D<T> nzp = { 0, 0, +1 };
 
+		// Vertex du cube
 		using vt = vertex_type;
 		static std::array<vertex_type, 36> points = {
 		   vt{P000, nzn, c100}, vt{P100, nzn, c100}, vt{P110, nzn, c100}, vt{P000, nzn, c100}, vt{P110, nzn, c100}, vt{P010, nzn, c100}
@@ -237,22 +236,20 @@ public:
 
 		// /!\ Attention, ca ne marche que si T=float : c'est un peu dommage.
 		glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
-		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(0); // Position
 		glVertexAttribPointer(1, decltype(vertex_type::normal)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
-		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(1); // Normale
 		glVertexAttribPointer(2, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position) + sizeof(vertex_type::normal));
-		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(2); // Couleur
 	}
 
 	void Update()
 	{
-		// Rotate the cube with direction of mouse
-		
 	}
 
 	void render(const Mat4<float>& VP, Point3D<T> cameraPositionWorld)
 	{
-
+		// Propriétés optiques du cube
 		struct OpticalProperties
 		{
 			float ambient = 0.3f;
@@ -261,6 +258,7 @@ public:
 			float shininess = 1.f;
 		} opticalProperties;
 
+		// Propriétés de la lumière
 		struct DirectionalLight
 		{
 			Point3D<T> direction = { 0.f, -1.f, 0.f };
@@ -269,7 +267,7 @@ public:
 
 		Mat4<float> rot = Mat4<float>::RotationX(beta) * Mat4<float>::RotationY(alpha);
 
-		Mat4<float> trans = Mat4<float>::Translation({ -3.f, 0.f, -5.f });
+		Mat4<float> trans = Mat4<float>::Translation({ -2.f, 0.f, -5.f });
 
 		Mat4<float> M = trans * rot;
 		Mat4<float> MVP = VP * M;
