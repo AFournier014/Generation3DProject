@@ -94,8 +94,7 @@ public:
 	Triangle(const vertex_type& p0, const vertex_type& p1, const vertex_type& p2)
 		: m_points{ p0, p1, p2 } // Initialisation de m_points, doit etre possible de faire autrement sans stocker le point
 		, m_vao(0)
-		, m_vbo(0)
-		, m_programId(0),
+		, m_vbo(0),
 		m_texture(TEXTURES_PATH + "texture.png")
 	{
 		load();
@@ -145,13 +144,14 @@ public:
 	{
 		Mat4<float> rot = Mat4<float>::RotationY(m_angle);
 
-		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
+		Mat4<float> trans = Mat4<float>::Translation({ 2.f, 0.f, -5.f });
 
 		Mat4<float> M = trans * rot;
 
 		// Matrice de transformation
 		Mat4<float> MVP = VP * M;
 
+		glUseProgram(m_programId);
 		glBindVertexArray(m_vao);
 		GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP");
 		glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, MVP.data());
@@ -173,6 +173,7 @@ template<typename T>
 struct CubeVertex
 {
 	Point3D<T> position;
+	Point3D<T> normal;
 	Color3<T> color;
 };
 
@@ -200,24 +201,23 @@ public:
 		glGenBuffers(1, &m_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-		// Allocate storage size units of OpenGL
-		// Copy data from client to server
+		// Points du cube et couleurs associées (en dur)
+		Point3D<T> P000 = { -1, -1, -1 }; Point3D<T> P100 = { +1, -1, -1 }; Point3D<T> P010 = { -1, +1, -1 }; Point3D<T> P110 = { +1, +1, -1 };
+		Point3D<T> P001 = { -1, -1, +1 }; Point3D<T> P101 = { +1, -1, +1 }; Point3D<T> P011 = { -1, +1, +1 }; Point3D<T> P111 = { +1, +1, +1 };
+		Color3<T> c100 = { +1, +0, +0 }; Color3<T> c010 = { +0, +1, +0 }; Color3<T> c001 = { +0, +0, +1 };
+		Color3<T> c011 = { +0, +1, +1 }; Color3<T> c101 = { +1, +0, +1 }; Color3<T> c110 = { +1, +1, +0 };
+		Point3D<T> nxn = { -1, 0, 0 }; Point3D<T> nyn = { 0, -1, 0 }; Point3D<T> nzn = { 0, 0, -1 };
+		Point3D<T> nxp = { +1, 0, 0 }; Point3D<T> nyp = { 0, +1, 0 }; Point3D<T> nzp = { 0, 0, +1 };
 
+		// Vertex du cube
+		using vt = vertex_type;
 		static std::array<vertex_type, 36> points = {
-			vertex_type{ {-1.f, -1.f, -1.f}, {1.f, 0.f, 0.f}}, vertex_type{ {+1.f, -1.f, -1.f}, {1., 0., 0.}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 0., 0.}}
-		  , vertex_type{ {-1.f, -1.f, -1.f}, {1.f, 0.f, 0.f}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 0., 0.}}, vertex_type{ {-1.f, +1.f, -1.f}, {1., 0., 0.}}
-		  , vertex_type{ {-1.f, -1.f, +1.f}, {0.f, 1.f, 1.f}}, vertex_type{ {+1.f, -1.f, +1.f}, {0., 1., 1.}}, vertex_type{ {+1.f, +1.f, +1.f}, {0., 1., 1.}}
-		  , vertex_type{ {-1.f, -1.f, +1.f}, {0.f, 1.f, 1.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {0., 1., 1.}}, vertex_type{ {-1.f, +1.f, +1.f}, {0., 1., 1.}}
-
-		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 1.f, 0.f}}, vertex_type{ {+1.f, -1.f, -1.f}, {0., 1., 0.}}, vertex_type{ {+1.f, -1.f, +1.f}, {0., 1., 0.}}
-		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 1.f, 0.f}}, vertex_type{ {+1.f, -1.f, +1.f}, {0., 1., 0.}}, vertex_type{ {-1.f, -1.f, +1.f}, {0., 1., 0.}}
-		  , vertex_type{ {-1.f, +1.f, -1.f}, {1.f, 0.f, 1.f}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 0., 1.}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 0., 1.}}
-		  , vertex_type{ {-1.f, +1.f, -1.f}, {1.f, 0.f, 1.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 0., 1.}}, vertex_type{ {-1.f, +1.f, +1.f}, {1., 0., 1.}}
-
-		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 0.f, 1.f}}, vertex_type{ {-1.f, +1.f, -1.f}, {0., 0., 1.}}, vertex_type{ {-1.f, +1.f, +1.f}, {0., 0., 1.}}
-		  , vertex_type{ {-1.f, -1.f, -1.f}, {0.f, 0.f, 1.f}}, vertex_type{ {-1.f, +1.f, +1.f}, {0., 0., 1.}}, vertex_type{ {-1.f, -1.f, +1.f}, {0., 0., 1.}}
-		  , vertex_type{ {+1.f, -1.f, -1.f}, {1.f, 1.f, 0.f}}, vertex_type{ {+1.f, +1.f, -1.f}, {1., 1., 0.}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 1., 0.}}
-		  , vertex_type{ {+1.f, -1.f, -1.f}, {1.f, 1.f, 0.f}}, vertex_type{ {+1.f, +1.f, +1.f}, {1., 1., 0.}}, vertex_type{ {+1.f, -1.f, +1.f}, {1., 1., 0.}}
+		   vt{P000, nzn, c100}, vt{P100, nzn, c100}, vt{P110, nzn, c100}, vt{P000, nzn, c100}, vt{P110, nzn, c100}, vt{P010, nzn, c100}
+		 , vt{P001, nzp, c011}, vt{P101, nzp, c011}, vt{P111, nzp, c011}, vt{P001, nzp, c011}, vt{P111, nzp, c011}, vt{P011, nzp, c011}
+		 , vt{P000, nyn, c010}, vt{P100, nyn, c010}, vt{P101, nyn, c010}, vt{P000, nyn, c010}, vt{P101, nyn, c010}, vt{P001, nyn, c010}
+		 , vt{P010, nyp, c101}, vt{P110, nyp, c101}, vt{P111, nyp, c101}, vt{P010, nyp, c101}, vt{P111, nyp, c101}, vt{P011, nyp, c101}
+		 , vt{P000, nxn, c001}, vt{P010, nxn, c001}, vt{P011, nxn, c001}, vt{P000, nxn, c001}, vt{P011, nxn, c001}, vt{P001, nxn, c001}
+		 , vt{P100, nxp, c110}, vt{P110, nxp, c110}, vt{P111, nxp, c110}, vt{P100, nxp, c110}, vt{P111, nxp, c110}, vt{P101, nxp, c110}
 		};
 
 		glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW);
@@ -236,36 +236,80 @@ public:
 
 		// /!\ Attention, ca ne marche que si T=float : c'est un peu dommage.
 		glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
-		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(0); // Position
+		glVertexAttribPointer(1, decltype(vertex_type::normal)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position));
+		glEnableVertexAttribArray(1); // Normale
+		glVertexAttribPointer(2, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position) + sizeof(vertex_type::normal));
+		glEnableVertexAttribArray(2); // Couleur
 	}
 
 	void Update()
 	{
-		m_angle += 0.025f;
 	}
 
-	void render(const Mat4<float>& VP)
+	void render(const Mat4<float>& VP, Point3D<T> cameraPositionWorld)
 	{
-		Mat4<float> rot = Mat4<float>::RotationY(m_angle);
+		// Propriétés optiques du cube
+		struct OpticalProperties
+		{
+			float ambient = 0.3f;
+			float diffuse = 0.7f;
+			float specular = 70.f;
+			float shininess = 1.f;
+		} opticalProperties;
 
-		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
+		// Propriétés de la lumière
+		struct DirectionalLight
+		{
+			Point3D<T> direction = { 0.f, -1.f, 0.f };
+			Color4<T> color = { 1.f, 1.f, 1.f, 1.f };
+		} directionalLight;
+
+		Mat4<float> rot = Mat4<float>::RotationX(beta) * Mat4<float>::RotationY(alpha);
+
+		Mat4<float> trans = Mat4<float>::Translation({ -2.f, 0.f, -5.f });
 
 		Mat4<float> M = trans * rot;
 		Mat4<float> MVP = VP * M;
 
+		glUseProgram(m_programId);
 		glBindVertexArray(m_vao);
 
 		GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP");
 		glUniformMatrix4fv(mvpLocation, 1, 0, MVP.data());
 
+		GLuint modelLocation = glGetUniformLocation(m_programId, "model");
+		glUniformMatrix4fv(modelLocation, 1, 0, M.data());
+
+		GLuint cameraPositionWorldLoc = glGetUniformLocation(m_programId, "cameraPositionWorld");
+		glUniform3fv(cameraPositionWorldLoc, 1, reinterpret_cast<float*>(&cameraPositionWorld));
+
+		GLuint ambient = glGetUniformLocation(m_programId, "material.ambient");
+		glUniform1fv(ambient, 1, &opticalProperties.ambient);
+
+		GLuint diffuse = glGetUniformLocation(m_programId, "material.diffuse");
+		glUniform1fv(diffuse, 1, &opticalProperties.diffuse);
+
+		GLuint specular = glGetUniformLocation(m_programId, "material.specular");
+		glUniform1fv(specular, 1, &opticalProperties.specular);
+
+		GLuint shininess = glGetUniformLocation(m_programId, "material.shininess");
+		glUniform1fv(shininess, 1, &opticalProperties.shininess);
+
+		GLuint lightLocation = glGetUniformLocation(m_programId, "light.direction");
+		glUniform3fv(lightLocation, 1, reinterpret_cast<float*>(&directionalLight.direction));
+
+		GLuint lightColor = glGetUniformLocation(m_programId, "light.color");
+		glUniform4fv(lightColor, 1, reinterpret_cast<float*>(& directionalLight.color));
+
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
+
+	float alpha = 0.f;
+	float beta = 0.f;
 
 private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_programId;
-	float m_angle = 0.f;
 };
