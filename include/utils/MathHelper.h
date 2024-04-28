@@ -32,11 +32,14 @@ struct Point3D
 	Point3D(const Point3D& pt)
 		: x(pt.x), y(pt.y), z(pt.z)
 	{}
+	
+	T* data() { return std::array<T, 3>{x, y, z}.data(); }
 
 	T x;
 	T y;
 	T z;
 };
+
 
 struct AxisX
 {

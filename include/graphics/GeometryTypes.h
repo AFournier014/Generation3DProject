@@ -97,7 +97,7 @@ public:
 		, m_vao(0)
 		, m_vbo(0)
 		, m_programId(0)
-		m_texture(TEXTURES_PATH + "texture.png")
+		, m_texture(TEXTURES_PATH + "texture.png")
 	{
 		load();
 	}
@@ -249,7 +249,7 @@ public:
 	{
 	}
 
-	void render(const Mat4<float>& VP, Point3D<T> cameraPositionWorld)
+	void render(const Mat4<float>& VP, Point3D<T>& cameraPositionWorld)
 	{
 		// Propriétés optiques du cube
 		struct OpticalProperties
@@ -277,33 +277,35 @@ public:
 		GLCall(glUseProgram(m_programId));
 		GLCall(glBindVertexArray(m_vao));
 
+		GLCall(GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP"));
 		GLCall(glUniformMatrix4fv(mvpLocation, 1, 0, MVP.data()));
 
-		GLuint modelLocation = glGetUniformLocation(m_programId, "model");
-		glUniformMatrix4fv(modelLocation, 1, 0, M.data());
+		GLCall(GLuint modelLocation = glGetUniformLocation(m_programId, "model"));
+		GLCall(glUniformMatrix4fv(modelLocation, 1, 0, M.data()));
 
-		GLuint cameraPositionWorldLoc = glGetUniformLocation(m_programId, "cameraPositionWorld");
-		glUniform3fv(cameraPositionWorldLoc, 1, reinterpret_cast<float*>(&cameraPositionWorld));
+		GLCall(GLuint cameraPositionWorldLoc = glGetUniformLocation(m_programId, "cameraPositionWorld"));
+		// GLCall(glUniform3fv(cameraPositionWorldLoc, 1, reinterpret_cast<float*>(&cameraPositionWorld))); // Ne fonctionne pas avec les Point3D (à fix)
+		glUniform3fv(cameraPositionWorldLoc, 1, cameraPositionWorld.data());
 
-		GLuint ambient = glGetUniformLocation(m_programId, "material.ambient");
-		glUniform1fv(ambient, 1, &opticalProperties.ambient);
+		GLCall(GLuint ambient = glGetUniformLocation(m_programId, "material.ambient"));
+		GLCall(glUniform1fv(ambient, 1, &opticalProperties.ambient));
 
-		GLuint diffuse = glGetUniformLocation(m_programId, "material.diffuse");
-		glUniform1fv(diffuse, 1, &opticalProperties.diffuse);
+		GLCall(GLuint diffuse = glGetUniformLocation(m_programId, "material.diffuse"));
+		GLCall(glUniform1fv(diffuse, 1, &opticalProperties.diffuse));
 
-		GLuint specular = glGetUniformLocation(m_programId, "material.specular");
-		glUniform1fv(specular, 1, &opticalProperties.specular);
+		GLCall(GLuint specular = glGetUniformLocation(m_programId, "material.specular"));
+		GLCall(glUniform1fv(specular, 1, &opticalProperties.specular));
 
-		GLuint shininess = glGetUniformLocation(m_programId, "material.shininess");
-		glUniform1fv(shininess, 1, &opticalProperties.shininess);
+		GLCall(GLuint shininess = glGetUniformLocation(m_programId, "material.shininess"));
+		GLCall(glUniform1fv(shininess, 1, &opticalProperties.shininess));
 
-		GLuint lightLocation = glGetUniformLocation(m_programId, "light.direction");
-		glUniform3fv(lightLocation, 1, reinterpret_cast<float*>(&directionalLight.direction));
+		GLCall(GLuint lightLocation = glGetUniformLocation(m_programId, "light.direction"));
+		GLCall(glUniform3fv(lightLocation, 1, reinterpret_cast<float*>(&directionalLight.direction)));
 
-		GLuint lightColor = glGetUniformLocation(m_programId, "light.color");
-		glUniform4fv(lightColor, 1, reinterpret_cast<float*>(& directionalLight.color));
+		GLCall(GLuint lightColor = glGetUniformLocation(m_programId, "light.color"));
+		GLCall(glUniform4fv(lightColor, 1, reinterpret_cast<float*>(&directionalLight.color)));
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 	}
 
 	float alpha = 0.f;

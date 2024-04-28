@@ -22,7 +22,7 @@ struct DirectionalLight
 
 uniform Material material;
 uniform DirectionalLight light;
-uniform vec4 cameraPositionWorld;
+uniform vec3 cameraPositionWorld;
 
 void main()
 {
