@@ -45,14 +45,13 @@ void AltShader::SetUniformMat4f(const std::string& name, const Mat4<float>& matr
 	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data()));
 }
 
-GLint AltShader::GetUniformLocation(const std::string& name)
+GLint AltShader::GetUniformLocation(const std::string& name) const
 {
-	GLCall(GLint location = glGetUniformLocation(m_RendererID, name.c_str()));
-	if (location == -1)
+	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 	{
-		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+		return m_UniformLocationCache[name];
 	}
-	return location;
+	return m_UniformLocationCache[name] = glGetUniformLocation(m_RendererID, name.c_str());
 }
 
 std::string AltShader::ReadShader(const char* filename)
@@ -70,11 +69,12 @@ std::string AltShader::ReadShader(const char* filename)
 	return buffer.str();
 }
 
-GLuint AltShader::CompileShader(GLenum type, const std::string& source)
+GLuint AltShader::CompileShader(GLenum type, const char* source)
 {
 	GLCall(GLuint id = glCreateShader(type));
-	const char* src = ReadShader(source.c_str()).c_str();
-	GLCall(glShaderSource(id, 1, &src, nullptr));
+	auto* str = ReadShader(source).c_str();
+
+	GLCall(glShaderSource(id, 1, &str, nullptr));
 	GLCall(glCompileShader(id));
 
 	int result;
@@ -83,7 +83,7 @@ GLuint AltShader::CompileShader(GLenum type, const std::string& source)
 	{
 		int length;
 		GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-		char* message = (char*)alloca(length * sizeof(char));
+		char* message = (char*)_malloca(length * sizeof(char));
 		GLCall(glGetShaderInfoLog(id, length, &length, message));
 		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
 		std::cout << message << std::endl;
@@ -97,8 +97,8 @@ GLuint AltShader::CompileShader(GLenum type, const std::string& source)
 GLuint AltShader::CreateShader(const std::string& vertexSource, const std::string& fragmentSource)
 {
 	GLCall(GLuint program = glCreateProgram());
-	GLuint vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
-	GLuint fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+	GLuint vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource.c_str());
+	GLuint fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource.c_str());
 
 	GLCall(glAttachShader(program, vertexShader));
 	GLCall(glAttachShader(program, fragmentShader));

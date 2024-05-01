@@ -3,6 +3,7 @@
 #include <string>
 #include <GL/glew.h>
 #include "MathHelper.h"
+#include <unordered_map>
 
 struct ShaderProgramSource
 {
@@ -26,12 +27,13 @@ public:
 	void SetUniformMat4f(const std::string& name, const Mat4<float>& matrix);
 
 private:
-	GLint GetUniformLocation(const std::string& name);
+	GLint GetUniformLocation(const std::string& name) const;
 	std::string ReadShader(const char* filename);
-	GLuint CompileShader(GLenum type, const std::string& source);
+	GLuint CompileShader(GLenum type, const char* source);
 	GLuint CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
 
 	GLuint m_RendererID;
 	std::string m_VertexPath;
 	std::string m_FragmentPath;
+	mutable std::unordered_map<std::string, GLint> m_UniformLocationCache;
 };
