@@ -2,6 +2,7 @@
 
 #include <array>
 #include <type_traits>
+#include <cmath>
 
 template <typename T>
 struct Point2D
@@ -168,6 +169,21 @@ Mat4<T> operator*(const Mat4<T>& op1, const Mat4<T>& op2)
 			result(row, col) = 0;
 			for (int k = 0; k < 4; ++k)
 				result(row, col) += op1(row, k) * op2(k, col);
+		}
+	}
+	return result;
+}
+
+template <typename T>
+Mat4<T> operator+(const Mat4<T>& op1, const Mat4<T>& op2)
+{
+	Mat4<T> result;
+
+	for (int row = 0; row < 4; ++row)
+	{
+		for (int col = 0; col < 4; ++col)
+		{
+			result(row, col) = op1(row, col) + op2(row, col);
 		}
 	}
 	return result;

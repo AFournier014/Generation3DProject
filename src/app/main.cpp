@@ -6,7 +6,7 @@
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
 
-Mat4<float> InitFirstTriangle()
+Mat4<float> InitProjection()
 {
 	using Mat4f = Mat4<float>;
 
@@ -55,7 +55,7 @@ int main() {
 	// Création d'un cube (temporaire)
 	CubeF cube;
 
-	auto P = InitFirstTriangle();
+	auto P = InitProjection();
 	// Fin du code temporaire
 
 	float alpha = 0.f;
@@ -91,6 +91,38 @@ int main() {
 				if (event.key.code == sf::Keyboard::Space)
 				{
 					setCameraOn = !setCameraOn;
+				}
+
+				// Déplacement de la caméra (temporaire) mais on est dans un monde 2D donc c'est pas ouf
+				if (event.key.code == sf::Keyboard::Z)
+				{
+					// Déplacement vers l'avant, en fonction de l'orientation de la caméra
+					cameraPos.z += 0.1f * cos(alpha);
+					cameraPos.x += 0.1f * sin(alpha);
+					cameraPos.y += 0.1f * sin(beta);
+				}
+				if (event.key.code == sf::Keyboard::S)
+				{
+					// Déplacement vers l'arrière, en fonction de l'orientation de la caméra
+					cameraPos.z -= 0.1f * cos(alpha);
+					cameraPos.x -= 0.1f * sin(alpha);
+					cameraPos.y -= 0.1f * sin(beta);
+
+				}
+				if (event.key.code == sf::Keyboard::Q)
+				{
+					// Déplacement vers la gauche, en fonction de l'orientation de la caméra
+					cameraPos.z += 0.1f * sin(alpha);
+					cameraPos.x -= 0.1f * cos(alpha);
+					cameraPos.y -= 0.1f * sin(beta);
+
+				}
+				if (event.key.code == sf::Keyboard::D)
+				{
+					// Déplacement vers la droite, en fonction de l'orientation de la caméra
+					cameraPos.z -= 0.1f * sin(alpha);
+					cameraPos.x += 0.1f * cos(alpha);
+					cameraPos.y += 0.1f * sin(beta);
 				}
 			}
 			else if (event.type == sf::Event::MouseMoved)
@@ -128,7 +160,7 @@ int main() {
 		// Nettoyage de la fenêtre (efface les tampons de couleur et de profondeur)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha);
+		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha) + Mat4<float>::Translation(cameraPos);
 		auto VP = P * V;
 
 		// Affichage du contenu

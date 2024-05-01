@@ -3,6 +3,7 @@
 #include "OpenGL/VertexBufferLayout.h"
 #include "OpenGL/Renderer.h"
 #include <GL/glew.h>
+#include "OpenGL/VertexBufferLayout.h"
 
 VertexArray::VertexArray()
 {

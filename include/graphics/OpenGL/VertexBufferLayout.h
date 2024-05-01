@@ -13,8 +13,11 @@ struct VertexBufferElement
 class VertexBufferLayout
 {
 public:
-	VertexBufferLayout();
-	~VertexBufferLayout();
+	VertexBufferLayout()
+		: m_stride(0)
+	{}
+	~VertexBufferLayout()
+	{}
 
 	template<typename T>
 	void Push(unsigned int count) { }
