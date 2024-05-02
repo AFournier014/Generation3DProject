@@ -92,38 +92,6 @@ int main() {
 				{
 					setCameraOn = !setCameraOn;
 				}
-
-				// Déplacement de la caméra (temporaire) mais on est dans un monde 2D donc c'est pas ouf
-				if (event.key.code == sf::Keyboard::Z)
-				{
-					// Déplacement vers l'avant, en fonction de l'orientation de la caméra
-					cameraPos.z += 0.1f * cos(alpha);
-					cameraPos.x += 0.1f * sin(alpha);
-					cameraPos.y += 0.1f * sin(beta);
-				}
-				if (event.key.code == sf::Keyboard::S)
-				{
-					// Déplacement vers l'arrière, en fonction de l'orientation de la caméra
-					cameraPos.z -= 0.1f * cos(alpha);
-					cameraPos.x -= 0.1f * sin(alpha);
-					cameraPos.y -= 0.1f * sin(beta);
-
-				}
-				if (event.key.code == sf::Keyboard::Q)
-				{
-					// Déplacement vers la gauche, en fonction de l'orientation de la caméra
-					cameraPos.z += 0.1f * sin(alpha);
-					cameraPos.x -= 0.1f * cos(alpha);
-					cameraPos.y -= 0.1f * sin(beta);
-
-				}
-				if (event.key.code == sf::Keyboard::D)
-				{
-					// Déplacement vers la droite, en fonction de l'orientation de la caméra
-					cameraPos.z -= 0.1f * sin(alpha);
-					cameraPos.x += 0.1f * cos(alpha);
-					cameraPos.y += 0.1f * sin(beta);
-				}
 			}
 			else if (event.type == sf::Event::MouseMoved)
 			{

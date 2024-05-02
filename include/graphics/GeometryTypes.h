@@ -34,6 +34,8 @@ struct Color3
 template <typename T>
 struct Color4
 {
+	static constexpr int ndim = 4;
+
 	Color4(const T& r_ = 0, const T& g_ = 0, const T& b_ = 0, const T& a_ = 0)
 		: r(r_), g(g_), b(b_), a(a_)
 	{}
@@ -53,6 +55,8 @@ template <typename T>
 struct Vertex // possible de templater pour gerer opengl en sachant ce qu'il contient (pas tout compris)
 {
 	Point3D<T> position;
+	Point3D<T> normal;
+	Color3<T> color;
 	Point2D<T> texture;
 };
 
