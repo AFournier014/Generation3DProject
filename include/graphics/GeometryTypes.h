@@ -183,7 +183,7 @@ struct CubeVertex
 	Color3<T> color;
 };
 
-template <typename T>
+/*template <typename T>
 class Cube
 {
 public:
@@ -283,7 +283,7 @@ public:
 
 		GLCall(GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP"));
 		GLCall(glUniformMatrix4fv(mvpLocation, 1, 0, MVP.data()));
-
+		
 		GLCall(GLuint modelLocation = glGetUniformLocation(m_programId, "model"));
 		GLCall(glUniformMatrix4fv(modelLocation, 1, 0, M.data()));
 
@@ -291,7 +291,7 @@ public:
 		// GLCall(glUniform3fv(cameraPositionWorldLoc, 1, reinterpret_cast<float*>(&cameraPositionWorld))); // Ne fonctionne pas avec les Point3D (à fix)
 		glUniform3fv(cameraPositionWorldLoc, 1, cameraPositionWorld.data());
 
-		GLCall(GLuint ambient = glGetUniformLocation(m_programId, "material.ambient"));
+		GLCall(GLuint ambient = glGetUniformLocation(m_programId, "	"));
 		GLCall(glUniform1fv(ambient, 1, &opticalProperties.ambient));
 
 		GLCall(GLuint diffuse = glGetUniformLocation(m_programId, "material.diffuse"));
@@ -319,4 +319,4 @@ private:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_programId;
-};
+};*/

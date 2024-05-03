@@ -1,6 +1,7 @@
 #include <SFML/Window.hpp>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
+#include <graphics/Drawables/Cube.h>
 #include <graphics/GeometryTypes.h>
 
 constexpr auto windowWidth = 800;
@@ -32,7 +33,7 @@ int main() {
 
 	// Activation de la fenêtre
 	window.setActive(true);
-	
+
 	// Lignes de code pour initialiser GLEW (apparemment c'est nécessaire)
 	glewExperimental = GL_TRUE;
 	if (glewInit()) {
@@ -53,7 +54,7 @@ int main() {
 	TriangleF triangle{ p0, p1, p2 };
 
 	// Création d'un cube (temporaire)
-	CubeF cube;
+	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f);
 
 	auto P = InitProjection();
 	// Fin du code temporaire
@@ -63,7 +64,7 @@ int main() {
 
 	Point3D<float> cameraPos{ 0.f, 0.f, 0.f };
 
-	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
+	sf::Mouse::setPosition({ windowWidth / 2, windowHeight / 2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
 	bool leftMouseButtonPressed = false; // Pour savoir si on doit bouger le cube
 
@@ -135,7 +136,7 @@ int main() {
 		triangle.Update();
 		triangle.render(VP);
 
-		cube.Update();
+		cube.update();
 		cube.render(VP, cameraPos);
 
 		glFlush();
