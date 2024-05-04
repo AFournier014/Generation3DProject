@@ -127,8 +127,9 @@ public:
 			{ GL_NONE, nullptr }
 		};
 
-		m_programId = Shader::LoadShaders(shaders);
-		GLCall(glUseProgram(m_programId));
+		shader = new Shader(vertPath, fragPath);
+		shader->Bind();
+		m_programId = shader->GetRendererID();
 
 		/*
 		* WARNING: Ne fonctionne que pour les types T = float, a changer pour les autres types
@@ -137,8 +138,8 @@ public:
 		GLCall(glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0));
 		GLCall(glEnableVertexAttribArray(0));
 
-		GLCall(glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position)));
-		GLCall(glEnableVertexAttribArray(1));
+		//GLCall(glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position)));
+		//GLCall(glEnableVertexAttribArray(1));
 	}
 
 	void Update()
@@ -157,7 +158,7 @@ public:
 		// Matrice de transformation
 		Mat4<float> MVP = VP * M;
 
-		GLCall(glUseProgram(m_programId));
+		shader->Bind();
 		GLCall(glBindVertexArray(m_vao));
 		GLCall(GLuint mvpLocation = glGetUniformLocation(m_programId, "MVP"));
 		GLCall(glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, MVP.data()));
@@ -173,6 +174,7 @@ private:
 	GLuint m_programId;
 	float m_angle = 0.f;
 	Texture m_texture;
+	Shader* shader;
 };
 
 template<typename T>
@@ -182,6 +184,7 @@ struct CubeVertex
 	Point3D<T> normal;
 	Color3<T> color;
 };
+
 
 /*template <typename T>
 class Cube
@@ -224,20 +227,14 @@ public:
 		 , vt{P010, nyp, c101}, vt{P110, nyp, c101}, vt{P111, nyp, c101}, vt{P010, nyp, c101}, vt{P111, nyp, c101}, vt{P011, nyp, c101}
 		 , vt{P000, nxn, c001}, vt{P010, nxn, c001}, vt{P011, nxn, c001}, vt{P000, nxn, c001}, vt{P011, nxn, c001}, vt{P001, nxn, c001}
 		 , vt{P100, nxp, c110}, vt{P110, nxp, c110}, vt{P111, nxp, c110}, vt{P100, nxp, c110}, vt{P111, nxp, c110}, vt{P101, nxp, c110}
-		};
+		}; 
 
 		GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(points), points.data(), GL_STATIC_DRAW));
 
 		std::string vertPath = SHADER_PATH + "cube.vert";
 		std::string fragPath = SHADER_PATH + "cube.frag";
 
-		ShaderInfo shaders[] = {
-			{ GL_VERTEX_SHADER, vertPath.c_str() },
-			{ GL_FRAGMENT_SHADER, fragPath.c_str() },
-			{ GL_NONE, nullptr }
-		};
-
-		m_programId = Shader::LoadShaders(shaders);
+		m_programId = Shader(vertPath, fragPath).GetRendererID();
 		GLCall(glUseProgram(m_programId));
 
 		// /!\ Attention, ca ne marche que si T=float : c'est un peu dommage.

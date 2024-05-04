@@ -1,11 +1,74 @@
 #include "Shader.h"
-
-#include <stdexcept>
-#include <GL/glew.h>
+#include <OpenGL/Renderer.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <OpenGL/Renderer.h>
+#include <malloc.h>
+
+Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
+	: m_VertexPath(vertexPath), m_FragmentPath(fragmentPath)
+{
+	ShaderInfo shaders[] = {
+		{ GL_VERTEX_SHADER, vertexPath.c_str()},
+		{ GL_FRAGMENT_SHADER, fragmentPath.c_str()},
+		{ GL_NONE, nullptr }
+	};
+	m_RendererID = LoadShader(shaders);
+}
+
+Shader::~Shader()
+{
+	GLCall(glDeleteProgram(m_RendererID))
+}
+
+void Shader::Bind() const
+{
+	GLCall(glUseProgram(m_RendererID))
+}
+
+void Shader::Unbind() const
+{
+	GLCall(glUseProgram(0))
+}
+
+void Shader::SetUniform1i(const std::string& name, int value) const
+{
+	GLCall(glUniform1i(GetUniformLocation(name), value))
+}
+
+void Shader::SetUniform1f(const std::string& name, float value) const
+{
+	GLCall(glUniform1f(GetUniformLocation(name), value))
+}
+
+void Shader::SetUniform3f(const std::string& name, const Point3D<float> point) const
+{
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, point.data()))
+}
+
+void Shader::SetUniformMat3f(const std::string& name, const Mat4<float>& matrix) const
+{
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, matrix.data()))
+}
+
+void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) const
+{
+	GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3))
+}
+
+void Shader::SetUniformMat4f(const std::string& name, const Mat4<float>& matrix) const
+{
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data()))
+}
+
+GLint Shader::GetUniformLocation(const std::string& name) const
+{
+	if (m_UniformLocationCache.contains(name))
+	{
+		return m_UniformLocationCache[name];
+	}
+	return m_UniformLocationCache[name] = glGetUniformLocation(m_RendererID, name.c_str());
+}
 
 namespace
 {
@@ -40,53 +103,55 @@ namespace
 	}
 }
 
-unsigned int Shader::LoadShaders(ShaderInfo* shaderInfo)
+GLuint Shader::LoadShader(ShaderInfo* shaders) const
 {
-	if (shaderInfo == nullptr)
+	if (shaders == nullptr)
 	{
 		throw std::runtime_error("Aucun shader à charger");
 	}
 
-	GLCall(auto programId = glCreateProgram());
-	auto* entry = shaderInfo;
+	GLCall(auto program = glCreateProgram());
+
+	auto* entry = shaders;
 
 	while (entry->type != GL_NONE)
 	{
-		GLCall(auto shaderId = glCreateShader(entry->type));
-		entry->shaderId = shaderId;
+		GLCall(auto id = glCreateShader(entry->type));
+
+		entry->shaderId = id;
 
 		auto str = ReadShader(entry->filename);
 
-		const char* cstr = str.c_str();
+		const char* csrc = str.c_str();
 
-		GLCall(glShaderSource(shaderId, 1, &cstr, nullptr));
-		GLCall(glCompileShader(shaderId));
+		GLCall(glShaderSource(id, 1, &csrc, nullptr));
+		GLCall(glCompileShader(id));
 
 		GLint hasCompiled;
-		GLCall(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &hasCompiled));
+		GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &hasCompiled));
 
 		if (!hasCompiled)
 		{
-			ThrowException(shaderId, entry->filename, "Erreur de compilation du shader: ");
+			ThrowException(id, entry->filename, "Erreur de compilation du shader: ");
 		}
 
-		GLCall(glAttachShader(programId, shaderId));
-		++entry;
+		GLCall(glAttachShader(program, id));
 
-		GLCall(glDeleteShader(shaderId));
+		++entry;
+		GLCall(glDeleteShader(id));
 	}
 
-	GLCall(glLinkProgram(programId));
+	GLCall(glLinkProgram(program));
 
 	GLint isLinked;
-	GLCall(glGetProgramiv(programId, GL_LINK_STATUS, &isLinked));
+	GLCall(glGetProgramiv(program, GL_LINK_STATUS, &isLinked));
 
 	if (!isLinked)
 	{
-		ThrowException(programId, entry->filename, "Erreur de linkage du programme de shaders: ");
+		ThrowException(program, entry->filename, "Erreur de linkage du programme de shaders: ");
 	}
 
-	GLCall(glValidateProgram(programId));
-	
-	return programId;
+	GLCall(glValidateProgram(program));
+
+	return program;
 }

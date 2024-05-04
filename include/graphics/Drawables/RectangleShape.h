@@ -11,26 +11,26 @@ public:
 	{
 	}
 
-	~RectangleShape() {}
+	~RectangleShape() = default;
 
-	virtual void load() override
+	void load() override
 	{
 		Mesh<T>::load();
 	}
 
-	virtual void update() override
+	void update() override
 	{
 		// Do nothing
 		Mesh<T>::update();
 	}
 
-	virtual void render(const Mat4<T>& VP, Point3D<T> cameraPositionWorld) override
+	void render(const Mat4<T>& VP, Point3D<T> cameraPositionWorld) override
 	{
 		Mesh<T>::render(VP, cameraPositionWorld);
 	}
 
 private:
-	static const std::vector<Vertex<T>> createRectangleShapeVertices(const Point3D<T>& center, T width, T height)
+	static std::vector<Vertex<T>> createRectangleShapeVertices(const Point3D<T>& center, T width, T height)
 	{
 		T halfWidth = width / 2;
 		T halfHeight = height / 2;
@@ -77,7 +77,7 @@ private:
 		return vertices;
 	}
 
-	static const std::vector<unsigned int> createRectangleShapeIndices()
+	static std::vector<unsigned int> createRectangleShapeIndices()
 	{
 		std::vector<unsigned int> indices;
 		indices.reserve(36);

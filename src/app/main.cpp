@@ -55,6 +55,7 @@ int main() {
 
 	// Création d'un cube (temporaire)
 	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f);
+	//CubeF cube;
 
 	auto P = InitProjection();
 	// Fin du code temporaire

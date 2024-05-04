@@ -35,6 +35,7 @@ struct Point3D
 	{}
 	
 	T* data() { return std::array<T, 3>{x, y, z}.data(); }
+	const T* data() const { return std::array<T, 3>{x, y, z}.data(); }
 
 	T x;
 	T y;
