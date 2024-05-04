@@ -260,8 +260,8 @@ public:
 		{
 			float ambient = 0.3f;
 			float diffuse = 0.7f;
-			float specular = 70.f;
-			float shininess = 1.f;
+			float specular = 1.f;
+			float shininess = 70.f;
 		} opticalProperties;
 
 		// Propriétés de la lumière
@@ -273,7 +273,7 @@ public:
 
 		Mat4<float> rot = Mat4<float>::RotationX(beta) * Mat4<float>::RotationY(alpha);
 
-		Mat4<float> trans = Mat4<float>::Translation({ -2.f, 0.f, -5.f });
+		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
 
 		Mat4<float> M = trans * rot;
 		Mat4<float> MVP = VP * M;

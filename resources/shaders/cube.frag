@@ -32,6 +32,6 @@ void main()
 	vec3 dc = normalize(positionWorld - cameraPositionWorld.xyz);
 	vec3 dcprime = 2. * dot(dc, normalWorld) * normalWorld - dc;
 
-	vec4 specular = pow(max(0, -dot( light.direction, dcprime)), material.shininess) * material.specular * materialColor;
-	outFragColor = ambiant + diffuse + specular;
+	float specularCoef = pow(max(0, dot( light.direction, -dcprime)), material.shininess);
+	outFragColor = (1. - specularCoef) * (ambiant + diffuse) + specularCoef * light.color;
 }
