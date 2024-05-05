@@ -28,21 +28,23 @@ struct Point3D
 	static constexpr int ndim = 3;
 
 	Point3D(const T& x_ = 0, const T& y_ = 0, const T& z_ = 0)
-		: x(x_), y(y_), z(z_)
+		: coord{ x_, y_, z_ }
 	{}
 
 	Point3D(const Point3D& pt)
-		: x(pt.x), y(pt.y), z(pt.z)
+		: coord{ pt.coord }
 	{}
 
-	Point3D<T> operator-() const { return Point3D(-x, -y, -z); }
+	Point3D<T> operator-() const { return Point3D<T>{-coord[0], -coord[1], -coord[2]}; }
 	
-	T* data() { return std::array<T, 3>{x, y, z}.data(); }
-	const T* data() const { return std::array<T, 3>{x, y, z}.data(); }
+	T* data() { return coord.data(); }
+	const T* data() const { return coord.data(); }
 
-	T x;
-	T y;
-	T z;
+	const T& x() const { return coord[0]; }
+	const T& y() const { return coord[1]; }
+	const T& z() const { return coord[2]; }
+
+	std::array<T, 3> coord;
 };
 
 
@@ -113,9 +115,9 @@ public:
 	static Mat4<T> Translation(const Point3D<T>& translation)
 	{
 		Mat4<T> m = Identity();
-		m(0, 3) = translation.x;
-		m(1, 3) = translation.y;
-		m(2, 3) = translation.z;
+		m(0, 3) = translation.x();
+		m(1, 3) = translation.y();
+		m(2, 3) = translation.z();
 		return m;
 	}
 
