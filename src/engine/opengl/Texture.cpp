@@ -1,16 +1,21 @@
-#include "engine/opengl/AltTexture.h"
+#include "Texture.h"
 #include "GL/glew.h"
-#include <engine/opengl/Renderer.h>
+#include <Renderer.h>
+#include <SFML/Graphics/Image.hpp>
+#include <filesystem>
+#include <iostream>
 
-
-AltTexture::AltTexture(const std::string& path)
-	: m_rendererID(0), m_filePath(path), m_width(0), m_height(0)
+Texture::Texture(const std::filesystem::path& path)
+	: m_filePath(path)
 {
-	image.loadFromFile(path);
-	image.flipVertically();
-
 	GLCall(glGenTextures(1, &m_rendererID));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_rendererID));
+
+	if (!image.loadFromFile(path.generic_string()))
+	{
+		std::cerr << "Failed to load texture" << std::endl;
+	}
+	image.flipVertically();
 
 	auto size = image.getSize();
 	m_width = size.x;
@@ -25,18 +30,18 @@ AltTexture::AltTexture(const std::string& path)
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 }
 
-AltTexture::~AltTexture()
+Texture::~Texture()
 {
 	GLCall(glDeleteTextures(1, &m_rendererID));
 }
 
-void AltTexture::Bind(unsigned int slot) const
+void Texture::Bind(unsigned int slot) const
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_rendererID));
 }
 
-void AltTexture::Unbind() const
+void Texture::Unbind() const
 {
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }

@@ -3,6 +3,11 @@
 #include <SFML/OpenGL.hpp>
 #include <engine/drawables/Meshs/Cube.h>
 #include <engine/utils/GeometryTypes.h>
+#include <Shader.h>
+#include <Texture.h>
+#include <Meshs/Triangle.h>
+#include <Paths.h>
+
 
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
@@ -51,20 +56,16 @@ int main() {
 	VertexF p0{ {-0.9f, -0.9f, 0.0f}, {-0.9f, 0.9f} };
 	VertexF p1{ {0.9f, -0.9f, 0.0f}, {0.9f, 0.9f} };
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
-	TriangleF triangle{ p0, p1, p2 };
+
+	Texture texture(TEXTURES_PATH + "texture.png");
+	TriangleF triangle(p0, p1, p2, texture);
 
 	Shader shader(SHADER_PATH + "cube.vert", SHADER_PATH + "cube.frag");
+	Shader shader2(SHADER_PATH + "triangle.vert", SHADER_PATH + "triangle.frag");
 
 	// Création d'un cube (temporaire)
-	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f, Texture(""));
-	CubeF cube2(Point3D<float>{2.f, 3.f, -10.f}, 1.f, Texture(""));
-
-	std::array<CubeF*, 10> cubes;
-	// Création de 10 cubes (temporaire) pour tester le rendu partout sur l'écran dans des positions différentes et aléatoires
-	for (int i = 0; i < 10; ++i)
-	{
-		cubes[i] = new CubeF(Point3D<float>{static_cast<float>(rand() % 10), static_cast<float>(rand() % 10), static_cast<float>(rand() % 10)}, 1.f, Texture(""));
-	}
+	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f, texture);
+	CubeF cube2(Point3D<float>{2.f, 3.f, -10.f}, 1.f, texture);
 
 	auto P = InitProjection();
 	// Fin du code temporaire
@@ -145,20 +146,14 @@ int main() {
 		auto VP = P * V;
 
 		// Affichage du contenu
-		triangle.Update();
-		triangle.render(VP);
+		triangle.update();
+		triangle.render(shader2, VP, cameraPos);
 
 		cube.update();
 		cube.render(shader, VP, cameraPos);
 
 		cube2.update();
 		cube2.render(shader, VP, cameraPos);
-
-		for (int i = 0; i < 10; ++i)
-		{
-			cubes[i]->update();
-			cubes[i]->render(shader, VP, cameraPos);
-		}
 
 		glFlush();
 

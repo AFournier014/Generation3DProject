@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATH_HELPER_H
+#define MATH_HELPER_H
 
 #include <array>
 #include <type_traits>
@@ -191,3 +192,5 @@ Mat4<T> operator+(const Mat4<T>& op1, const Mat4<T>& op2)
 	}
 	return result;
 }
+
+#endif // !MATH_HELPER_H

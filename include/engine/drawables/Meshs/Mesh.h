@@ -1,19 +1,24 @@
-#pragma once
+#ifndef MESH_H
+#define MESH_H
 
 #include <vector>
 #include <GL/glew.h>
-#include "engine/utils/MathHelper.h"
-#include "engine/utils/GeometryTypes.h"
-#include "engine/opengl/Shader.h"
-#include "engine/drawables/drawable.h"
+#include <MathHelper.h>
+#include <GeometryTypes.h>
+#include <Drawable.h>
+#include <Texture.h>
+#include <Shader.h>
+#include <Renderer.h>
 
 template <typename T>
 class Mesh : public Drawable<T>
 {
 public:
 	using vertex_type = Vertex<T>;
+	using Point3D = Point3D<T>;
+	using Mat4 = Mat4<T>;
 
-	Mesh(const std::vector<Vertex<T>>& vertices, const std::vector<unsigned int>& indices, const Texture& texture = Texture(""))
+	Mesh(const std::vector<vertex_type>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
 		: m_vertices(vertices)
 		, m_indices(indices)
 		, m_texture(texture)
@@ -31,9 +36,9 @@ public:
 		// TODO: Mettre à jour les données du mesh
 	}
 
-	void render(Shader& shader, const Mat4<T>& VP, const Point3D<T>& cameraPositionWorld) override
+	void render(Shader& shader, const Mat4& VP, const Point3D& cameraPositionWorld) override
 	{
-		// Temporaire propriétés optiques de l'objet
+		// Temporaire propriétés optiques de l'objet et de la lumière
 		struct OpticalProperties
 		{
 			float ambient = 0.3f;
@@ -42,19 +47,19 @@ public:
 			float shininess = 70.f;
 		} opticalProperties;
 
-		// Propriétés de la lumière
+		// Propriétés de la lumière directionnelle (temporaire)
 		struct DirectionalLight
 		{
-			Point3D<T> direction = { 0.f, -1.f, 0.f };
+			Point3D direction = { 0.f, -1.f, 0.f };
 			Color4<T> color = { 1.f, 1.f, 1.f, 1.f };
 		} directionalLight;
 
-		Mat4<float> rot = Mat4<float>::RotationX(beta) * Mat4<float>::RotationY(alpha);
+		Mat4 rot = Mat4::RotationX(beta) * Mat4::RotationY(alpha);
 
-		Mat4<float> trans = Mat4<float>::Translation({ 0.f, 0.f, -5.f });
+		Mat4 trans = Mat4::Translation({ 0.f, 0.f, -5.f });
 
-		Mat4<float> M = trans * rot;
-		Mat4<float> MVP = VP * M;
+		Mat4 M = trans * rot;
+		Mat4 MVP = VP * M;
 
 		shader.Bind();
 		shader.SetUniformMat4f("MVP", MVP);
@@ -72,9 +77,9 @@ public:
 		GLCall(glBindVertexArray(0));
 	}
 
-	void setLocation(const Point3D<T>& location) { m_location = location; }
+	void setLocation(const Point3D& location) { m_location = location; }
 
-	Point3D<T> getLocation() const { return m_location; }
+	Point3D getLocation() const { return m_location; }
 
 	float alpha = 0.f;
 	float beta = 0.f;
@@ -89,8 +94,6 @@ private:
 		GLCall(glBindVertexArray(m_vao));
 
 		updateBuffers();
-
-		//GLCall(glUseProgram(0));
 
 		GLCall(glEnableVertexAttribArray(0));
 		GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, position)));
@@ -121,11 +124,13 @@ private:
 		glDeleteBuffers(1, &m_vbo);
 	}
 
-	std::vector<Vertex<T>> m_vertices;
+	std::vector<vertex_type> m_vertices;
 	std::vector<unsigned int> m_indices;
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;
 	GLuint m_ebo = 0;
-	Point3D<T> m_location = { 0.f, 0.f, 0.f };
+	Point3D m_location = { 0.f, 0.f, 0.f };
 	Texture m_texture;
 };
+
+#endif // !MESH_H
