@@ -2,16 +2,14 @@
 
 #include <array>
 #include <GL/glew.h>
-#include <Shader.h>
-#include <MathHelper.h>
-#include <utils/Paths.h>
+#include <engine/opengl/Shader.h>
+#include <engine/utils/MathHelper.h>
+#include <engine/utils/Paths.h>
 #include <iostream>
 #include <direct.h>
-#include <MathHelper.h>
 #include <filesystem>
 #include <SFML/Graphics.hpp>
-#include <Paths.h>
-#include <OpenGL/Renderer.h>
+#include <engine/opengl/Renderer.h>
 
 template <typename T>
 struct Color3
@@ -81,7 +79,7 @@ struct Texture
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 	}
 
-	void Bind()
+	void Bind() const
 	{
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_texture));
 	}
@@ -138,8 +136,8 @@ public:
 		GLCall(glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), 0));
 		GLCall(glEnableVertexAttribArray(0));
 
-		//GLCall(glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position)));
-		//GLCall(glEnableVertexAttribArray(1));
+		GLCall(glVertexAttribPointer(1, decltype(vertex_type::texture)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), reinterpret_cast<char*>(nullptr) + sizeof(vertex_type::position)));
+		GLCall(glEnableVertexAttribArray(1));
 	}
 
 	void Update()

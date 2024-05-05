@@ -6,17 +6,12 @@ template <typename T>
 class RectangleShape : public Mesh<T>
 {
 public:
-	RectangleShape(const Point3D<T>& location, T width, T height, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
-		: Mesh<T>(std::vector<Vertex<T>>(createRectangleShapeVertices(location, width, height)), std::vector<unsigned int>(createRectangleShapeIndices()), vertexShaderPath, fragmentShaderPath)
+	RectangleShape(const Point3D<T>& location, T width, T height, const Texture& texture)
+		: Mesh<T>(std::vector<Vertex<T>>(createRectangleShapeVertices(location, width, height)), std::vector<unsigned int>(createRectangleShapeIndices()), texture)
 	{
 	}
 
 	~RectangleShape() = default;
-
-	void load() override
-	{
-		Mesh<T>::load();
-	}
 
 	void update() override
 	{
@@ -24,12 +19,13 @@ public:
 		Mesh<T>::update();
 	}
 
-	void render(const Mat4<T>& VP, Point3D<T> cameraPositionWorld) override
+	void render(Shader& shader, const Mat4<T>& VP, const Point3D<T>& cameraPositionWorld) override
 	{
-		Mesh<T>::render(VP, cameraPositionWorld);
+		Mesh<T>::render(shader, VP, cameraPositionWorld);
 	}
 
 private:
+
 	static std::vector<Vertex<T>> createRectangleShapeVertices(const Point3D<T>& center, T width, T height)
 	{
 		T halfWidth = width / 2;

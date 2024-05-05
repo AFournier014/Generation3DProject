@@ -1,6 +1,6 @@
-#include "OpenGL/AltTexture.h"
+#include "engine/opengl/AltTexture.h"
 #include "GL/glew.h"
-#include <OpenGL/Renderer.h>
+#include <engine/opengl/Renderer.h>
 
 
 AltTexture::AltTexture(const std::string& path)

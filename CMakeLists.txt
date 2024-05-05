@@ -35,7 +35,7 @@ set(TEXTURE_DIR "${RESOURCE_DIR}/texture")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Configurer les sous-projets
-add_subdirectory(src/core)
+add_subdirectory(src/engine)
 add_subdirectory(src/app)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT app)

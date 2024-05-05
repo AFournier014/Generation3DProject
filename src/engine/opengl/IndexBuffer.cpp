@@ -1,5 +1,5 @@
-#include "OpenGL/IndexBuffer.h"
-#include "OpenGL/Renderer.h"
+#include "engine/opengl/IndexBuffer.h"
+#include "engine/opengl/Renderer.h"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, GLuint count)
 	: m_count(count)

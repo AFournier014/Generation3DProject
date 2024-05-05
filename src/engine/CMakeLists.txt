@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.18)
-project(core)
+project(engine)
 
 file(GLOB_RECURSE CPP_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*")
 file(GLOB_RECURSE H_HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*")
 file(GLOB_RECURSE SHADER_FILES "${CMAKE_SOURCE_DIR}/resources/shaders/*")
 
-add_library(core ${CPP_SOURCE_FILES} ${H_HEADER_FILES} ${SHADER_FILES})
+add_library(engine ${CPP_SOURCE_FILES} ${H_HEADER_FILES} ${SHADER_FILES})
 
-target_include_directories(core PUBLIC "${CMAKE_SOURCE_DIR}/include")
+target_include_directories(engine PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
 foreach(FILE IN LISTS CPP_SOURCE_FILES H_HEADER_FILES SHADER_FILES)
     get_filename_component(PARENT_DIR "${FILE}" DIRECTORY)
@@ -34,22 +34,23 @@ endforeach()
 source_group("Shaders" FILES ${SHADER_FILES})
 
 find_package(GLEW REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 
-target_link_libraries(core PRIVATE GLEW::GLEW glfw imgui::imgui)
-target_link_libraries(core PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(engine PRIVATE GLEW::GLEW imgui::imgui)
+target_link_libraries(engine PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 
 # Inclure les fichiers d'en-tête du projet et les sous dossiers
-target_include_directories(core PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(core PUBLIC ${CMAKE_SOURCE_DIR}/include/graphics)
-target_include_directories(core PUBLIC ${CMAKE_SOURCE_DIR}/include/gui)
-target_include_directories(core PUBLIC ${CMAKE_SOURCE_DIR}/include/utils)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/opengl)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/gui)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/utils)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/drawables)
 
 # Appliquer les options de compilation
 if(MSVC)
-  target_compile_options(core PRIVATE /W4 /WX)
+  target_compile_options(engine PRIVATE /W4 /WX)
 else()
-  target_compile_options(core PRIVATE -Wall -Wextra -Werror)
+  target_compile_options(engine PRIVATE -Wall -Wextra -Werror)
 endif()

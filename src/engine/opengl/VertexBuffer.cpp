@@ -1,5 +1,5 @@
-#include "OpenGL/VertexBuffer.h"
-#include "OpenGL/Renderer.h"
+#include "engine/opengl/VertexBuffer.h"
+#include "engine/opengl/Renderer.h"
 
 VertexBuffer::VertexBuffer(const void* data, GLuint size)
 {

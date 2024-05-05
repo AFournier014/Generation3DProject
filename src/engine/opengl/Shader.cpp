@@ -1,5 +1,5 @@
-#include "Shader.h"
-#include <OpenGL/Renderer.h>
+#include "engine/opengl/Shader.h"
+#include <engine/opengl/Renderer.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>

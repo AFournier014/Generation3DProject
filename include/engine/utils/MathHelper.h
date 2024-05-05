@@ -33,6 +33,8 @@ struct Point3D
 	Point3D(const Point3D& pt)
 		: x(pt.x), y(pt.y), z(pt.z)
 	{}
+
+	Point3D<T> operator-() const { return Point3D(-x, -y, -z); }
 	
 	T* data() { return std::array<T, 3>{x, y, z}.data(); }
 	const T* data() const { return std::array<T, 3>{x, y, z}.data(); }

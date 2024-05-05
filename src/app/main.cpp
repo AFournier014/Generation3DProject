@@ -1,8 +1,8 @@
 #include <SFML/Window.hpp>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-#include <graphics/Drawables/Cube.h>
-#include <graphics/GeometryTypes.h>
+#include <engine/drawables/Meshs/Cube.h>
+#include <engine/utils/GeometryTypes.h>
 
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
@@ -53,9 +53,18 @@ int main() {
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
 	TriangleF triangle{ p0, p1, p2 };
 
+	Shader shader(SHADER_PATH + "cube.vert", SHADER_PATH + "cube.frag");
+
 	// Création d'un cube (temporaire)
-	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f);
-	//CubeF cube;
+	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f, Texture(""));
+	CubeF cube2(Point3D<float>{2.f, 3.f, -10.f}, 1.f, Texture(""));
+
+	std::array<CubeF*, 10> cubes;
+	// Création de 10 cubes (temporaire) pour tester le rendu partout sur l'écran dans des positions différentes et aléatoires
+	for (int i = 0; i < 10; ++i)
+	{
+		cubes[i] = new CubeF(Point3D<float>{static_cast<float>(rand() % 10), static_cast<float>(rand() % 10), static_cast<float>(rand() % 10)}, 1.f, Texture(""));
+	}
 
 	auto P = InitProjection();
 	// Fin du code temporaire
@@ -63,7 +72,7 @@ int main() {
 	float alpha = 0.f;
 	float beta = 0.f;
 
-	Point3D<float> cameraPos{ 0.f, 0.f, 0.f };
+	Point3D<float> cameraPos(0.f, 0.f, 0.f);
 
 	sf::Mouse::setPosition({ windowWidth / 2, windowHeight / 2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
@@ -82,6 +91,8 @@ int main() {
 			else if (event.type == sf::Event::Resized)
 			{
 				// On redimensionne le viewport
+				float aspect = static_cast<float>(event.size.width) / static_cast<float>(event.size.height);
+				P = Mat4<float>::Projection(aspect, 45.f / 180.f * 3.141592f, 0.1f, 100.f);
 				glViewport(0, 0, event.size.width, event.size.height);
 			}
 			else if (event.type == sf::Event::KeyPressed)
@@ -130,7 +141,7 @@ int main() {
 		// Nettoyage de la fenêtre (efface les tampons de couleur et de profondeur)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha) + Mat4<float>::Translation(cameraPos);
+		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha) + Mat4<float>::Translation(-cameraPos);
 		auto VP = P * V;
 
 		// Affichage du contenu
@@ -138,7 +149,16 @@ int main() {
 		triangle.render(VP);
 
 		cube.update();
-		cube.render(VP, cameraPos);
+		cube.render(shader, VP, cameraPos);
+
+		cube2.update();
+		cube2.render(shader, VP, cameraPos);
+
+		for (int i = 0; i < 10; ++i)
+		{
+			cubes[i]->update();
+			cubes[i]->render(shader, VP, cameraPos);
+		}
 
 		glFlush();
 

@@ -1,9 +1,9 @@
-#include "OpenGL/VertexArray.h"
-#include "OpenGL/VertexBuffer.h"
-#include "OpenGL/VertexBufferLayout.h"
-#include "OpenGL/Renderer.h"
+#include "engine/opengl/VertexArray.h"
+#include "engine/opengl/VertexBuffer.h"
+#include "engine/opengl/VertexBufferLayout.h"
+#include "engine/opengl/Renderer.h"
 #include <GL/glew.h>
-#include "OpenGL/VertexBufferLayout.h"
+#include "engine/opengl/VertexBufferLayout.h"
 
 VertexArray::VertexArray()
 {
