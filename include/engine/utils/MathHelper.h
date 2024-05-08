@@ -51,13 +51,10 @@ struct Point3D
 
 	Point3D<T> Normalize()
 	{
-		if (T norm = std::sqrt(x() * x() + y() * y() + z() * z()); norm > 0)
-		{
-			T invNorm = 1 / norm;
-			coord[0] *= invNorm;
-			coord[1] *= invNorm;
-			coord[2] *= invNorm;
-		}
+		T norm = std::sqrt(coord[0] * coord[0] + coord[1] * coord[1] + coord[2] * coord[2]);
+		coord[0] /= norm;
+		coord[1] /= norm;
+		coord[2] /= norm;
 		return *this;
 	}
 

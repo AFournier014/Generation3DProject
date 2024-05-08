@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SHADER_H
+#define SHADER_H
 
 #include <string>
 #include <GL/glew.h>
@@ -39,3 +40,5 @@ private:
 	std::string m_FragmentPath;
 	mutable std::unordered_map<std::string, GLint> m_UniformLocationCache;
 };
+
+#endif // SHADER_H

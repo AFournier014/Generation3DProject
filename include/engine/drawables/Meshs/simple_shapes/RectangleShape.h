@@ -2,6 +2,9 @@
 
 #include "meshs/Mesh.h"
 #include <vector>
+#include <memory>
+
+class Texture;
 
 class RectangleShape : public Mesh
 {
@@ -10,8 +13,8 @@ public:
 	using Mat4f = Mat4<float>;
 	using vertex_type = Vertex<float>;
 
-	RectangleShape(const Point3f& location, float width, float height, const Texture& texture)
-		: Mesh(std::vector<vertex_type>(createRectangleShapeVertices(location, width, height)), std::vector<unsigned int>(createRectangleShapeIndices()), texture)
+	RectangleShape(const Point3f& location, float width, float height, const Texture texture)
+		: Mesh(createRectangleShapeVertices(location, width, height), createRectangleShapeIndices(), texture)
 	{
 		setLocation(location);
 		scale({ width, height, 1 });

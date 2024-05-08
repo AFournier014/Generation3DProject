@@ -6,6 +6,7 @@
 #include <GeometryTypes.h>
 #include <Drawable.h>
 #include <Texture.h>
+#include <memory>
 
 class Shader;
 
@@ -17,9 +18,9 @@ public:
 	using Mat4f = Mat4<float>;
 	using Color4f = Color4<float>;
 
-	Mesh(const std::vector<vertex_type>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
-		: m_vertices(vertices)
-		, m_indices(indices)
+	explicit Mesh(const std::vector<vertex_type>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
+		: m_vertices(make_unique<std::vector<vertex_type>>(vertices))
+		, m_indices(make_unique<std::vector<unsigned int>>(indices))
 		, m_texture(texture)
 	{
 		load();
@@ -31,9 +32,7 @@ public:
 	}
 
 	void update() override
-	{
-		// TODO: Mettre à jour les données du mesh
-	}
+	{}
 
 	void render(Shader& shader, const Mat4f& VP, const Point3f& cameraPositionWorld) override;
 
@@ -58,8 +57,8 @@ private:
 
 	void clearMesh() const;
 
-	std::vector<vertex_type> m_vertices;
-	std::vector<unsigned int> m_indices;
+	std::unique_ptr<std::vector<vertex_type>> m_vertices;
+	std::unique_ptr<std::vector<unsigned int>> m_indices;
 	Texture m_texture;
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;

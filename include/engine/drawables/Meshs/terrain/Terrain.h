@@ -3,6 +3,8 @@
 
 #include <meshs/Mesh.h>
 
+class Texture;
+
 class Terrain : public Mesh
 {
 public:
