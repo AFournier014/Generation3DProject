@@ -1,12 +1,13 @@
 #include <SFML/Window.hpp>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-#include <engine/drawables/Meshs/Cube.h>
+#include <meshs/simple_shapes/Cube.h>
 #include <engine/utils/GeometryTypes.h>
 #include <Shader.h>
 #include <Texture.h>
-#include <Meshs/Triangle.h>
+#include <meshs/simple_shapes/Triangle.h>
 #include <Paths.h>
+#include <cstdlib>
 
 
 constexpr auto windowWidth = 800;
@@ -49,8 +50,6 @@ int main() {
 
 	// TODO: Temporaire, à retirer
 	using VertexF = Vertex<float>;
-	using TriangleF = Triangle<float>;
-	using CubeF = Cube<float>;
 
 	// Création d'un triangle (temporaire)
 	VertexF p0{ {-0.9f, -0.9f, 0.0f}, {-0.9f, 0.9f} };
@@ -58,14 +57,21 @@ int main() {
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
 
 	Texture texture(TEXTURES_PATH + "texture.png");
-	TriangleF triangle(p0, p1, p2, texture);
+	Triangle triangle(p0, p1, p2, texture);
 
 	Shader shader(SHADER_PATH + "cube.vert", SHADER_PATH + "cube.frag");
 	Shader shader2(SHADER_PATH + "triangle.vert", SHADER_PATH + "triangle.frag");
 
 	// Création d'un cube (temporaire)
-	CubeF cube(Point3D<float>{0.f, 0.f, 0.f}, 1.f, texture);
-	CubeF cube2(Point3D<float>{2.f, 3.f, -10.f}, 1.f, texture);
+	Cube cube(Point3D<float>{0.f, 0.f, -5.f}, 1.f, texture);
+	Cube cube2(Point3D<float>{2.f, 3.f, -10.f}, 1.f, texture);
+
+	std::array<Cube*, 10> cubes;
+	for (int i = 0; i < 10; ++i)
+	{
+		// add cube at random position
+		cubes[i] = new Cube(Point3D<float>(float(rand() % 10) - 5, float(rand() % 10) - 5, float(rand() % 10) - 5), 1.f, texture);
+	}
 
 	auto P = InitProjection();
 	// Fin du code temporaire
@@ -73,7 +79,7 @@ int main() {
 	float alpha = 0.f;
 	float beta = 0.f;
 
-	Point3D<float> cameraPos(0.f, 0.f, 0.f);
+	Point3D<float> cameraPos(0.f, 0.f, 5.f);
 
 	sf::Mouse::setPosition({ windowWidth / 2, windowHeight / 2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
@@ -123,8 +129,14 @@ int main() {
 				}
 				else
 				{
-					cube.alpha += coef * dx;
-					cube.beta += -coef * dy;
+					cube.rotate({ 0.f, 1.f, 0.f }, coef * dx);
+					cube.rotate({ 1.f, 0, 0.f }, -coef * dy);
+					
+					for (int i = 0; i < 10; ++i)
+					{
+						cubes[i]->rotate({ 0.f, 1.f, 0.f }, coef * dx);
+						cubes[i]->rotate({ 1.f, 0, 0.f }, -coef * dy);
+					}
 				}
 			}
 			else if (event.type == sf::Event::MouseButtonPressed)
@@ -142,7 +154,7 @@ int main() {
 		// Nettoyage de la fenêtre (efface les tampons de couleur et de profondeur)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha) + Mat4<float>::Translation(-cameraPos);
+		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha) * Mat4<float>::Translation(-cameraPos);
 		auto VP = P * V;
 
 		// Affichage du contenu
@@ -151,6 +163,12 @@ int main() {
 
 		cube.update();
 		cube.render(shader, VP, cameraPos);
+
+		for (int i = 0; i < 10; ++i)
+		{
+			cubes[i]->update();
+			cubes[i]->render(shader, VP, cameraPos);
+		}
 
 		cube2.update();
 		cube2.render(shader, VP, cameraPos);

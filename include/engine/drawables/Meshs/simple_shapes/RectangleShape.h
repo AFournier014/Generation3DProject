@@ -1,37 +1,30 @@
 #pragma once
 
-#include "Mesh.h"
+#include "meshs/Mesh.h"
+#include <vector>
 
-template <typename T>
-class RectangleShape : public Mesh<T>
+class RectangleShape : public Mesh
 {
 public:
-	RectangleShape(const Point3D<T>& location, T width, T height, const Texture& texture)
-		: Mesh<T>(std::vector<Vertex<T>>(createRectangleShapeVertices(location, width, height)), std::vector<unsigned int>(createRectangleShapeIndices()), texture)
-	{
-	}
+	using Point3f = Point3D<float>;
+	using Mat4f = Mat4<float>;
+	using vertex_type = Vertex<float>;
 
-	~RectangleShape() = default;
-
-	void update() override
+	RectangleShape(const Point3f& location, float width, float height, const Texture& texture)
+		: Mesh(std::vector<vertex_type>(createRectangleShapeVertices(location, width, height)), std::vector<unsigned int>(createRectangleShapeIndices()), texture)
 	{
-		// Do nothing
-		Mesh<T>::update();
-	}
-
-	void render(Shader& shader, const Mat4<T>& VP, const Point3D<T>& cameraPositionWorld) override
-	{
-		Mesh<T>::render(shader, VP, cameraPositionWorld);
+		setLocation(location);
+		scale({ width, height, 1 });
 	}
 
 private:
 
-	static std::vector<Vertex<T>> createRectangleShapeVertices(const Point3D<T>& center, T width, T height)
+	static std::vector<vertex_type> createRectangleShapeVertices(const Point3f& center, float width, float height)
 	{
-		T halfWidth = width / 2;
-		T halfHeight = height / 2;
+		float halfWidth = width / 2;
+		float halfHeight = height / 2;
 
-		std::vector<Vertex<T>> vertices;
+		std::vector<vertex_type> vertices;
 		vertices.reserve(24);
 
 		// Top face

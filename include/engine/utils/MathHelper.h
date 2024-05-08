@@ -36,7 +36,12 @@ struct Point3D
 	{}
 
 	Point3D<T> operator-() const { return Point3D<T>{-coord[0], -coord[1], -coord[2]}; }
-	
+	Point3D<T> operator+(const Point3D<T>& pt) const { return Point3D<T>{coord[0] + pt.coord[0], coord[1] + pt.coord[1], coord[2] + pt.coord[2]}; }
+	Point3D<T> operator-(const Point3D<T>& pt) const { return Point3D<T>{coord[0] - pt.coord[0], coord[1] - pt.coord[1], coord[2] - pt.coord[2]}; }
+	Point3D<T> operator*(const T& scalar) const { return Point3D<T>{coord[0] * scalar, coord[1] * scalar, coord[2] * scalar}; }
+	Point3D<T>& operator+=(const Point3D<T>& pt) { coord[0] += pt.coord[0]; coord[1] += pt.coord[1]; coord[2] += pt.coord[2]; return *this; }
+	Point3D<T>& operator-=(const Point3D<T>& pt) { coord[0] -= pt.coord[0]; coord[1] -= pt.coord[1]; coord[2] -= pt.coord[2]; return *this; }
+
 	T* data() { return coord.data(); }
 	const T* data() const { return coord.data(); }
 
@@ -44,8 +49,26 @@ struct Point3D
 	const T& y() const { return coord[1]; }
 	const T& z() const { return coord[2]; }
 
+	Point3D<T> Normalize()
+	{
+		if (T norm = std::sqrt(x() * x() + y() * y() + z() * z()); norm > 0)
+		{
+			T invNorm = 1 / norm;
+			coord[0] *= invNorm;
+			coord[1] *= invNorm;
+			coord[2] *= invNorm;
+		}
+		return *this;
+	}
+
 	std::array<T, 3> coord;
 };
+
+template <typename T>
+Point3D<T> operator*(const T& scalar, const Point3D<T>& pt)
+{
+	return pt * scalar;
+}
 
 
 struct AxisX
@@ -146,6 +169,41 @@ public:
 	static Mat4<T> RotationZ(const T& angle)
 	{
 		return RotationAxisAligned<AxisZ>(angle);
+	}
+
+	static Mat4<T> Rotation(const Mat4<T>& matrix, const Point3D<T>& axis, const T& angle)
+	{
+		T c = std::cos(angle);
+		T s = std::sin(angle);
+		//axis = axis.Normalize();
+		Point3D<T> temp = (1 - c) * axis;
+
+		Mat4<T> rotate = Identity();
+		rotate(0, 0) = c + temp.x() * axis.x();
+		rotate(0, 1) = temp.x() * axis.y() + s * axis.z();
+		rotate(0, 2) = temp.x() * axis.z() - s * axis.y();
+		rotate(0, 3) = 0;
+
+		rotate(1, 0) = temp.y() * axis.x() - s * axis.z();
+		rotate(1, 1) = c + temp.y() * axis.y();
+		rotate(1, 2) = temp.y() * axis.z() + s * axis.x();
+		rotate(1, 3) = 0;
+
+		rotate(2, 0) = temp.z() * axis.x() + s * axis.y();
+		rotate(2, 1) = temp.z() * axis.y() - s * axis.x();
+		rotate(2, 2) = c + temp.z() * axis.z();
+		rotate(2, 3) = 0;
+		
+		return matrix * rotate;
+	}
+
+	static Mat4<T> Scale(const Point3D<T>& scale)
+	{
+		Mat4<T> m = Identity();
+		m(0, 0) = scale.x();
+		m(1, 1) = scale.y();
+		m(2, 2) = scale.z();
+		return m;
 	}
 
 	static Mat4<T> Projection(const T& aspect, const T& fov, const T& nearPlane, const T& farPlane)

@@ -11,13 +11,12 @@
 #include <GL/glew.h>
 #include <Paths.h>
 
-template <typename T>
-class Triangle : public Drawable<T>
+class Triangle : public Drawable
 {
 public:
-	using vertex_type = Vertex<T>;
-	using Point3D = Point3D<T>;
-	using Mat4 = Mat4<T>;
+	using vertex_type = Vertex<float>;
+	using Point3f = Point3D<float>;
+	using Mat4 = Mat4<float>;
 
 	Triangle(const vertex_type& v0, const vertex_type& v1, const vertex_type& v2, Texture& texture)
 		: m_points{ v0, v1, v2 }, m_texture(texture)
@@ -25,14 +24,12 @@ public:
 		load();
 	}
 
-	~Triangle() = default;
-
 	void update() override
 	{
 		m_rotation += 0.025f;
 	}
 
-	void render(Shader& shader, const Mat4& VP, const Point3D& cameraPositionWorld) override
+	void render(Shader& shader, const Mat4& VP, const Point3f& cameraPositionWorld) override
 	{
 		Mat4 Rotation = Mat4::RotationY(m_rotation);
 		Mat4 Translation = Mat4::Translation({ 2.f, 0.f, -5.f });
@@ -81,7 +78,7 @@ private:
 	std::array<vertex_type, 3> m_points;
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;
-	Point3D m_position = { 0.f, 0.f, 0.f };
+	Point3f m_position = { 0.f, 0.f, 0.f };
 	GLuint m_RenderId = 0;
 	Texture m_texture;
 	float m_rotation = 0.f;
