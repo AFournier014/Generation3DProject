@@ -1,7 +1,5 @@
-#ifndef GEOMETRY_TYPES_H
-#define GEOMETRY_TYPES_H
-
-#include <MathHelper.h>
+#ifndef COLOR_H
+#define COLOR_H
 
 template <typename T>
 struct Color3
@@ -40,13 +38,4 @@ struct Color4
 	T a;
 };
 
-template <typename T>
-struct Vertex
-{
-	Point3D<T> position = Point3D<T>(0, 0, 0);
-	Point3D<T> normal = Point3D<T>(0, 0, 0);
-	Color3<T> color = Color3<T>(0, 0, 0);
-	Point2D<T> texture = Point2D<T>(0, 0);
-};
-
-#endif // !GEOMETRY_TYPES_H
+#endif // !COLOR_H

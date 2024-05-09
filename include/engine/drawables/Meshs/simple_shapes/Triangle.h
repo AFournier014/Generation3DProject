@@ -2,9 +2,8 @@
 #define TRIANGLE_H
 
 #include "Drawable.h"
-#include <MathHelper.h>
+#include <MathIncludes.h>
 #include <array>
-#include <GeometryTypes.h>
 #include <Texture.h>
 #include <Shader.h>
 #include <Renderer.h>

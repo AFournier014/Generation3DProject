@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <meshs/simple_shapes/Cube.h>
-#include <engine/utils/GeometryTypes.h>
+#include <MathIncludes.h>
 #include <Shader.h>
 #include <Texture.h>
 #include <meshs/simple_shapes/Triangle.h>

@@ -1,7 +1,6 @@
 #include "meshs/Mesh.h"
 #include "Shader.h"
-#include "utils/GeometryTypes.h"
-#include "utils/MathHelper.h"
+#include <MathIncludes.h>
 #include "Renderer.h"
 #include "GL/glew.h"
 

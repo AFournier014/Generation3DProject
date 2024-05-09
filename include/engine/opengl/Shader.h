@@ -3,7 +3,7 @@
 
 #include <string>
 #include <GL/glew.h>
-#include <engine/utils/MathHelper.h>
+#include <MathIncludes.h>
 #include <unordered_map>
 
 struct ShaderInfo {

@@ -2,8 +2,8 @@
 #define MESH_H
 
 #include <vector>
-#include <MathHelper.h>
-#include <GeometryTypes.h>
+#include <GL/glew.h>
+#include <MathIncludes.h>
 #include <Drawable.h>
 #include <Texture.h>
 #include <memory>
