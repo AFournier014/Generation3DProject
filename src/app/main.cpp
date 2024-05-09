@@ -1,9 +1,6 @@
 #include <SFML/Window.hpp>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-<<<<<<< Updated upstream
-#include <graphics/GeometryTypes.h>
-=======
 #include <meshs/simple_shapes/Cube.h>
 #include <MathIncludes.h>
 #include <Shader.h>
@@ -13,30 +10,10 @@
 #include <cstdlib>
 #include <Camera.h>
 
->>>>>>> Stashed changes
 
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
 
-<<<<<<< Updated upstream
-Mat4<float> InitFirstTriangle()
-{
-	using Mat4f = Mat4<float>;
-
-	// Param�tres de la cam�ra, � g�rer autrement
-	float aspect = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
-	float fov = 45.f / 180.f * 3.141592f;
-	float n = 0.1f;
-	float f = 2.f;
-
-	// Matrice de projection
-	Mat4f P = Mat4f::Projection(aspect, fov, n, f);
-
-	return P;
-}
-
-=======
->>>>>>> Stashed changes
 int main() {
 	// J'ai pas bien compris ce que �a fait
 	const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
@@ -72,22 +49,12 @@ int main() {
 
 	// Cr�ation d'un cube (temporaire)
 	Cube cube(Vector3D<float>{0.f, 0.f, -5.f}, 1.f, texture);
-
-<<<<<<< Updated upstream
-	auto P = InitFirstTriangle();
-	// Fin du code temporaire
-
-	float alpha = 0.f;
-	float beta = 0.f;
-
-	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
-=======
 	// Fin du code temporaire
 
 	Vector3D<float> cameraPos(0.f, 0.f, 5.f);
 
 	sf::Mouse::setPosition({ windowWidth / 2, windowHeight / 2 }, window); // Centre la souris, c'est degueu a changer
->>>>>>> Stashed changes
+
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
 	bool leftMouseButtonPressed = false; // Pour savoir si on doit bouger le cube
 
@@ -107,11 +74,8 @@ int main() {
 			else if (event.type == sf::Event::Resized)
 			{
 				// On redimensionne le viewport
-<<<<<<< Updated upstream
-=======
 				float aspect = static_cast<float>(event.size.width) / static_cast<float>(event.size.height);
 				camera.InitProjection(aspect, 45.f / 180.f * 3.141592f, 0.1f, 100.f);
->>>>>>> Stashed changes
 				glViewport(0, 0, event.size.width, event.size.height);
 			}
 			else if (event.type == sf::Event::KeyPressed)
@@ -159,14 +123,9 @@ int main() {
 		// Nettoyage de la fen�tre (efface les tampons de couleur et de profondeur)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-<<<<<<< Updated upstream
-		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha);
-		auto VP = P * V;
-=======
 		camera.Look();
 		camera.Update(GL_TIME_ELAPSED);
 		auto VP = camera.GetProjectionViewMatrix();
->>>>>>> Stashed changes
 
 		// Affichage du contenu
 		triangle.update();

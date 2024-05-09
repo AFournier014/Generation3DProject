@@ -16,9 +16,6 @@ void Camera::InitProjection(float aspect, float fov, float near, float far)
 
 void Camera::MouseMoved(Vector2f pos)
 {
-    //m_alpha += (pos.x - old_Pos.x) * m_sensivity;
-    //m_beta -= (pos.y - old_Pos.y) * m_sensivity;
-
     m_alpha += pos.x  * m_sensivity;
     m_beta -= pos.y  * m_sensivity;
 
