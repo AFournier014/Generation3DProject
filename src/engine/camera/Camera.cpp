@@ -5,10 +5,10 @@ Vector2f old_Pos;
 Camera::Camera(const Vector3f& position)
     : m_speed(0.000001f), m_sensivity(0.0002f), m_alpha(.0f), m_beta(.0f), m_position(position)
 {
-    VectorsFromAngles();
 	Projection = Mat4<float>::Identity();
-	m_forward = Vector3f(0, 0, -1);
-	m_left = Vector3f(-1, 0, 0);
+	m_forward = Vector3f(0, 0, 1);
+	m_left = Vector3f(1, 0, 0);
+	m_up = Vector3f(0, 1, 0);
 }
 
 void Camera::InitProjection(float aspect, float fov, float near, float far)
@@ -20,15 +20,14 @@ void Camera::MouseMoved(Vector2f pos)
 {
     m_alpha += pos.x  * m_sensivity;
     m_beta -= pos.y  * m_sensivity;
-
-    old_Pos = pos;
     VectorsFromAngles();
+    old_Pos = pos;
 }
 
 void Camera::Update(float timestep)
 {
     float currentSpeed = (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) ? 2 * m_speed : m_speed;
-    VectorsFromAngles();
+
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) m_position += m_forward * currentSpeed * timestep;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) m_position -= m_forward * currentSpeed * timestep;
@@ -49,7 +48,7 @@ void Camera::Update(float timestep)
 
     m_target = m_position + m_forward;
 
-    View = Mat4<float>::RotationX(-m_beta) * Mat4<float>::RotationY(-m_alpha) * Mat4<float>::Translation(-m_position);
+    View = Mat4<float>::RotationX(m_beta) * Mat4<float>::RotationY(m_alpha) * Mat4<float>::Translation(m_position);
 }
 
 void Camera::MouseWheelMoved(const sf::Event& event)
@@ -85,15 +84,18 @@ void Camera::VectorsFromAngles()
     else if (m_beta < -90)
         m_beta = -90;
 
-    float r_temp = float (std::cos((m_beta * 3.14f) / 180));
-    m_forward.y() = std::sin((m_beta * 3.14f) / 180);
-    m_forward.x() = r_temp * std::cos((m_alpha * 3.14f) / 180);
-    m_forward.z() = r_temp * std::sin((m_alpha * 3.14f) / 180);
+    /*float r_temp = float (std::cos((m_beta * 3.14f) / 180));*/
 
-    m_left = up.CrossProduct(m_forward);
+    m_forward.z() = std::cos(m_alpha) * std::cos(m_beta);
+    m_forward.y() = std::sin(m_beta );
+    m_forward.x() = std::sin(m_alpha)  * std::cos(m_beta);
+
+	m_forward.Normalize();
+    m_left = m_forward.CrossProduct(up);
     m_left.Normalize();
 
-    m_target = m_position + m_forward;
+	//m_up = m_left.CrossProduct(m_forward);
+	//m_up.Normalize();
 }
 
 

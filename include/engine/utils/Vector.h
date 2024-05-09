@@ -67,6 +67,11 @@ struct Vector3D
 			coord[0] * pt.coord[1] - coord[1] * pt.coord[0]};
 	}
 
+	T DotProduct(Vector3D<T> pt)
+	{
+		return coord[0] * pt.coord[0] + coord[1] * pt.coord[1] + coord[2] * pt.coord[2];
+	}
+
 	std::array<T, 3> coord;
 };
 

@@ -54,4 +54,5 @@ private:
 	Vector3f m_target;
 	Vector3f m_forward;
 	Vector3f m_left;
+	Vector3f m_up;
 };

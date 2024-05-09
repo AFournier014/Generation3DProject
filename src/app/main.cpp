@@ -42,7 +42,6 @@ int main() {
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
 
 	Texture texture(TEXTURES_PATH + "texture.png");
-	Triangle triangle(p0, p1, p2, texture);
 
 	Shader shader(SHADER_PATH + "cube.vert", SHADER_PATH + "cube.frag");
 	Shader shader2(SHADER_PATH + "triangle.vert", SHADER_PATH + "triangle.frag");
@@ -128,9 +127,6 @@ int main() {
 		auto VP = camera.GetProjectionViewMatrix();
 
 		// Affichage du contenu
-		triangle.update();
-		triangle.render(shader2, VP, cameraPos);
-
 		cube.update();
 		cube.render(shader, VP, cameraPos);
 

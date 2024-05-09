@@ -35,6 +35,7 @@ using AllAxis = typelist<AxisX, AxisY, AxisZ>;
 template <typename T>
 class Mat4
 {
+
 public:
 	Mat4()
 	{
@@ -169,6 +170,42 @@ Mat4<T> operator+(const Mat4<T>& op1, const Mat4<T>& op2)
 			result(row, col) = op1(row, col) + op2(row, col);
 		}
 	}
+	return result;
+}
+
+template <typename T>
+static Mat4<T> LookAt(const Vector3D<T>& eye, const Vector3D<T>& center, const Vector3D<T>& up)
+{
+	Mat4<T> result;
+	Vector3D<T> X, Y, Z;
+
+	Z = (eye - center).Normalize();
+	Z.Normalize();
+	Y = up;
+	X = Y.CrossProduct(Z).Normalize();
+
+	Y = Z.CrossProduct(X);
+
+	X.Normalize();
+	Y.Normalize();
+
+	result(0, 0) = X.x();
+	result(1, 0) = X.y();
+	result(2, 0) = X.z();
+	result(3, 0) = -X.DotProduct(eye);
+	result(0, 1) = Y.x();
+	result(1, 1) = Y.y();
+	result(2, 1) = Y.z();
+	result(3, 1) = -Y.DotProduct(eye);
+	result(0, 2) = Z.x();
+	result(1, 2) = Z.y();
+	result(2, 2) = Z.z();
+	result(3, 2) = -Z.DotProduct(eye);
+	result(0, 3) = 0;
+	result(1, 3) = 0;
+	result(2, 3) = 0;
+	result(3, 3) = 1;
+
 	return result;
 }
 
