@@ -87,11 +87,11 @@ void Camera::VectorsFromAngles()
     /*float r_temp = float (std::cos((m_beta * 3.14f) / 180));*/
 
     m_forward.z() = std::cos(m_alpha) * std::cos(m_beta);
-    m_forward.y() = std::sin(m_beta );
+    m_forward.y() = std::sin(m_beta);
     m_forward.x() = std::sin(m_alpha)  * std::cos(m_beta);
 
 	m_forward.Normalize();
-    m_left = m_forward.CrossProduct(up);
+    m_left = -m_forward.CrossProduct(up);
     m_left.Normalize();
 
 	//m_up = m_left.CrossProduct(m_forward);
