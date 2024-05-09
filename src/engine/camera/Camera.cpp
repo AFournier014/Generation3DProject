@@ -7,6 +7,8 @@ Camera::Camera(const Vector3f& position)
 {
     VectorsFromAngles();
 	Projection = Mat4<float>::Identity();
+	m_forward = Vector3f(0, 0, -1);
+	m_left = Vector3f(-1, 0, 0);
 }
 
 void Camera::InitProjection(float aspect, float fov, float near, float far)
@@ -46,6 +48,7 @@ void Camera::Update(float timestep)
     }
 
     m_target = m_position + m_forward;
+
     View = Mat4<float>::RotationX(-m_beta) * Mat4<float>::RotationY(-m_alpha) * Mat4<float>::Translation(-m_position);
 }
 
@@ -77,10 +80,15 @@ void Camera::VectorsFromAngles()
 {
     Vector3f up(0, 1, 0);
 
+    if (m_beta > 90)
+        m_beta = 90;
+    else if (m_beta < -90)
+        m_beta = -90;
+
     float r_temp = float (std::cos((m_beta * 3.14f) / 180));
-    m_forward.z() = std::sin((m_beta * 3.14f) / 180);
+    m_forward.y() = std::sin((m_beta * 3.14f) / 180);
     m_forward.x() = r_temp * std::cos((m_alpha * 3.14f) / 180);
-    m_forward.y() = r_temp * std::sin((m_alpha * 3.14f) / 180);
+    m_forward.z() = r_temp * std::sin((m_alpha * 3.14f) / 180);
 
     m_left = up.CrossProduct(m_forward);
     m_left.Normalize();
