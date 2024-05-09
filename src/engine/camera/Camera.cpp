@@ -1,4 +1,4 @@
-#include "Camera.hpp"
+#include "camera/Camera.h"
 
 sf::Vector2i old_Pos;
 

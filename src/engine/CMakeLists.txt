@@ -47,6 +47,7 @@ target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/open
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/gui)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/utils)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/drawables)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/camera)
 
 # Appliquer les options de compilation
 if(MSVC)
