@@ -1,12 +1,19 @@
 #include <SFML/Window.hpp>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
-#include <graphics/GeometryTypes.h>
+#include <meshs/simple_shapes/Cube.h>
+#include <MathIncludes.h>
+#include <Shader.h>
+#include <Texture.h>
+#include <meshs/simple_shapes/Triangle.h>
+#include <Paths.h>
+#include <cstdlib>
+
 
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
 
-Mat4<float> InitFirstTriangle()
+Mat4<float> InitProjection()
 {
 	using Mat4f = Mat4<float>;
 
@@ -43,25 +50,30 @@ int main() {
 
 	// TODO: Temporaire, à retirer
 	using VertexF = Vertex<float>;
-	using TriangleF = Triangle<float>;
-	using CubeF = Cube<float>;
 
 	// Création d'un triangle (temporaire)
 	VertexF p0{ {-0.9f, -0.9f, 0.0f}, {-0.9f, 0.9f} };
 	VertexF p1{ {0.9f, -0.9f, 0.0f}, {0.9f, 0.9f} };
 	VertexF p2{ {0.9f, 0.9f, 0.0f}, {0.9f, -0.9f} };
-	TriangleF triangle{ p0, p1, p2 };
+
+	Texture texture(TEXTURES_PATH + "texture.png");
+	Triangle triangle(p0, p1, p2, texture);
+
+	Shader shader(SHADER_PATH + "cube.vert", SHADER_PATH + "cube.frag");
+	Shader shader2(SHADER_PATH + "triangle.vert", SHADER_PATH + "triangle.frag");
 
 	// Création d'un cube (temporaire)
-	CubeF cube;
+	Cube cube(Vector3D<float>{0.f, 0.f, -5.f}, 1.f, texture);
 
-	auto P = InitFirstTriangle();
+	auto P = InitProjection();
 	// Fin du code temporaire
 
 	float alpha = 0.f;
 	float beta = 0.f;
 
-	sf::Mouse::setPosition({ windowWidth/2, windowHeight/2 }, window); // Centre la souris, c'est degueu a changer
+	Vector3D<float> cameraPos(0.f, 0.f, 5.f);
+
+	sf::Mouse::setPosition({ windowWidth / 2, windowHeight / 2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
 	bool leftMouseButtonPressed = false; // Pour savoir si on doit bouger le cube
 
@@ -78,6 +90,8 @@ int main() {
 			else if (event.type == sf::Event::Resized)
 			{
 				// On redimensionne le viewport
+				float aspect = static_cast<float>(event.size.width) / static_cast<float>(event.size.height);
+				P = Mat4<float>::Projection(aspect, 45.f / 180.f * 3.141592f, 0.1f, 100.f);
 				glViewport(0, 0, event.size.width, event.size.height);
 			}
 			else if (event.type == sf::Event::KeyPressed)
@@ -107,8 +121,8 @@ int main() {
 				}
 				else
 				{
-					cube.alpha += coef * dx;
-					cube.beta += -coef * dy;
+					cube.rotate({ 0.f, 1.f, 0.f }, coef * dx);
+					cube.rotate({ 1.f, 0, 0.f }, -coef * dy);
 				}
 			}
 			else if (event.type == sf::Event::MouseButtonPressed)
@@ -126,15 +140,15 @@ int main() {
 		// Nettoyage de la fenêtre (efface les tampons de couleur et de profondeur)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha);
+		Mat4<float> V = Mat4<float>::RotationX(-beta) * Mat4<float>::RotationY(-alpha) * Mat4<float>::Translation(-cameraPos);
 		auto VP = P * V;
 
 		// Affichage du contenu
-		triangle.Update();
-		triangle.render(VP);
+		triangle.update();
+		triangle.render(shader2, VP, cameraPos);
 
-		cube.Update();
-		cube.render(VP, { 0.f, 0.f, 0.f });
+		cube.update();
+		cube.render(shader, VP, cameraPos);
 
 		glFlush();
 
