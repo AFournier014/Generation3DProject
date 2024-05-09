@@ -44,6 +44,9 @@ struct Vector3D
 	T* data() { return coord.data(); }
 	const T* data() const { return coord.data(); }
 
+	T& x() { return coord[0]; }
+	T& y() { return coord[1]; }
+	T& z() { return coord[2]; }
 	const T& x() const { return coord[0]; }
 	const T& y() const { return coord[1]; }
 	const T& z() const { return coord[2]; }

@@ -21,7 +21,7 @@ Mat4<float> InitProjection()
 	float aspect = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
 	float fov = 45.f / 180.f * 3.141592f;
 	float n = 0.1f;
-	float f = 100.f;
+	float f = 2.f;
 
 	// Matrice de projection
 	Mat4f P = Mat4f::Projection(aspect, fov, n, f);
