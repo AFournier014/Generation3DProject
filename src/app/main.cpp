@@ -63,15 +63,7 @@ int main() {
 	Shader shader2(SHADER_PATH + "triangle.vert", SHADER_PATH + "triangle.frag");
 
 	// Création d'un cube (temporaire)
-	Cube cube(Point3D<float>{0.f, 0.f, -5.f}, 1.f, texture);
-	Cube cube2(Point3D<float>{2.f, 3.f, -10.f}, 1.f, texture);
-
-	std::array<Cube*, 10> cubes;
-	for (int i = 0; i < 10; ++i)
-	{
-		// add cube at random position
-		cubes[i] = new Cube(Point3D<float>(float(rand() % 10) - 5, float(rand() % 10) - 5, float(rand() % 10) - 5), 1.f, texture);
-	}
+	Cube cube(Vector3D<float>{0.f, 0.f, -5.f}, 1.f, texture);
 
 	auto P = InitProjection();
 	// Fin du code temporaire
@@ -79,7 +71,7 @@ int main() {
 	float alpha = 0.f;
 	float beta = 0.f;
 
-	Point3D<float> cameraPos(0.f, 0.f, 5.f);
+	Vector3D<float> cameraPos(0.f, 0.f, 5.f);
 
 	sf::Mouse::setPosition({ windowWidth / 2, windowHeight / 2 }, window); // Centre la souris, c'est degueu a changer
 	bool setCameraOn = false; // Pour savoir si on doit bouger la camera
@@ -131,12 +123,6 @@ int main() {
 				{
 					cube.rotate({ 0.f, 1.f, 0.f }, coef * dx);
 					cube.rotate({ 1.f, 0, 0.f }, -coef * dy);
-					
-					for (int i = 0; i < 10; ++i)
-					{
-						cubes[i]->rotate({ 0.f, 1.f, 0.f }, coef * dx);
-						cubes[i]->rotate({ 1.f, 0, 0.f }, -coef * dy);
-					}
 				}
 			}
 			else if (event.type == sf::Event::MouseButtonPressed)
@@ -163,15 +149,6 @@ int main() {
 
 		cube.update();
 		cube.render(shader, VP, cameraPos);
-
-		for (int i = 0; i < 10; ++i)
-		{
-			cubes[i]->update();
-			cubes[i]->render(shader, VP, cameraPos);
-		}
-
-		cube2.update();
-		cube2.render(shader, VP, cameraPos);
 
 		glFlush();
 

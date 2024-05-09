@@ -3,7 +3,7 @@
 
 #include <array>
 #include <cmath>
-#include "Point.h"
+#include "Vector.h"
 #include "List.h"
 
 struct AxisX
@@ -54,7 +54,7 @@ public:
 		return m;
 	}
 
-	static Mat4<T> Translation(const Point3D<T>& translation)
+	static Mat4<T> Translation(const Vector3D<T>& translation)
 	{
 		Mat4<T> m = Identity();
 		m(0, 3) = translation.x();
@@ -90,12 +90,12 @@ public:
 		return RotationAxisAligned<AxisZ>(angle);
 	}
 
-	static Mat4<T> Rotation(const Mat4<T>& matrix, const Point3D<T>& axis, const T& angle)
+	static Mat4<T> Rotation(const Mat4<T>& matrix, const Vector3D<T>& axis, const T& angle)
 	{
 		T c = std::cos(angle);
 		T s = std::sin(angle);
 		//axis = axis.Normalize();
-		Point3D<T> temp = (1 - c) * axis;
+		Vector3D<T> temp = (1 - c) * axis;
 
 		Mat4<T> rotate = Identity();
 		rotate(0, 0) = c + temp.x() * axis.x();
@@ -116,7 +116,7 @@ public:
 		return matrix * rotate;
 	}
 
-	static Mat4<T> Scale(const Point3D<T>& scale)
+	static Mat4<T> Scale(const Vector3D<T>& scale)
 	{
 		Mat4<T> m = Identity();
 		m(0, 0) = scale.x();

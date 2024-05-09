@@ -2,15 +2,15 @@
 #define VERTEX_H
 
 #include <Color.h>
-#include <Point.h>
+#include <Vector.h>
 
 template <typename T>
 struct Vertex
 {
-	Point3D<T> position = Point3D<T>(0, 0, 0);
-	Point3D<T> normal = Point3D<T>(0, 0, 0);
+	Vector3D<T> position = Vector3D<T>(0, 0, 0);
+	Vector3D<T> normal = Vector3D<T>(0, 0, 0);
 	Color3<T> color = Color3<T>(0, 0, 0);
-	Point2D<T> texture = Point2D<T>(0, 0);
+	Vector2D<T> texture = Vector2D<T>(0, 0);
 };
 
 #endif // !VERTEX_H

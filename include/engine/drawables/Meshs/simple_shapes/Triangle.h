@@ -14,10 +14,10 @@ class Triangle : public Drawable
 {
 public:
 	using vertex_type = Vertex<float>;
-	using Point3f = Point3D<float>;
+	using Vector3f = Vector3D<float>;
 	using Mat4 = Mat4<float>;
 
-	Triangle(const vertex_type& v0, const vertex_type& v1, const vertex_type& v2, Texture& texture)
+	Triangle(const vertex_type& v0, const vertex_type& v1, const vertex_type& v2, Texture const& texture)
 		: m_points{ v0, v1, v2 }, m_texture(texture)
 	{
 		load();
@@ -28,21 +28,22 @@ public:
 		m_rotation += 0.025f;
 	}
 
-	void render(Shader& shader, const Mat4& VP, const Point3f& cameraPositionWorld) override
+	void render(Shader& shader, const Mat4& VP, const Vector3f& cameraPositionWorld) override
 	{
 		Mat4 Rotation = Mat4::RotationY(m_rotation);
-		Mat4 Translation = Mat4::Translation({ 2.f, 0.f, -5.f });
+		Mat4 Translation = Mat4::Translation({ 0.f, 0.f, 0.f });
 		Mat4 Model = Translation * Rotation;
 
 		Mat4 MVP = VP * Model;
 
 		shader.Bind();
 		GLCall(glBindVertexArray(m_vao));
-
-		Point3D CameraPosition = cameraPositionWorld;
+		Vector3D CameraPosition = cameraPositionWorld; // Ne sert pas ici, évite l'erreur de compilation
 		shader.SetUniformMat4f("MVP", MVP);
 		m_texture.Bind();
 		shader.SetUniform1i("tex1", 0);
+
+		
 		GLCall(glDrawArrays(GL_TRIANGLES, 0, GLsizei(m_points.size())));
 
 		GLCall(glBindVertexArray(0));
@@ -70,15 +71,12 @@ private:
 		GLCall(glEnableVertexAttribArray(3));
 
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-		GLCall(glBindVertexArray(0));
-
 	}
 
 	std::array<vertex_type, 3> m_points;
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;
-	Point3f m_position = { 0.f, 0.f, 0.f };
-	GLuint m_RenderId = 0;
+	Vector3f m_position = { 0.f, 0.f, 0.f };
 	Texture m_texture;
 	float m_rotation = 0.f;
 };

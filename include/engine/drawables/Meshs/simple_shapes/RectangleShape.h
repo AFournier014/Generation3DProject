@@ -9,11 +9,11 @@ class Texture;
 class RectangleShape : public Mesh
 {
 public:
-	using Point3f = Point3D<float>;
+	using Vector3f = Vector3D<float>;
 	using Mat4f = Mat4<float>;
 	using vertex_type = Vertex<float>;
 
-	RectangleShape(const Point3f& location, float width, float height, const Texture texture)
+	RectangleShape(const Vector3f& location, float width, float height, const Texture texture)
 		: Mesh(createRectangleShapeVertices(location, width, height), createRectangleShapeIndices(), texture)
 	{
 		setLocation(location);
@@ -22,7 +22,7 @@ public:
 
 private:
 
-	static std::vector<vertex_type> createRectangleShapeVertices(const Point3f& center, float width, float height)
+	static std::vector<vertex_type> createRectangleShapeVertices(const Vector3f& center, float width, float height)
 	{
 		float halfWidth = width / 2;
 		float halfHeight = height / 2;

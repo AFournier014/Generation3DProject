@@ -41,9 +41,9 @@ void Shader::SetUniform1f(const std::string& name, float value) const
 	GLCall(glUniform1f(GetUniformLocation(name), value))
 }
 
-void Shader::SetUniform3f(const std::string& name, const Point3D<float> point) const
+void Shader::SetUniform3f(const std::string& name, const Vector3D<float> Vector) const
 {
-	GLCall(glUniform3fv(GetUniformLocation(name), 1, point.data()))
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, Vector.data()))
 }
 
 void Shader::SetUniformMat3f(const std::string& name, const Mat4<float>& matrix) const

@@ -6,7 +6,7 @@
 
 using Mat4f = Mat4<float>;
 
-void Mesh::render(Shader& shader, const Mat4f& VP, const Point3f& cameraPositionWorld)
+void Mesh::render(Shader& shader, const Mat4f& VP, const Vector3f& cameraPositionWorld)
 {
 	// Temporaire propriétés optiques de l'objet et de la lumière
 	struct OpticalProperties
@@ -20,7 +20,7 @@ void Mesh::render(Shader& shader, const Mat4f& VP, const Point3f& cameraPosition
 	// Propriétés de la lumière directionnelle (temporaire)
 	struct DirectionalLight
 	{
-		Point3f direction = { 0.f, -1.f, 0.f };
+		Vector3f direction = { 0.f, -1.f, 0.f };
 		Color4f color = { 1.f, 1.f, 1.f, 1.f };
 	} directionalLight;
 
@@ -48,9 +48,9 @@ Mat4f Mesh::getModelMatrix() const
 	return Mat4f::Translation(m_location) * m_rotation * Mat4f::Scale(m_scale);
 }
 
-void Mesh::rotate(const Point3f& axis, float angle)
+void Mesh::rotate(const Vector3f& axis, float angle)
 {
-	Point3f normalizedAxis = axis;
+	Vector3f normalizedAxis = axis;
 	normalizedAxis.Normalize();
 	Mat4f rotation = Mat4f::Rotation(Mat4f::Identity(), normalizedAxis, angle);
 	Mat4f toOrigin = Mat4f::Translation(-m_location);
@@ -77,12 +77,12 @@ void Mesh::rotateZ(float angle)
 	m_rotation = m * m_rotation;
 }
 
-void Mesh::translate(const Point3f& translation)
+void Mesh::translate(const Vector3f& translation)
 {
 	m_location += translation;
 }
 
-void Mesh::scale(const Point3f& scale)
+void Mesh::scale(const Vector3f& scale)
 {
 	m_scale = scale;
 }
@@ -97,14 +97,14 @@ void Mesh::load()
 
 	updateBuffers();
 
+	GLCall(glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, position)));
 	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, position)));
+	GLCall(glVertexAttribPointer(1, decltype(vertex_type::normal)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, normal)));
 	GLCall(glEnableVertexAttribArray(1));
-	GLCall(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, normal)));
+	GLCall(glVertexAttribPointer(2, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, color)));
 	GLCall(glEnableVertexAttribArray(2));
-	GLCall(glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, color)));
+	GLCall(glVertexAttribPointer(3, decltype(vertex_type::texture)::ndim , GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, texture)));
 	GLCall(glEnableVertexAttribArray(3));
-	GLCall(glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, texture)));
 
 	GLCall(glBindVertexArray(0));
 }
