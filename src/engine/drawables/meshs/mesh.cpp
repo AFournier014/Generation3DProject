@@ -39,7 +39,7 @@ void Mesh::render(Shader& shader, const Mat4f& VP, const Vector3f& cameraPositio
 	shader.SetUniform4f("light.color", directionalLight.color.r, directionalLight.color.g, directionalLight.color.b, directionalLight.color.a);
 
 	GLCall(glBindVertexArray(m_vao));
-	GLCall(glDrawElements(GL_TRIANGLES, GLsizei(m_indices->size()), GL_UNSIGNED_INT, nullptr));
+	GLCall(glDrawElements(GL_TRIANGLES, GLsizei(m_indices.size()), GL_UNSIGNED_INT, nullptr));
 	GLCall(glBindVertexArray(0));
 }
 
@@ -112,12 +112,12 @@ void Mesh::load()
 void Mesh::updateBuffers()
 {
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, m_vertices->size() * sizeof(vertex_type), nullptr, GL_STREAM_DRAW));
-	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices->size() * sizeof(vertex_type), m_vertices->data()));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(vertex_type), nullptr, GL_STREAM_DRAW));
+	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices.size() * sizeof(vertex_type), m_vertices.data()));
 
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo));
-	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices->size() * sizeof(unsigned int), nullptr, GL_STREAM_DRAW));
-	GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indices->size() * sizeof(unsigned int), m_indices->data()));
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), nullptr, GL_STREAM_DRAW));
+	GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_indices.size() * sizeof(unsigned int), m_indices.data()));
 }
 
 void Mesh::clearMesh() const

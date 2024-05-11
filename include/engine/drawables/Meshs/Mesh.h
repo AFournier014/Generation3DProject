@@ -19,8 +19,8 @@ public:
 	using Color4f = Color4<float>;
 
 	explicit Mesh(const std::vector<vertex_type>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
-		: m_vertices(make_unique<std::vector<vertex_type>>(vertices))
-		, m_indices(make_unique<std::vector<unsigned int>>(indices))
+		: m_vertices(std::vector<vertex_type>(vertices))
+		, m_indices(std::vector<unsigned int>(indices))
 		, m_texture(texture)
 	{
 		load();
@@ -29,6 +29,10 @@ public:
 	~Mesh() override
 	{
 		clearMesh();
+
+		GLCall(glDeleteVertexArrays(1, &m_vao));
+		GLCall(glDeleteBuffers(1, &m_vbo));
+		GLCall(glDeleteBuffers(1, &m_ebo));
 	}
 
 	void update() override
@@ -57,8 +61,8 @@ private:
 
 	void clearMesh() const;
 
-	std::unique_ptr<std::vector<vertex_type>> m_vertices;
-	std::unique_ptr<std::vector<unsigned int>> m_indices;
+	std::vector<vertex_type> m_vertices;
+	std::vector<unsigned int> m_indices;
 	Texture m_texture;
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;

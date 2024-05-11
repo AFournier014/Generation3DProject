@@ -33,6 +33,4 @@ call "%VCPKG_DIR%\vcpkg" integrate install
 
 echo Les dependances ont ete installees avec succes.
 
-call "%~dp0cmake-build.bat"
-
 pause

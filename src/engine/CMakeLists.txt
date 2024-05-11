@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 project(engine)
 
 file(GLOB_RECURSE CPP_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*")
-file(GLOB_RECURSE H_HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*")
+file(GLOB_RECURSE H_HEADER_FILES "${CMAKE_SOURCE_DIR}/include/engine/*")
 file(GLOB_RECURSE SHADER_FILES "${CMAKE_SOURCE_DIR}/resources/shaders/*")
 
 add_library(engine ${CPP_SOURCE_FILES} ${H_HEADER_FILES} ${SHADER_FILES})
@@ -36,8 +36,9 @@ source_group("Shaders" FILES ${SHADER_FILES})
 find_package(GLEW REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(ImGui-SFML CONFIG REQUIRED)
 
-target_link_libraries(engine PRIVATE GLEW::GLEW imgui::imgui)
+target_link_libraries(engine PRIVATE GLEW::GLEW imgui::imgui ImGui-SFML::ImGui-SFML)
 target_link_libraries(engine PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 
 # Inclure les fichiers d'en-tête du projet et les sous dossiers
