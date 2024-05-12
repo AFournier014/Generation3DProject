@@ -13,7 +13,7 @@ public:
 
 	virtual ~Drawable() = default;
 	virtual void update() = 0;
-	virtual void render(Shader& shader, const Mat4f& VP, const Vector3f& cameraPositionWorld) = 0;
+	virtual void render(Shader& shader) = 0;
 };
 
 #endif // !DRAWABLE_H

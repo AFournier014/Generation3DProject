@@ -1,9 +1,10 @@
 #ifndef SCENE_MANAGER_H
 #define SCENE_MANAGER_H
 
-#include "scene/Scene.h"
 #include <memory>
 #include <stack>
+
+class Scene;
 
 class SceneManager
 {

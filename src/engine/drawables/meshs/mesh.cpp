@@ -6,7 +6,7 @@
 
 using Mat4f = Mat4<float>;
 
-void Mesh::render(Shader& shader, const Mat4f& VP, const Vector3f& cameraPositionWorld)
+void Mesh::render(Shader& shader)
 {
 	// Temporaire propriétés optiques de l'objet et de la lumière
 	struct OpticalProperties
@@ -25,12 +25,9 @@ void Mesh::render(Shader& shader, const Mat4f& VP, const Vector3f& cameraPositio
 	} directionalLight;
 
 	Mat4 M = getModelMatrix();
-	Mat4 MVP = VP * M;
 
 	shader.Bind();
-	shader.SetUniformMat4f("MVP", MVP);
 	shader.SetUniformMat4f("model", M);
-	shader.SetUniform3f("cameraPositionWorld", cameraPositionWorld);
 	shader.SetUniform1f("material.ambient", opticalProperties.ambient);
 	shader.SetUniform1f("material.diffuse", opticalProperties.diffuse);
 	shader.SetUniform1f("material.specular", opticalProperties.specular);
@@ -97,13 +94,13 @@ void Mesh::load()
 
 	updateBuffers();
 
-	GLCall(glVertexAttribPointer(0, decltype(vertex_type::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, position)));
+	GLCall(glVertexAttribPointer(0, decltype(Vertexf::position)::ndim, GL_FLOAT, GL_FALSE, sizeof(Vertexf), (void*)offsetof(Vertexf, position)));
 	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(1, decltype(vertex_type::normal)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, normal)));
+	GLCall(glVertexAttribPointer(1, decltype(Vertexf::normal)::ndim, GL_FLOAT, GL_FALSE, sizeof(Vertexf), (void*)offsetof(Vertexf, normal)));
 	GLCall(glEnableVertexAttribArray(1));
-	GLCall(glVertexAttribPointer(2, decltype(vertex_type::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, color)));
+	GLCall(glVertexAttribPointer(2, decltype(Vertexf::color)::ndim, GL_FLOAT, GL_FALSE, sizeof(Vertexf), (void*)offsetof(Vertexf, color)));
 	GLCall(glEnableVertexAttribArray(2));
-	GLCall(glVertexAttribPointer(3, decltype(vertex_type::texture)::ndim , GL_FLOAT, GL_FALSE, sizeof(vertex_type), (void*)offsetof(vertex_type, texture)));
+	GLCall(glVertexAttribPointer(3, decltype(Vertexf::texture)::ndim , GL_FLOAT, GL_FALSE, sizeof(Vertexf), (void*)offsetof(Vertexf, texture)));
 	GLCall(glEnableVertexAttribArray(3));
 
 	GLCall(glBindVertexArray(0));
@@ -112,8 +109,8 @@ void Mesh::load()
 void Mesh::updateBuffers()
 {
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(vertex_type), nullptr, GL_STREAM_DRAW));
-	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices.size() * sizeof(vertex_type), m_vertices.data()));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertexf), nullptr, GL_STREAM_DRAW));
+	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertices.size() * sizeof(Vertexf), m_vertices.data()));
 
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo));
 	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), nullptr, GL_STREAM_DRAW));

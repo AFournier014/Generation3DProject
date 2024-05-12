@@ -3,31 +3,29 @@
 #include "meshs/Mesh.h"
 #include <vector>
 #include <memory>
+#include "MathIncludes.h"
 
 class Texture;
 
 class RectangleShape : public Mesh
 {
 public:
-	using Vector3f = Vector3D<float>;
-	using Mat4f = Mat4<float>;
-	using vertex_type = Vertex<float>;
 
-	RectangleShape(const Vector3f& location, float width, float height, const Texture texture)
-		: Mesh(createRectangleShapeVertices(location, width, height), createRectangleShapeIndices(), texture)
+	RectangleShape(const Transform<float>& transform, const Texture& texture)
+		: Mesh(createRectangleShapeVertices(transform.position, transform.scale.x(), transform.scale.y()), createRectangleShapeIndices(), texture)
 	{
-		setLocation(location);
-		scale({ width, height, 1 });
+		setLocation(transform.position);
+		scale({ transform.scale.x(), transform.scale.y(), transform.scale.z() });
 	}
 
 private:
 
-	static std::vector<vertex_type> createRectangleShapeVertices(const Vector3f& center, float width, float height)
+	static std::vector<Vertexf> createRectangleShapeVertices(const Vector3f& center, float width, float height)
 	{
 		float halfWidth = width / 2;
 		float halfHeight = height / 2;
 
-		std::vector<vertex_type> vertices;
+		std::vector<Vertexf> vertices;
 		vertices.reserve(24);
 
 		// Top face

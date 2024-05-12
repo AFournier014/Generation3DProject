@@ -13,13 +13,8 @@ class Shader;
 class Mesh : public Drawable
 {
 public:
-	using vertex_type = Vertex<float>;
-	using Vector3f = Vector3D<float>;
-	using Mat4f = Mat4<float>;
-	using Color4f = Color4<float>;
-
-	explicit Mesh(const std::vector<vertex_type>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
-		: m_vertices(std::vector<vertex_type>(vertices))
+	explicit Mesh(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
+		: m_vertices(std::vector<Vertexf>(vertices))
 		, m_indices(std::vector<unsigned int>(indices))
 		, m_texture(texture)
 	{
@@ -38,7 +33,7 @@ public:
 	void update() override
 	{}
 
-	void render(Shader& shader, const Mat4f& VP, const Vector3f& cameraPositionWorld) override;
+	void render(Shader& shader) override;
 
 	Mat4f getModelMatrix() const;
 
@@ -61,7 +56,7 @@ private:
 
 	void clearMesh() const;
 
-	std::vector<vertex_type> m_vertices;
+	std::vector<Vertexf> m_vertices;
 	std::vector<unsigned int> m_indices;
 	Texture m_texture;
 	GLuint m_vao = 0;

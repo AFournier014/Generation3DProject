@@ -9,7 +9,7 @@ class Terrain : public Mesh
 {
 public:
 
-	Terrain(const std::vector<vertex_type>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
+	Terrain(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
 		: Mesh(vertices, indices, texture)
 	{}
 
