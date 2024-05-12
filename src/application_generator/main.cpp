@@ -8,7 +8,8 @@
 #include <meshs/simple_shapes/Triangle.h>
 #include <Paths.h>
 #include <cstdlib>
-
+#include <memory>
+#include "Application.h"
 
 constexpr auto windowWidth = 800;
 constexpr auto windowHeight = 600;
@@ -21,7 +22,7 @@ Mat4<float> InitProjection()
 	float aspect = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
 	float fov = 45.f / 180.f * 3.141592f;
 	float n = 0.1f;
-	float f = 2.f;
+	float f = 100.f;
 
 	// Matrice de projection
 	Mat4f P = Mat4f::Projection(aspect, fov, n, f);
@@ -30,6 +31,9 @@ Mat4<float> InitProjection()
 }
 
 int main() {
+	auto app = std::make_unique<Application>();
+	app->Run();
+
 	// J'ai pas bien compris ce que ça fait
 	const sf::ContextSettings contextSettings(24, 8, 4, 4, 6);
 

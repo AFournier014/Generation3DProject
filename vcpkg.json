@@ -2,8 +2,11 @@
   "name": "generation3dproject",
   "version-string": "1.0.0",
   "dependencies": [
-    "imgui",
-    "imgui-sfml",
+	{
+		"name": "imgui",
+		"features": ["opengl3-binding"]
+	},
+	"imgui-sfml",
     "glew",
 	"glfw3",
 	"sfml"

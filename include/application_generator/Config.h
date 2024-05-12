@@ -36,12 +36,16 @@ namespace Config
 	inline const std::string SHADERS_PATH = "resources/shaders/";
 	inline const std::string ASSETS_PATH = "resources/assets/";
 	inline const std::string TEXTURES_PATH = "resources/textures/";
+	inline const std::string FONT_PATH = "resources/fonts/";
 
 	inline const std::string ApplicationName = "Generator 3D Project";
+
 	inline const std::string TriangleVertexShaderPath = SHADERS_PATH + "triangle.vert";
 	inline const std::string TriangleFragmentShaderPath = SHADERS_PATH + "triangle.frag";
 	inline const std::string CubeVertexShaderPath = SHADERS_PATH + "cube.vert";
 	inline const std::string CubeFragmentShaderPath = SHADERS_PATH + "cube.frag";
+
+	inline const std::string ArialFontPath = FONT_PATH + "ARIAL.ttf";
 
 	inline Vec2u WindowSize()
 	{
