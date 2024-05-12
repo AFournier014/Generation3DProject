@@ -1,6 +1,9 @@
 #pragma once
 
 #include "RectangleShape.h"
+#include "Vertex.h"
+#include "Vector.h"
+#include "Matrice.h"
 
 class Texture;
 
@@ -11,7 +14,7 @@ public:
 	using Mat4f = Mat4<float>;
 	using vertex_type = Vertex<float>;
 
-	Cube(const Vector3f& location, float size, Texture& texture)
+	Cube(const Vector3f& location, float size, const Texture& texture)
 		: RectangleShape(location, size, size, texture)
 	{
 	}

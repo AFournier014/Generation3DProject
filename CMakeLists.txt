@@ -31,12 +31,13 @@ set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
 set(ASSET_DIR "${RESOURCE_DIR}/assets")
 set(SHADER_DIR "${RESOURCE_DIR}/shaders")
 set(TEXTURE_DIR "${RESOURCE_DIR}/texture")
+set(FONT_DIR "${RESOURCE_DIR}/fonts")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Configurer les sous-projets
 add_subdirectory(src/engine)
-add_subdirectory(src/app)
+add_subdirectory(src/application_generator)
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT app)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT application_generator)
 
