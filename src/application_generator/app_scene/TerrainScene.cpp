@@ -2,20 +2,24 @@
 #include "Meshs/simple_shapes/Cube.h"
 #include "Texture.h"
 #include "Config.h"
+#include "managers/ShaderManager.h"
+#include <Transform.h>
 
-TerrainScene::TerrainScene()
+TerrainScene::TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager)
+	: Scene(window, shaderManager)
 {
-	init();
 }
 
 void TerrainScene::init()
 {
-	addMesh<Cube>(Vec3f(0.0f, 0.0f, -10.0f), Texture(Config::TEXTURES_PATH + "texture.png"));
+	// Temporaire pour tester
+	Transform transform(Vec3f(0.0f, 0.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
+	addMesh<Cube>(transform, Texture(Config::TEXTURES_PATH + "texture.png"));
 
+	// Temporaire pour tester
 	m_projectionMatrix = Mat4f::Projection(static_cast<float>(Config::WindowSize().x) / static_cast<float>(Config::WindowSize().y),
 		Config::CameraFov / 180.f * 3.14159265359f, Config::CameraNear, Config::CameraFar);
 
-	m_shader = new Shader(Config::SHADERS_PATH + "cube.vert", Config::SHADERS_PATH + "cube.frag");
 }
 
 void TerrainScene::handleInput()
@@ -30,6 +34,7 @@ void TerrainScene::update(float deltaTime)
 	{
 		mesh->update();
 		mesh->rotate(Vec3f(0.f, 1.f, 0.f), 0.01f);
+		mesh->rotate(Vec3f(1.f, 0.f, 0.f), 0.01f);
 	}
 }
 
@@ -40,10 +45,29 @@ void TerrainScene::render()
 	GLCall(glClearColor(0.f, 0.f, 0.f, 1.f));
 
 	m_viewMatrix = Mat4f::RotationX(-m_beta) * Mat4f::RotationY(-m_alpha) * Mat4f::Translation(Vec3f(0.f, 0.f, 0.f));
-	Mat4f VP = m_projectionMatrix * m_viewMatrix;
+
+	initShaders();
 
 	for (auto const& mesh : m_meshes)
 	{
-		mesh->render(*m_shader, VP, Config::CameraInitialPosition());
+		mesh->render(*m_shaderManager->getCubeShader());
+	}
+}
+
+void TerrainScene::initShaders() const
+{
+	initShader(m_shaderManager->getCubeShader());
+	initShader(m_shaderManager->getTerrainShader());
+	// initShader(*m_shaderManager->getSkyboxShader());
+	// initShader(*m_shaderManager->getTerrainShader());
+}
+
+void TerrainScene::initShader(const std::shared_ptr<Shader> shader) const
+{
+	if (shader && shader->GetRendererID() != 0)
+	{
+		shader->Bind();
+		shader->SetUniformMat4f("ViewProjection", m_projectionMatrix * m_viewMatrix);
+		shader->SetUniform3f("cameraPositionWorld", Vec3f(0.f, 0.f, 0.f));
 	}
 }

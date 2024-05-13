@@ -10,22 +10,25 @@
 class Texture;
 class Mesh;
 class Shader;
+class ShaderManager;
 
 class TerrainScene : public Scene
 {
 public:
-	TerrainScene();
+	TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager);
 	~TerrainScene() override = default;
 
 	void init() override;
 	void handleInput() override;
 	void update(float deltaTime) override;
 	void render() override;
+	void initShaders() const;
+	void initShader(const std::shared_ptr<Shader> shader) const;
 
-	template <typename T>
-	T* addMesh(Vec3f position, Texture texture)
+	template <typename MeshT, typename T>
+	MeshT* addMesh(Transform<T> transform, Texture texture)
 	{
-		auto* mesh = new T(position, 1.f, texture);
+		auto* mesh = new MeshT(transform, texture);
 		m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
 		return mesh;
 	}
@@ -42,8 +45,6 @@ private:
 	float m_cameraRotationSpeed = 0.1f;
 	float m_alpha = 0.f;
 	float m_beta = 0.f;
-
-	Shader* m_shader;
 };
 
 #endif // TERRAIN_SCENE_H

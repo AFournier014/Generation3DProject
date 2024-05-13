@@ -2,8 +2,8 @@
 #include <sstream>
 #include "SFML/Graphics.hpp"
 
-MainMenuScene::MainMenuScene(const std::shared_ptr<sf::Window>& window)
-	: m_window(window)
+MainMenuScene::MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager)
+	: Scene(window, shaderManager)
 {
 	if (!m_font.loadFromFile(Config::ArialFontPath))
 	{

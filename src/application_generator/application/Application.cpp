@@ -1,12 +1,13 @@
 #include "Application.h"
-#include <GL/glew.h>
-#include <SFML/OpenGL.hpp>
-#include <Renderer.h>
-#include <memory>
-#include "app_scene/SceneManager.h"
+#include "managers/SceneManager.h"
+#include "managers/ShaderManager.h"
 #include <app_scene/TerrainScene.h>
+#include <GL/glew.h>
+#include <memory>
+#include <Renderer.h>
+#include <SFML/OpenGL.hpp>
 
-Application::Application() : m_sceneManager(std::make_unique<SceneManager>()), m_isRunning(true)
+Application::Application() : m_shaderManager(std::make_unique<ShaderManager>()), m_sceneManager(std::make_unique<SceneManager>())
 {
 	m_applicationName = Config::ApplicationName;
 	m_windowSize = Config::WindowSize();
@@ -49,7 +50,9 @@ void Application::Initialize()
 	};
 	glEnable(GL_DEPTH_TEST);
 
-	m_sceneManager->pushScene(std::make_unique<TerrainScene>());
+	initShaders();
+
+	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager));
 }
 
 void Application::ProcessEvents()
@@ -79,4 +82,20 @@ void Application::Render()
 void Application::Cleanup() const
 {
 	m_window->close();
+}
+
+void Application::initShaders()
+{
+	auto cubeShader = std::make_shared<Shader>(Config::SHADERS_PATH + "cube.vert", Config::SHADERS_PATH + "cube.frag");
+	m_shaderManager->setCubeShader(cubeShader);
+
+	auto triangleShader = std::make_shared<Shader>(Config::SHADERS_PATH + "triangle.vert", Config::SHADERS_PATH + "triangle.frag");
+	m_shaderManager->setTriangleShader(std::shared_ptr<Shader>(triangleShader));
+
+	/*auto* terrainShader = new Shader(Config::SHADERS_PATH + "terrain.vert", Config::SHADERS_PATH + "terrain.frag");
+	m_shaderManager->setTerrainShader(std::shared_ptr<Shader>(terrainShader));*/
+}
+
+void Application::initTextures()
+{
 }

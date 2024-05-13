@@ -7,9 +7,9 @@
 #include <string>
 
 class Camera;
-class OpenGLConfig;
 class SceneManager;
 class InputManager;
+class ShaderManager;
 
 class Application
 {
@@ -26,16 +26,19 @@ private:
 	void Render();
 	void Cleanup() const;
 
+	void initShaders();
+	void initTextures();
+
 	//std::unique_ptr<Camera> m_camera;
-	//std::unique_ptr<OpenGLConfig> m_openGLConfig;
-	std::unique_ptr<SceneManager> m_sceneManager;
+	std::shared_ptr<ShaderManager> m_shaderManager = nullptr;
+	std::unique_ptr<SceneManager> m_sceneManager = nullptr;
 	//std::unique_ptr<InputManager> m_inputManager;
 
 	Vec2u m_windowSize;
 	std::string m_applicationName;
 	sf::ContextSettings m_contextSettings;
-	std::shared_ptr<sf::Window> m_window;
-	bool m_isRunning;
+	std::shared_ptr<sf::Window> m_window = nullptr;
+	bool m_isRunning = true;
 };
 
 #endif // APPLICATION_H

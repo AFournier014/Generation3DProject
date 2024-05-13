@@ -10,7 +10,7 @@
 class MainMenuScene : public Scene
 {
 public:
-	explicit MainMenuScene(const std::shared_ptr<sf::Window>& window);
+	explicit MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager);
 	void init() override;
 	void handleInput() override;
 	void update(float deltaTime) override;
@@ -19,7 +19,6 @@ public:
 	void updateMenuText();
 
 private:
-	std::shared_ptr<sf::Window> m_window;
 	sf::Font m_font;
 	sf::Text m_text;
 	std::string m_menuText;
