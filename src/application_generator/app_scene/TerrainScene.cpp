@@ -8,9 +8,8 @@
 TerrainScene::TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager)
     : Scene(window, shaderManager)
 {
-    float aspect = static_cast<float>(Config::WindowSize().x) / static_cast<float>(Config::WindowSize().y);
-    camera = new Camera(Vec3f(0.f, 0.f, 0.f), aspect, Config::CameraFov / 180.f * 3.14159265359f,
-                                      Config::CameraNear, Config::CameraFar);
+   camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+
     m_inputManager = std::make_unique<InputManager>();
 }
 
@@ -23,11 +22,11 @@ void TerrainScene::init()
 
 void TerrainScene::bindInputs()
 {
-    m_inputManager->subscribe("LeftClick", *camera);
-    m_inputManager->subscribe("RightClick", *camera);
-    m_inputManager->subscribe("MouseMoved", *camera);
-    m_inputManager->subscribe("KeyPressed", *camera);
-    m_inputManager->subscribe("KeyReleased", *camera);
+    m_inputManager->subscribe("LeftClick", camera);
+    m_inputManager->subscribe("RightClick", camera);
+    m_inputManager->subscribe("MouseMoved", camera);
+    m_inputManager->subscribe("KeyPressed", camera);
+    m_inputManager->subscribe("KeyReleased", camera);
 }
 
 void TerrainScene::update(float deltaTime)

@@ -4,12 +4,12 @@
 
 InputManager::InputManager() = default;
 
-void InputManager::subscribe(const EventID& id, EventSubscriber& subscriber)
+void InputManager::subscribe(const EventID& id, std::shared_ptr<EventSubscriber> subscriber)
 {
-    m_hashSubscribers[id].push_back(subscriber);
+	m_hashSubscribers[id].push_back(subscriber);
 }
 
-void InputManager::unsubscribe(const EventID& id, EventSubscriber& subscriber)
+void InputManager::unsubscribe(const EventID& id, std::shared_ptr<EventSubscriber> subscriber)
 {
     auto& subscribers = m_hashSubscribers[id];
     std::erase(subscribers, subscriber);
@@ -18,11 +18,12 @@ void InputManager::unsubscribe(const EventID& id, EventSubscriber& subscriber)
 void InputManager::notify(const EventID& id)
 {
     if (m_hashSubscribers.contains(id))
-        for (const auto& subscriber : m_hashSubscribers[id])
-        {
-            const EventBase* event = new EventBase(id);
-            subscriber.on_notify(*event);
-        }
+	{
+		for (auto& subscriber : m_hashSubscribers[id])
+		{
+			subscriber->on_notify(EventBase(id));
+		}
+	}
 }
 
 void InputManager::update()

@@ -10,8 +10,8 @@ class InputManager : public EventPublisher
 public:
     InputManager();
 
-    void subscribe(const EventID& id, EventSubscriber& subscriber) override;
-    void unsubscribe(const EventID& id, EventSubscriber& subscriber) override;
+	void subscribe(const EventID& id, std::shared_ptr<EventSubscriber> subscriber) override;
+	void unsubscribe(const EventID& id, std::shared_ptr<EventSubscriber> subscriber) override;
     void notify(const EventID& id) override;
     void update();
 

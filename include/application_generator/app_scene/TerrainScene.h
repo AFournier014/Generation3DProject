@@ -41,7 +41,7 @@ private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
 	std::shared_ptr<sf::Window> m_window;
-	Camera* camera;
+	std::shared_ptr<Camera> camera;
 	std::unique_ptr<InputManager> m_inputManager;
 };
 
