@@ -5,12 +5,9 @@
 #include "managers/ShaderManager.h"
 #include <Transform.h>
 
-TerrainScene::TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager)
-    : Scene(window, shaderManager)
+TerrainScene::TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
+    : Scene(window, shaderManager, camera)
 {
-   camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
-
-    m_inputManager = std::make_unique<InputManager>();
 }
 
 void TerrainScene::init()
@@ -20,14 +17,6 @@ void TerrainScene::init()
     addMesh<Cube>(transform, Texture(Config::TEXTURES_PATH + "texture.png"));
 }
 
-void TerrainScene::bindInputs()
-{
-    m_inputManager->subscribe("LeftClick", camera);
-    m_inputManager->subscribe("RightClick", camera);
-    m_inputManager->subscribe("MouseMoved", camera);
-    m_inputManager->subscribe("KeyPressed", camera);
-    m_inputManager->subscribe("KeyReleased", camera);
-}
 
 void TerrainScene::update(float deltaTime)
 {
@@ -37,7 +26,11 @@ void TerrainScene::update(float deltaTime)
         mesh->rotate(Vec3f(0.f, 1.f, 0.f), 0.01f);
         mesh->rotate(Vec3f(1.f, 0.f, 0.f), 0.01f);
     }
-    camera->Update(deltaTime);
+
+    if(m_camera)
+	    m_camera->update(deltaTime);
+
+	sf::Mouse::setPosition(sf::Vector2i(Config::WindowSize().x / 2, Config::WindowSize().y / 2), *m_window);
 }
 
 void TerrainScene::render()
@@ -64,10 +57,10 @@ void TerrainScene::initShaders() const
 
 void TerrainScene::initShader(const std::shared_ptr<Shader> shader) const
 {
-    if (shader && shader->GetRendererID() != 0)
+    if (shader && shader->GetRendererID() != 0 && m_camera)
     {
         shader->Bind();
-        shader->SetUniformMat4f("ViewProjection", camera->GetProjectionViewMatrix());
-        shader->SetUniform3f("cameraPositionWorld", camera->GetPosition());
+        shader->SetUniformMat4f("ViewProjection", m_camera->GetProjectionViewMatrix());
+        shader->SetUniform3f("cameraPositionWorld", m_camera->GetPosition());
     }
 }

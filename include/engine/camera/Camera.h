@@ -26,12 +26,18 @@ public:
 	void SetPosition(const Vector3f& position);
 
 	void Look();
-	void Update(float timestep);
+	void update(float timestep);
 
 	void VectorsFromAngles();
 	Mat4<float> GetProjectionViewMatrix() { return Projection * View; }
 	Vector3f GetPosition() { return m_position; }
 	void InitProjection(float aspect, float fov, float near, float far);
+
+	void MoveLeft() { m_position += m_left * m_velocity; }
+	void MoveRight() { m_position -= m_left * m_velocity; }
+	void MoveForward() { m_position += m_forward * m_velocity; }
+	void MoveBackward() { m_position -= m_forward * m_velocity; }
+
 
 	void on_notify(const EventBase& _eventB) override;
 
@@ -42,9 +48,13 @@ private:
 	float m_alpha;
 	float m_beta;
 
+	float m_velocity;
+	float m_speedMultiplier = 2.0f;
+
 	//Vertical motion
 	double m_timeBeforeStoppingVerticalMotion;
 	bool m_verticalMotionActive = false;
+	bool m_isSpeedingUp = false;
 	float m_verticalMotionDirection;
 
 	Mat4<float> Projection;

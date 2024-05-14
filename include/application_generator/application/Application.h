@@ -28,6 +28,7 @@ private:
 
 	void initShaders();
 	void initTextures();
+	void bindInputs();
 
 	//std::unique_ptr<Camera> m_camera;
 	std::shared_ptr<ShaderManager> m_shaderManager = nullptr;
@@ -39,6 +40,9 @@ private:
 	sf::ContextSettings m_contextSettings;
 	std::shared_ptr<sf::Window> m_window = nullptr;
 	bool m_isRunning = true;
+
+	std::shared_ptr<Camera> m_camera;
+	std::unique_ptr<InputManager> m_inputManager;
 };
 
 #endif // APPLICATION_H

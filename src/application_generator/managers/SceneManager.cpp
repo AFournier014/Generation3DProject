@@ -22,14 +22,6 @@ void SceneManager::changeScene(std::unique_ptr<Scene> scene)
 	m_scenes.push(std::move(scene));
 }
 
-void SceneManager::handleInput()
-{
-	if (!m_scenes.empty())
-	{
-		m_scenes.top()->bindInputs();
-	}
-}
-
 void SceneManager::update(float deltaTime)
 {
 	if (!m_scenes.empty())

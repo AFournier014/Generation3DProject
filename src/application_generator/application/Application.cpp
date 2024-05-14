@@ -21,6 +21,9 @@ Application::Application() : m_shaderManager(std::make_unique<ShaderManager>()),
 	m_window->setVerticalSyncEnabled(true);
 	m_window->setActive(true);
 
+	m_camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+	m_inputManager = std::make_unique<InputManager>();
+
 	Initialize();
 }
 
@@ -52,12 +55,21 @@ void Application::Initialize()
 
 	initShaders();
 
-	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager));
+	bindInputs();
+	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
 }
 
 void Application::ProcessEvents()
 {
-	//m_inputManager->processInput(*m_window);
+	sf::Event event;
+	while (m_window->pollEvent(event))
+	{
+		if (event.type == sf::Event::Closed)
+		{
+			m_isRunning = false;
+		}
+		m_inputManager->handle(event);
+	}
 }
 
 void Application::Update(float deltaTime) const
@@ -98,4 +110,13 @@ void Application::initShaders()
 
 void Application::initTextures()
 {
+}
+
+void Application::bindInputs()
+{
+	m_inputManager->subscribe("MouseMoved", m_camera);
+	m_inputManager->subscribe("Z_KeyPressed", m_camera);
+	m_inputManager->subscribe("Q_KeyPressed", m_camera);
+	m_inputManager->subscribe("S_KeyPressed", m_camera);
+	m_inputManager->subscribe("D_KeyPressed", m_camera);
 }

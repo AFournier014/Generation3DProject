@@ -1,4 +1,4 @@
-﻿#include "managers/InputManager.h"
+#include "managers/InputManager.h"
 
 #include <SFML/Window/Event.hpp>
 
@@ -26,12 +26,8 @@ void InputManager::notify(const EventID& id)
 	}
 }
 
-void InputManager::update()
+void InputManager::handle(sf::Event& event)
 {
-    sf::Event event;
-    while (m_window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed)
-            m_window->close();
 
         if (event.type == sf::Event::MouseButtonPressed)
         {
@@ -43,7 +39,33 @@ void InputManager::update()
             {
                 notify("RightClick");
             }
-            
         }
-    }
+		else if (event.type == sf::Event::MouseMoved)
+        {
+			notify("MouseMoved");
+		}
+
+        else if (event.type == sf::Event::KeyPressed)
+        {
+			if (event.key.code == sf::Keyboard::A)
+				notify("A_KeyPressed");
+
+            if (event.key.code == sf::Keyboard::Z)
+                notify("Z_KeyPressed");
+
+			if (event.key.code == sf::Keyboard::Q)
+                notify("Q_KeyPressed");
+
+            if (event.key.code == sf::Keyboard::S)
+				notify("S_KeyPressed");
+
+			if (event.key.code == sf::Keyboard::D)
+				notify("D_KeyPressed");
+
+			if (event.key.code == sf::Keyboard::Space)
+				notify("Space_KeyPressed");
+
+			if (event.key.code == sf::Keyboard::LShift)
+				notify("LShift_KeyPressed");
+        }   
 }

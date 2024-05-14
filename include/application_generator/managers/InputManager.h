@@ -13,10 +13,10 @@ public:
 	void subscribe(const EventID& id, std::shared_ptr<EventSubscriber> subscriber) override;
 	void unsubscribe(const EventID& id, std::shared_ptr<EventSubscriber> subscriber) override;
     void notify(const EventID& id) override;
-    void update();
+    void handle(sf::Event& event);
 
 private:
-    std::shared_ptr<sf::RenderWindow> m_window;
+
 };
 
 #endif // INPUT_MANAGER_H
