@@ -1,93 +1,109 @@
 #include "camera/Camera.h"
 
-sf::Vector2i old_Pos;
+Vector2f old_Pos;
 
-Camera::Camera(const sf::Vector3f& position)
-    : _speed(50), _sensivity(0.2f), _theta(0), _phi(0), _position(position)
+Camera::Camera(const Vector3f& position = Vector3f(0, 0, 0), const float aspect = 1.f, const float fov = 70.0f, const float near = 0.1f, const float far = 1000.f)
+    : m_speed(0.000001f), m_sensivity(0.0002f), m_alpha(.0f), m_beta(.0f), m_position(position)
 {
-    VectorsFromAngles();
+	Projection = Mat4<float>::Identity();
+	m_forward = Vector3f(0, 0, 1);
+	m_left = Vector3f(1, 0, 0);
+	m_up = Vector3f(0, 1, 0);
+
+	InitProjection(aspect, fov, near, far);
 }
 
-void Camera::MouseMoved()
+void Camera::InitProjection(float aspect, float fov, float near, float far)
 {
-    sf::Vector2i Pos = sf::Mouse::getPosition();
+	Projection = Mat4<float>::Projection(aspect, fov, near, far);
+}
 
-    _theta += (Pos.x - old_Pos.x) * _sensivity;
-    _phi -= (Pos.y - old_Pos.y) * _sensivity;
-
-    old_Pos = Pos;
+void Camera::MouseMoved(Vector2f pos)
+{
+    m_alpha += pos.x  * m_sensivity;
+    m_beta -= pos.y  * m_sensivity;
     VectorsFromAngles();
+    old_Pos = pos;
 }
 
 void Camera::Update(float timestep)
 {
-    float currentSpeed = (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) ? 2 * _speed : _speed;
-    VectorsFromAngles();
+    float currentSpeed = (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) ? 2 * m_speed : m_speed;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) _position += _forward * currentSpeed * timestep;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) _position -= _forward * currentSpeed * timestep;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) _position += _left * currentSpeed * timestep;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) _position -= _left * currentSpeed * timestep;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) m_position += m_forward * currentSpeed * timestep;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) m_position -= m_forward * currentSpeed * timestep;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) m_position += m_left * currentSpeed * timestep;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) m_position -= m_left * currentSpeed * timestep;
 
-    if (_verticalMotionActive)
+    if (m_verticalMotionActive)
     {
-        _timeBeforeStoppingVerticalMotion -= timestep;
-        if (_timeBeforeStoppingVerticalMotion <= 0)
+        m_timeBeforeStoppingVerticalMotion -= timestep;
+        if (m_timeBeforeStoppingVerticalMotion <= 0)
         {
-            _verticalMotionActive = false;
-            _timeBeforeStoppingVerticalMotion = 0;
+            m_verticalMotionActive = false;
+            m_timeBeforeStoppingVerticalMotion = 0;
         }
         else
-            _position.y += _verticalMotionDirection * _speed * timestep;
+            m_position.y() += m_verticalMotionDirection * m_speed * timestep;
     }
 
-    _target = _position + _forward;
+    m_target = m_position + m_forward;
+
+    View = Mat4<float>::RotationX(-m_beta) * Mat4<float>::RotationY(-m_alpha) * Mat4<float>::Translation(-m_position);
 }
 
 void Camera::MouseWheelMoved(const sf::Event& event)
 {
     if (event.mouseWheel.delta > 0) //coup de molette vers le haut
     {
-        _verticalMotionActive = true;
-        _timeBeforeStoppingVerticalMotion = 0.100;
-        _verticalMotionDirection = 1;
+        m_verticalMotionActive = true;
+        m_timeBeforeStoppingVerticalMotion = 0.100;
+        m_verticalMotionDirection = 1;
     }
     else if (event.mouseWheel.delta < 0) //coup de molette vers le bas
     {
-        _verticalMotionActive = true;
-        _timeBeforeStoppingVerticalMotion = 0.100;
-        _verticalMotionDirection = -1;
+        m_verticalMotionActive = true;
+        m_timeBeforeStoppingVerticalMotion = 0.100;
+        m_verticalMotionDirection = -1;
     }
 }
 
 
-void Camera::SetPosition(const sf::Vector3f& position)
+void Camera::SetPosition(const Vector3f& position)
 {
-    _position = position;
-    _target = _position + _forward;
+    m_position = position;
+    m_target = m_position + m_forward;
 }
 
 
 void Camera::VectorsFromAngles()
 {
-    static const sf::Vector3f up(0, 1, 0);
+    Vector3f up(0, 1, 0);
 
-    float r_temp = float (std::cos((_phi * 3.14f) / 180));
-    _forward.z = std::sin((_phi * 3.14f) / 180);
-    _forward.x = r_temp * std::cos((_theta * 3.14f) / 180);
-    _forward.y = r_temp * std::sin((_theta * 3.14f) / 180);
+    if (m_beta > 90)
+        m_beta = 90;
+    else if (m_beta < -90)
+        m_beta = -90;
 
-    //_left = up.crossProduct(_forward);
-    //_left.normalize();
+    /*float r_temp = float (std::cos((m_beta * 3.14f) / 180));*/
 
-    _target = _position + _forward;
+    m_forward.z() = std::cos(m_alpha) * std::cos(m_beta);
+    m_forward.y() = std::sin(m_beta);
+    m_forward.x() = std::sin(m_alpha)  * std::cos(m_beta);
+
+	m_forward.Normalize();
+    m_left = -m_forward.CrossProduct(up);
+    m_left.Normalize();
+
+	//m_up = m_left.CrossProduct(m_forward);
+	//m_up.Normalize();
 }
 
 
 void Camera::Look()
 {
-    gluLookAt(_position.x, _position.y, _position.z,
-         _target.x, _target.y, _target.z,
+    gluLookAt(m_position.x(), m_position.y(), m_position.z(),
+         m_target.x(), m_target.y(), m_target.z(),
          0, 1, 0);
 }
 
