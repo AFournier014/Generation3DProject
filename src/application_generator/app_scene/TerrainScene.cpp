@@ -8,8 +8,8 @@
 TerrainScene::TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager)
 	: Scene(window, shaderManager)
 {
-	float aspect = static_cast<float>(Config::WindowSize().x / Config::WindowSize().y);
-	camera = std::make_unique<Camera>(Vec3f(0.f, 0.f, 0.f), aspect, Config::CameraFov, Config::CameraNear, Config::CameraFar);
+	float aspect = (static_cast<float>(Config::WindowSize().x) / static_cast<float>(Config::WindowSize().y));
+	camera = std::make_unique<Camera>(Vec3f(0.f, 0.f, 0.f), aspect, Config::CameraFov / 180.f * 3.14159265359f, Config::CameraNear, Config::CameraFar);
 }
 
 void TerrainScene::init()
