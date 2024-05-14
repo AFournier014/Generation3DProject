@@ -4,11 +4,11 @@
 #include "scene/Scene.h"
 #include "Config.h"
 #include "memory"
+#include "Texture.h"
 #include "vector"
 #include "SFML/Window.hpp"
 #include <Camera.h>
 
-class Texture;
 class Mesh;
 class Shader;
 class ShaderManager;
