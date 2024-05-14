@@ -37,12 +37,12 @@ class EventPublisher
 {
 public:
     virtual ~EventPublisher() = default;
-    virtual void subscribe(const EventID& id, EventSubscriber* subscriber) = 0;
-    virtual void unsubscribe(const EventID& id, EventSubscriber* subscriber) = 0;
+    virtual void subscribe(const EventID& id, EventSubscriber& subscriber) = 0;
+    virtual void unsubscribe(const EventID& id, EventSubscriber& subscriber) = 0;
     virtual void notify(const EventID& id) = 0;
 
 protected:
-    std::unordered_map<EventID, std::vector<EventSubscriber*>> m_hashSubscribers;
+    std::unordered_map<EventID, std::vector<EventSubscriber&>> m_hashSubscribers;
 };
 
 #endif // EVENTS_H

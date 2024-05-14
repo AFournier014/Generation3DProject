@@ -12,7 +12,7 @@ class MainMenuScene : public Scene
 public:
 	explicit MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager);
 	void init() override;
-	void handleInput() override;
+	void bindInputs() override;
 	void update(float deltaTime) override;
 	void render() override;
 

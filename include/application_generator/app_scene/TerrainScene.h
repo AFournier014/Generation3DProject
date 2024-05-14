@@ -9,6 +9,8 @@
 #include "SFML/Window.hpp"
 #include <Camera.h>
 
+#include "managers/InputManager.h"
+
 class Mesh;
 class Shader;
 class ShaderManager;
@@ -20,7 +22,7 @@ public:
 	~TerrainScene() override = default;
 
 	void init() override;
-	void handleInput() override;
+	void bindInputs() override;
 	void update(float deltaTime) override;
 	void render() override;
 	void initShaders() const;
@@ -39,7 +41,8 @@ private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
 	std::shared_ptr<sf::Window> m_window;
-	std::unique_ptr<Camera> camera;
+	Camera* camera;
+	std::unique_ptr<InputManager> m_inputManager;
 };
 
 #endif // TERRAIN_SCENE_H

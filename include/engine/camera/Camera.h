@@ -7,9 +7,11 @@
 #include<cmath>
 #include <string>
 
+#include "events/Events.h"
+
 #define _USE_MATH_DEFINES
 
-class Camera
+class Camera : public EventSubscriber
 {
 
 public:
@@ -30,6 +32,8 @@ public:
 	Mat4<float> GetProjectionViewMatrix() { return Projection * View; }
 	Vector3f GetPosition() { return m_position; }
 	void InitProjection(float aspect, float fov, float near, float far);
+
+	void on_notify(const EventBase& _eventB) override;
 
 private:
 	//Main values

@@ -18,6 +18,18 @@ void Camera::InitProjection(float aspect, float fov, float near, float far)
 	Projection = Mat4<float>::Projection(aspect, fov, near, far);
 }
 
+void Camera::on_notify(const EventBase& _eventB)
+{
+    if (_eventB.id == "LeftClick")
+    {
+        std::cout << "Left click" << std::endl;
+    }
+    else if (_eventB.id == "RightClick")
+    {
+        std::cout << "Right click" << std::endl;
+    }
+}
+
 void Camera::MouseMoved(Vector2f pos)
 {
     m_alpha += pos.x  * m_sensivity;

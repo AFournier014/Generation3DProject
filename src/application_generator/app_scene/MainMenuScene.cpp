@@ -20,7 +20,7 @@ void MainMenuScene::init()
 {
 }
 
-void MainMenuScene::handleInput()
+void MainMenuScene::bindInputs()
 {
 	sf::Event event;
 	while (m_window->pollEvent(event))

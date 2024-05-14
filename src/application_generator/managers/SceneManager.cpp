@@ -26,7 +26,7 @@ void SceneManager::handleInput()
 {
 	if (!m_scenes.empty())
 	{
-		m_scenes.top()->handleInput();
+		m_scenes.top()->bindInputs();
 	}
 }
 
