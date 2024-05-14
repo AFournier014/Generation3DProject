@@ -6,6 +6,7 @@
 #include "memory"
 #include "vector"
 #include "SFML/Window.hpp"
+#include <Camera.h>
 
 class Texture;
 class Mesh;
@@ -37,14 +38,8 @@ private:
 
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
-	Mat4f m_projectionMatrix;
 	std::shared_ptr<sf::Window> m_window;
-	Mat4f m_viewMatrix;
-
-	float m_cameraSpeed = 0.1f;
-	float m_cameraRotationSpeed = 0.1f;
-	float m_alpha = 0.f;
-	float m_beta = 0.f;
+	std::unique_ptr<Camera> camera;
 };
 
 #endif // TERRAIN_SCENE_H

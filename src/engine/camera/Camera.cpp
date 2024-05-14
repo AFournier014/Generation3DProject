@@ -2,13 +2,15 @@
 
 Vector2f old_Pos;
 
-Camera::Camera(const Vector3f& position)
+Camera::Camera(const Vector3f& position = Vector3f(0, 0, 0), const float aspect = 1.f, const float fov = 70.0f, const float near = 0.1f, const float far = 1000.f)
     : m_speed(0.000001f), m_sensivity(0.0002f), m_alpha(.0f), m_beta(.0f), m_position(position)
 {
 	Projection = Mat4<float>::Identity();
 	m_forward = Vector3f(0, 0, 1);
 	m_left = Vector3f(1, 0, 0);
 	m_up = Vector3f(0, 1, 0);
+
+	InitProjection(aspect, fov, near, far);
 }
 
 void Camera::InitProjection(float aspect, float fov, float near, float far)
@@ -27,7 +29,6 @@ void Camera::MouseMoved(Vector2f pos)
 void Camera::Update(float timestep)
 {
     float currentSpeed = (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) ? 2 * m_speed : m_speed;
-
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) m_position += m_forward * currentSpeed * timestep;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) m_position -= m_forward * currentSpeed * timestep;
@@ -48,7 +49,7 @@ void Camera::Update(float timestep)
 
     m_target = m_position + m_forward;
 
-    View = Mat4<float>::RotationX(m_beta) * Mat4<float>::RotationY(m_alpha) * Mat4<float>::Translation(m_position);
+    View = Mat4<float>::RotationX(-m_beta) * Mat4<float>::RotationY(-m_alpha) * Mat4<float>::Translation(-m_position);
 }
 
 void Camera::MouseWheelMoved(const sf::Event& event)

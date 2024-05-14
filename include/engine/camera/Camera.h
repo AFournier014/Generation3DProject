@@ -5,19 +5,15 @@
 
 #include <MathIncludes.h>
 #include<cmath>
-
 #include <string>
 
 #define _USE_MATH_DEFINES
-
-using Vector3f = Vector3D<float>;
-using Vector2f = Vector2D<float>;
 
 class Camera
 {
 
 public:
-	Camera(const Vector3f& position = Vector3f(0, 0, 0));
+	Camera(const Vector3f& position, const float aspect, const float fov, const float near, const float far);
 	virtual ~Camera();
 
 	void MouseMoved(Vector2f pos);
@@ -32,6 +28,7 @@ public:
 
 	void VectorsFromAngles();
 	Mat4<float> GetProjectionViewMatrix() { return Projection * View; }
+	Vector3f GetPosition() { return m_position; }
 	void InitProjection(float aspect, float fov, float near, float far);
 
 private:
