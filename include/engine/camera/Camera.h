@@ -1,6 +1,4 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <GL/glew.h>
 
 #include <MathIncludes.h>
@@ -19,7 +17,7 @@ public:
 	~Camera() final = default;
 
 	void MouseMoved(Vector2f pos);
-	void MouseWheelMoved(const sf::Event& event);
+	//void MouseWheelMoved(const sf::Event& event);
 
 	inline void SetSpeed(const float& speed) { m_speed = speed; }
 	inline void SetSensivity(const float& sensivity) { m_sensivity = sensivity; }

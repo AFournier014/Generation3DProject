@@ -27,7 +27,7 @@ void MainMenuScene::update(float deltaTime)
 
 void MainMenuScene::render()
 {
-	m_window->display();
+	//m_window->display();
 }
 
 void MainMenuScene::updateMenuText()

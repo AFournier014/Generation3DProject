@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include <memory>
-#include <SFML/Window/Window.hpp>
+//#include <GLFW/glfw3.h>
 #include "managers/ShaderManager.h"
 
 class Camera;
@@ -21,7 +21,7 @@ public:
 	virtual void render() = 0; // Rendu de la scène
 
 protected:
-	std::shared_ptr<sf::Window> m_window;
+	GLFWwindow* m_window;
 	std::shared_ptr<ShaderManager> m_shaderManager;
 	std::shared_ptr<Camera> m_camera;
 };

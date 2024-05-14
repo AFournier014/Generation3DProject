@@ -1,9 +1,9 @@
 #include "app_scene/TerrainScene.h"
 #include "Meshs/simple_shapes/Cube.h"
-#include "Texture.h"
 #include "Config.h"
 #include "managers/ShaderManager.h"
 #include <Transform.h>
+#include <Camera.h>
 
 TerrainScene::TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)

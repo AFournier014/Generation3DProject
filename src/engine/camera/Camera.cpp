@@ -87,7 +87,7 @@ void Camera::update(float timestep)
 	View = Mat4<float>::RotationX(-m_beta) * Mat4<float>::RotationY(-m_alpha) * Mat4<float>::Translation(-m_position);
 }
 
-void Camera::MouseWheelMoved(const sf::Event& event)
+/*void Camera::MouseWheelMoved(const sf::Event& event)
 {
 	if (event.mouseWheel.delta > 0) //coup de molette vers le haut
 	{

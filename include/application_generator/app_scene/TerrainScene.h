@@ -6,8 +6,7 @@
 #include "memory"
 #include "Texture.h"
 #include "vector"
-#include "SFML/Window.hpp"
-#include <Camera.h>
+#include <GLFW/glfw3.h>
 
 #include "managers/InputManager.h"
 
