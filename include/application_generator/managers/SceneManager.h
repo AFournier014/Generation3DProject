@@ -12,7 +12,6 @@ public:
 	void pushScene(std::unique_ptr<Scene> scene);
 	void popScene();
 	void changeScene(std::unique_ptr<Scene> scene);
-	void handleInput();
 	void update(float deltaTime);
 	void render();
 

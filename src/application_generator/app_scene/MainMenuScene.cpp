@@ -2,8 +2,8 @@
 #include <sstream>
 #include "SFML/Graphics.hpp"
 
-MainMenuScene::MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager)
-	: Scene(window, shaderManager)
+MainMenuScene::MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
+	: Scene(window, shaderManager, camera)
 {
 	if (!m_font.loadFromFile(Config::ArialFontPath))
 	{
@@ -18,29 +18,6 @@ MainMenuScene::MainMenuScene(const std::shared_ptr<sf::Window> window, const std
 
 void MainMenuScene::init()
 {
-}
-
-void MainMenuScene::handleInput()
-{
-	sf::Event event;
-	while (m_window->pollEvent(event))
-	{
-		if (event.type == sf::Event::Closed)
-		{
-			m_window->close();
-		}
-		else if (event.type == sf::Event::KeyPressed)
-		{
-			if (event.key.code == sf::Keyboard::Num1)
-			{
-				// Start the game
-			}
-			else if (event.key.code == sf::Keyboard::Num2)
-			{
-				m_window->close();
-			}
-		}
-	}
 }
 
 void MainMenuScene::update(float deltaTime)

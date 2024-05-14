@@ -56,6 +56,16 @@ namespace Config
 	{
 		return Vec3f(CameraInitialPositionX, CameraInitialPositionY, CameraInitialPositionZ);
 	}
+
+	inline float GetAspectRatio()
+	{
+		return static_cast<float>(WindowSize().x) / static_cast<float>(WindowSize().y);
+	}
+
+	inline float GetCameraFov()
+	{
+		return CameraFov / 180.f * 3.14159265359f;
+	}
 }
 
 #endif // CONFIG_H

@@ -7,14 +7,16 @@
 #include<cmath>
 #include <string>
 
+#include "events/Events.h"
+
 #define _USE_MATH_DEFINES
 
-class Camera
+class Camera : public EventSubscriber
 {
 
 public:
 	Camera(const Vector3f& position, const float aspect, const float fov, const float near, const float far);
-	virtual ~Camera();
+	~Camera() final = default;
 
 	void MouseMoved(Vector2f pos);
 	void MouseWheelMoved(const sf::Event& event);
@@ -23,13 +25,20 @@ public:
 	inline void SetSensivity(const float& sensivity) { m_sensivity = sensivity; }
 	void SetPosition(const Vector3f& position);
 
-	void Look();
-	void Update(float timestep);
+	void update(float timestep);
 
 	void VectorsFromAngles();
-	Mat4<float> GetProjectionViewMatrix() { return Projection * View; }
-	Vector3f GetPosition() { return m_position; }
+	Mat4<float> GetProjectionViewMatrix() const { return Projection * View; }
+	Vector3f GetPosition() const { return m_position; }
 	void InitProjection(float aspect, float fov, float near, float far);
+
+	void MoveLeft() { m_position += m_left * m_velocity; }
+	void MoveRight() { m_position -= m_left * m_velocity; }
+	void MoveForward() { m_position += m_forward * m_velocity; }
+	void MoveBackward() { m_position -= m_forward * m_velocity; }
+
+
+	void on_notify(const EventBase& _eventB) override;
 
 private:
 	//Main values
@@ -38,9 +47,15 @@ private:
 	float m_alpha;
 	float m_beta;
 
+	Vector2f old_Pos;
+
+	float m_velocity;
+	float m_speedMultiplier = 2.0f;
+
 	//Vertical motion
 	double m_timeBeforeStoppingVerticalMotion;
 	bool m_verticalMotionActive = false;
+	bool m_isSpeedingUp = false;
 	float m_verticalMotionDirection;
 
 	Mat4<float> Projection;

@@ -10,9 +10,8 @@
 class MainMenuScene : public Scene
 {
 public:
-	explicit MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager);
+	explicit MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
 	void init() override;
-	void handleInput() override;
 	void update(float deltaTime) override;
 	void render() override;
 

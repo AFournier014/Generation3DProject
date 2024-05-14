@@ -4,23 +4,24 @@
 #include "scene/Scene.h"
 #include "Config.h"
 #include "memory"
+#include "Texture.h"
 #include "vector"
 #include "SFML/Window.hpp"
 #include <Camera.h>
 
-class Texture;
+#include "managers/InputManager.h"
+
 class Mesh;
 class Shader;
-class ShaderManager;
+class ShaderManager;	
 
 class TerrainScene : public Scene
 {
 public:
-	TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager);
+	TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
 	~TerrainScene() override = default;
 
 	void init() override;
-	void handleInput() override;
 	void update(float deltaTime) override;
 	void render() override;
 	void initShaders() const;
@@ -35,11 +36,9 @@ public:
 	}
 
 private:
-
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
-	std::shared_ptr<sf::Window> m_window;
-	std::unique_ptr<Camera> camera;
+
 };
 
 #endif // TERRAIN_SCENE_H
