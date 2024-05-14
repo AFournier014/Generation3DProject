@@ -19,7 +19,7 @@ void InputManager::notify(const EventID& id)
 {
     if (m_hashSubscribers.contains(id))
 	{
-		for (auto& subscriber : m_hashSubscribers[id])
+		for (auto const& subscriber : m_hashSubscribers[id])
 		{
 			subscriber->on_notify(EventBase(id));
 		}

@@ -17,6 +17,13 @@ struct Vector2D
 		: x(pt.x), y(pt.y)
 	{}
 
+	Vector2D<T> operator-() const { return Vector2D<T>{-x, -y}; }
+	Vector2D<T> operator+(const Vector2D<T>& pt) const { return Vector2D<T>{x + pt.x, y + pt.y}; }
+	Vector2D<T> operator-(const Vector2D<T>& pt) const { return Vector2D<T>{x - pt.x, y - pt.y}; }
+	Vector2D<T> operator*(const T& scalar) const { return Vector2D<T>{x* scalar, y* scalar}; }
+	Vector2D<T> operator/(const T& scalar) const { return Vector2D<T>{x / scalar, y / scalar}; }
+	bool operator==(const Vector2D<T>& pt) const { return x == pt.x && y == pt.y; }
+
 	T x;
 	T y;
 };

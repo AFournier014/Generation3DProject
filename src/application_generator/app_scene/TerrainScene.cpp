@@ -15,6 +15,8 @@ void TerrainScene::init()
     // Temporaire pour tester
     Transform transform(Vec3f(0.0f, 0.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
     addMesh<Cube>(transform, Texture(Config::TEXTURES_PATH + "texture.png"));
+
+    sf::Mouse::setPosition(sf::Vector2i(Config::WindowSize().x / 2, Config::WindowSize().y / 2), *m_window);
 }
 
 
@@ -29,8 +31,6 @@ void TerrainScene::update(float deltaTime)
 
     if(m_camera)
 	    m_camera->update(deltaTime);
-
-	sf::Mouse::setPosition(sf::Vector2i(Config::WindowSize().x / 2, Config::WindowSize().y / 2), *m_window);
 }
 
 void TerrainScene::render()

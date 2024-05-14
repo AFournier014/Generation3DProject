@@ -68,6 +68,11 @@ void Application::ProcessEvents()
 		{
 			m_isRunning = false;
 		}
+		if (event.type == sf::Event::Resized)
+		{
+			glViewport(0, 0, event.size.width, event.size.height);
+			m_camera->InitProjection(static_cast<float>(event.size.width) / event.size.height, Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+		}
 		m_inputManager->handle(event);
 	}
 }
