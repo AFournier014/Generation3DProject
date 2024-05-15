@@ -21,27 +21,16 @@ void Camera::SetProjection(float aspect, float fov, float near, float far)
 
 void Camera::mouseMoved(double xpos, double ypos)
 {
-	//Vector2f pos(static_cast<float>(xpos), static_cast<float>(ypos));
-	//if (old_Pos != Vector2f(0, 0))
-	//{
-	//	Vector2f delta = pos - old_Pos;
-	//	m_alpha += delta.x * m_sensivity;
-	//	m_beta -= delta.y * m_sensivity;
-
-	//	m_beta = std::clamp(m_beta, -1.570796f, 1.570796f);
-	//	VectorsFromAngles();
-	//}
-	//old_Pos = pos;
 	float xOffset = static_cast<float>(xpos);
 	float yOffset = static_cast<float>(ypos);
 
 	m_alpha += xOffset * m_sensivity;
 	m_beta -= yOffset * m_sensivity;
 
-	constexpr float maxPitch = 1.570796f; // 90 degrees in radians
+	constexpr float maxPitch = 1.570796f; // 90 degrés en radians
 	m_beta = std::clamp(m_beta, -maxPitch, maxPitch);
 
-	// Recalculate camera orientation vectors based on updated angles
+	// Recalcule les vecteurs de la camera en fonction des angles
 	VectorsFromAngles();
 }
 
