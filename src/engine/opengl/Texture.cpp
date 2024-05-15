@@ -32,7 +32,7 @@ Texture::Texture(const std::filesystem::path& path)
 
 Texture::~Texture()
 {
-	GLCall(glDeleteTextures(1, &m_rendererID));
+	m_filePath.clear();
 }
 
 void Texture::Bind(unsigned int slot) const
@@ -44,4 +44,9 @@ void Texture::Bind(unsigned int slot) const
 void Texture::Unbind() const
 {
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
+void Texture::Release() const
+{
+	GLCall(glDeleteTextures(1, &m_rendererID));
 }

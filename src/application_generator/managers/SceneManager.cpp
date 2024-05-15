@@ -37,3 +37,12 @@ void SceneManager::render()
 		m_scenes.top()->render();
 	}
 }
+
+void SceneManager::release()
+{
+	while (!m_scenes.empty())
+	{
+		m_scenes.top()->release();
+		m_scenes.pop();
+	}
+}

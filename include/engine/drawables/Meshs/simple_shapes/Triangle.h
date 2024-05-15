@@ -28,7 +28,7 @@ public:
 		m_rotation += 0.025f;
 	}
 
-	void render(Shader& shader, const Mat4& VP, const Vector3f& cameraPositionWorld) override
+	void render(std::shared_ptr<Shader> shader, const Mat4& VP, const Vector3f& cameraPositionWorld) override
 	{
 		Mat4 Rotation = Mat4::RotationY(m_rotation);
 		Mat4 Translation = Mat4::Translation({ 0.f, 0.f, 0.f });
@@ -36,18 +36,18 @@ public:
 
 		Mat4 MVP = VP * Model;
 
-		shader.Bind();
+		shader->Bind();
 		GLCall(glBindVertexArray(m_vao));
 		Vector3D CameraPosition = cameraPositionWorld; // Ne sert pas ici, évite l'erreur de compilation
-		shader.SetUniformMat4f("MVP", MVP);
+		shader->SetUniformMat4f("MVP", MVP);
 		m_texture.Bind();
-		shader.SetUniform1i("tex1", 0);
+		shader->SetUniform1i("tex1", 0);
 
 		
 		GLCall(glDrawArrays(GL_TRIANGLES, 0, GLsizei(m_points.size())));
 
 		GLCall(glBindVertexArray(0));
-		shader.Unbind();
+		shader->Unbind();
 		m_texture.Unbind();
 	}
 

@@ -11,7 +11,7 @@
 #include <inputs/InputManager.h>
 #include <handler/CameraInputHandler.h>
 
-Application::Application() : m_shaderManager(std::make_unique<ShaderManager>()),
+Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())
 {
     if (!glfwInit())
@@ -47,6 +47,11 @@ Application::Application() : m_shaderManager(std::make_unique<ShaderManager>()),
 Application::~Application()
 {
     Cleanup();
+
+	m_shaderManager.reset();
+	m_sceneManager.reset();
+	m_inputManager.reset();
+	m_camera.reset();
 }
 
 void Application::Run()
@@ -134,6 +139,8 @@ void Application::Render()
 
 void Application::Cleanup() const
 {
+	m_sceneManager->release();
+
     glfwDestroyWindow(m_window);
     glfwTerminate();
 

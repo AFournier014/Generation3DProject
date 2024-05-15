@@ -15,11 +15,17 @@ public:
 	{
 	}
 
-	virtual ~Scene() = default;
+	virtual ~Scene()
+	{
+		m_shaderManager.reset();
+		m_camera.reset();
+	}
 
 	virtual void init() = 0; // Initialisation de la scène
 	virtual void update(float deltaTime) = 0; // Mise à jour de la scène
 	virtual void render() = 0; // Rendu de la scène
+
+	virtual void release() const = 0; // Libération de la mémoire
 
 protected:
 	GLFWwindow* m_window;

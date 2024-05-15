@@ -13,7 +13,7 @@ class Shader;
 class Mesh : public Drawable
 {
 public:
-	explicit Mesh(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
+	explicit Mesh(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const std::shared_ptr<Texture> texture)
 		: m_vertices(std::vector<Vertexf>(vertices))
 		, m_indices(std::vector<unsigned int>(indices))
 		, m_texture(texture)
@@ -23,17 +23,21 @@ public:
 
 	~Mesh() override
 	{
-		clearMesh();
-
-		GLCall(glDeleteVertexArrays(1, &m_vao));
-		GLCall(glDeleteBuffers(1, &m_vbo));
-		GLCall(glDeleteBuffers(1, &m_ebo));
+		m_vertices.clear();
+		m_indices.clear();
 	}
 
 	void update() override
-	{}
+	{
+		// Nothing to do
+	}
 
-	void render(Shader& shader) override;
+	void render(std::shared_ptr<Shader> shader) override;
+
+	void release() override
+	{
+		clearMesh();
+	}
 
 	Mat4f getModelMatrix() const;
 
@@ -58,7 +62,7 @@ private:
 
 	std::vector<Vertexf> m_vertices;
 	std::vector<unsigned int> m_indices;
-	Texture m_texture;
+	std::shared_ptr<Texture> m_texture;
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;
 	GLuint m_ebo = 0;

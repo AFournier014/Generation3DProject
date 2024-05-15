@@ -8,7 +8,21 @@ class ShaderManager
 {
 public:
 	ShaderManager() = default;
-	~ShaderManager() = default;
+	~ShaderManager()
+	{
+		m_cubeShader.reset();
+		m_triangleShader.reset();
+		m_terrainShader.reset();
+		m_skyboxShader.reset();
+	}
+
+	void release() const
+	{
+		m_cubeShader->Release();
+		m_triangleShader->Release();
+		m_terrainShader->Release();
+		m_skyboxShader->Release();
+	}
 
 	void setCubeShader(const std::shared_ptr<Shader>& shader) { m_cubeShader = shader; }
 	void setTriangleShader(const std::shared_ptr<Shader>& shader) { m_triangleShader = shader; }

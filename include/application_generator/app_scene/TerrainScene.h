@@ -7,9 +7,8 @@
 #include "Texture.h"
 #include "vector"
 #include <GLFW/glfw3.h>
+#include "Meshs/Mesh.h"
 
-
-class Mesh;
 class Shader;
 class ShaderManager;	
 
@@ -17,16 +16,32 @@ class TerrainScene : public Scene
 {
 public:
 	TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
-	~TerrainScene() override = default;
+	~TerrainScene() override
+	{
+		m_meshes.clear();
+		m_shaderManager.reset();
+		m_camera.reset();
+	}
 
 	void init() override;
 	void update(float deltaTime) override;
 	void render() override;
 	void initShaders() const;
 	void initShader(const std::shared_ptr<Shader> shader) const;
+	void release() const override
+	{
+		for (auto& texture : m_textures)
+		{
+			texture->Release();
+		}
+		for (auto& mesh : m_meshes)
+		{
+			mesh->release();
+		}
+	}
 
 	template <typename MeshT, typename T>
-	MeshT* addMesh(Transform<T> transform, Texture texture)
+	MeshT* addMesh(Transform<T> transform, std::shared_ptr<Texture> texture)
 	{
 		auto* mesh = new MeshT(transform, texture);
 		m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
@@ -36,7 +51,7 @@ public:
 private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
-
+	std::vector<std::shared_ptr<Texture>> m_textures;
 };
 
 #endif // TERRAIN_SCENE_H

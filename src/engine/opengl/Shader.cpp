@@ -18,47 +18,61 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 
 Shader::~Shader()
 {
-	GLCall(glDeleteProgram(m_RendererID))
+	m_UniformLocationCache.clear();
+
+	m_VertexPath.clear();
+	m_FragmentPath.clear();
 }
 
 void Shader::Bind() const
 {
-	GLCall(glUseProgram(m_RendererID))
+	GLCall(glUseProgram(m_RendererID));
 }
 
 void Shader::Unbind() const
 {
-	GLCall(glUseProgram(0))
+	GLCall(glUseProgram(0));
+}
+
+void Shader::Release() const
+{
+	GLCall(glDeleteProgram(m_RendererID));
+
+	GLCall(glDeleteProgram(m_RendererID));
+	for (auto const& [key, val] : m_UniformLocationCache)
+	{
+		GLCall(glDeleteShader(val));
+	}
 }
 
 void Shader::SetUniform1i(const std::string& name, int value) const
 {
-	GLCall(glUniform1i(GetUniformLocation(name), value))
+	GLCall(glUniform1i(GetUniformLocation(name), value));
 }
 
 void Shader::SetUniform1f(const std::string& name, float value) const
 {
-	GLCall(glUniform1f(GetUniformLocation(name), value))
+	GLCall(glUniform1f(GetUniformLocation(name), value));
 }
 
 void Shader::SetUniform3f(const std::string& name, const Vector3D<float> Vector) const
 {
-	GLCall(glUniform3fv(GetUniformLocation(name), 1, Vector.data()))
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, Vector.data()));
 }
 
 void Shader::SetUniformMat3f(const std::string& name, const Mat4<float>& matrix) const
 {
-	GLCall(glUniform3fv(GetUniformLocation(name), 1, matrix.data()))
+	GLCall(glUniform3fv(GetUniformLocation(name), 1, matrix.data()));
 }
 
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) const
 {
-	GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3))
+	GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 }
 
 void Shader::SetUniformMat4f(const std::string& name, const Mat4<float>& matrix) const
 {
-	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data()))
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.data()));
 }
 
 GLint Shader::GetUniformLocation(const std::string& name) const

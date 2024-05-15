@@ -11,7 +11,7 @@ class RectangleShape : public Mesh
 {
 public:
 
-	RectangleShape(const Transform<float>& transform, const Texture& texture)
+	RectangleShape(const Transform<float>& transform, const std::shared_ptr<Texture> texture)
 		: Mesh(createRectangleShapeVertices(transform.position, transform.scale.x(), transform.scale.y()), createRectangleShapeIndices(), texture)
 	{
 		setLocation(transform.position);

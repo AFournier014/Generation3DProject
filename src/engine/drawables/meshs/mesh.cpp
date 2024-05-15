@@ -6,7 +6,7 @@
 
 using Mat4f = Mat4<float>;
 
-void Mesh::render(Shader& shader)
+void Mesh::render(std::shared_ptr<Shader> shader)
 {
 	// Temporaire propriétés optiques de l'objet et de la lumière
 	struct OpticalProperties
@@ -26,14 +26,14 @@ void Mesh::render(Shader& shader)
 
 	Mat4 M = getModelMatrix();
 
-	shader.Bind();
-	shader.SetUniformMat4f("model", M);
-	shader.SetUniform1f("material.ambient", opticalProperties.ambient);
-	shader.SetUniform1f("material.diffuse", opticalProperties.diffuse);
-	shader.SetUniform1f("material.specular", opticalProperties.specular);
-	shader.SetUniform1f("material.shininess", opticalProperties.shininess);
-	shader.SetUniform3f("light.direction", directionalLight.direction);
-	shader.SetUniform4f("light.color", directionalLight.color.r, directionalLight.color.g, directionalLight.color.b, directionalLight.color.a);
+	shader->Bind();
+	shader->SetUniformMat4f("model", M);
+	shader->SetUniform1f("material.ambient", opticalProperties.ambient);
+	shader->SetUniform1f("material.diffuse", opticalProperties.diffuse);
+	shader->SetUniform1f("material.specular", opticalProperties.specular);
+	shader->SetUniform1f("material.shininess", opticalProperties.shininess);
+	shader->SetUniform3f("light.direction", directionalLight.direction);
+	shader->SetUniform4f("light.color", directionalLight.color.r, directionalLight.color.g, directionalLight.color.b, directionalLight.color.a);
 
 	GLCall(glBindVertexArray(m_vao));
 	GLCall(glDrawElements(GL_TRIANGLES, GLsizei(m_indices.size()), GL_UNSIGNED_INT, nullptr));

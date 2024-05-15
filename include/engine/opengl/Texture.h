@@ -16,6 +16,8 @@ public:
 	void Bind(unsigned int slot = 0) const;
 	void Unbind() const;
 
+	void Release() const;
+
 	inline int GetWidth() const { return m_width; }
 	inline int GetHeight() const { return m_height; }
 	inline std::filesystem::path GetFilePath() const { return m_filePath; }
