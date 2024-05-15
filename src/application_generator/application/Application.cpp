@@ -10,6 +10,7 @@
 #include <imgui_impl_opengl3.h>
 #include <inputs/InputManager.h>
 #include <handler/CameraInputHandler.h>
+#include "sky_sphere/Skyphere.h"
 
 Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())
@@ -158,6 +159,9 @@ void Application::initShaders()
     auto triangleShader = std::make_shared<Shader>(Config::SHADERS_PATH + "triangle.vert",
                                                    Config::SHADERS_PATH + "triangle.frag");
     m_shaderManager->setTriangleShader(std::shared_ptr<Shader>(triangleShader));
+
+	auto skyboxShader = std::make_shared<Shader>(Config::SHADERS_PATH + "skysphere.vert", Config::SHADERS_PATH + "skysphere.frag");
+	m_shaderManager->setSkyboxShader(skyboxShader);
 
     /*auto* terrainShader = new Shader(Config::SHADERS_PATH + "terrain.vert", Config::SHADERS_PATH + "terrain.frag");
     m_shaderManager->setTerrainShader(std::shared_ptr<Shader>(terrainShader));*/

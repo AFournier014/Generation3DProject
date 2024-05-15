@@ -15,7 +15,7 @@ Texture::Texture(const std::filesystem::path& path)
 	{
 		std::cerr << "Failed to load texture" << std::endl;
 	}
-	image.flipVertically();
+	//image.flipVertically();
 
 	auto size = image.getSize();
 	m_width = size.x;

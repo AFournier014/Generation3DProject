@@ -10,7 +10,9 @@
 #include "Meshs/Mesh.h"
 
 class Shader;
-class ShaderManager;	
+class ShaderManager;
+class Camera;
+class Skyphere;
 
 class TerrainScene : public Scene
 {
@@ -52,6 +54,7 @@ private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
 	std::vector<std::shared_ptr<Texture>> m_textures;
+	std::unique_ptr<Skyphere> m_skyphere;
 };
 
 #endif // TERRAIN_SCENE_H

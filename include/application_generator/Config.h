@@ -50,6 +50,8 @@ namespace Config
 	inline const std::string TriangleFragmentShaderPath = SHADERS_PATH + "triangle.frag";
 	inline const std::string CubeVertexShaderPath = SHADERS_PATH + "cube.vert";
 	inline const std::string CubeFragmentShaderPath = SHADERS_PATH + "cube.frag";
+	inline const std::string SkyphereVertexShaderPath = SHADERS_PATH + "skyphere.vert";
+	inline const std::string SkyphereFragmentShaderPath = SHADERS_PATH + "skyphere.frag";
 
 	inline const std::string ArialFontPath = FONT_PATH + "ARIAL.ttf";
 

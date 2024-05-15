@@ -4,6 +4,7 @@
 #include "managers/ShaderManager.h"
 #include <Transform.h>
 #include <Camera.h>
+#include "sky_sphere/Skyphere.h"
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)
@@ -12,6 +13,9 @@ TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManag
 
 void TerrainScene::init()
 {
+	auto skySphereTexture = std::make_shared<Texture>(Config::TEXTURES_PATH + "Skysphere.png");
+	m_skyphere = std::make_unique<Skyphere>(skySphereTexture);
+
     // Temporaire pour tester
     Transform transform(Vec3f(0.0f, 0.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
 	Transform transform2(Vec3f(2.0f, 3.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
@@ -52,13 +56,14 @@ void TerrainScene::render()
     {
         mesh->render(m_shaderManager->getCubeShader());
     }
+	m_skyphere->render(m_shaderManager->getSkyboxShader());
 }
 
 void TerrainScene::initShaders() const
 {
     initShader(m_shaderManager->getCubeShader());
     initShader(m_shaderManager->getTerrainShader());
-    // initShader(*m_shaderManager->getSkyboxShader());
+    initShader(m_shaderManager->getSkyboxShader());
     // initShader(*m_shaderManager->getTerrainShader());
 }
 
