@@ -6,10 +6,8 @@
 #include "memory"
 #include "Texture.h"
 #include "vector"
-#include "SFML/Window.hpp"
-#include <Camera.h>
+#include <GLFW/glfw3.h>
 
-#include "managers/InputManager.h"
 
 class Mesh;
 class Shader;
@@ -18,7 +16,7 @@ class ShaderManager;
 class TerrainScene : public Scene
 {
 public:
-	TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
+	TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
 	~TerrainScene() override = default;
 
 	void init() override;

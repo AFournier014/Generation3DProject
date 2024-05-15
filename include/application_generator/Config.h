@@ -4,6 +4,7 @@
 #include "Vector.h"
 #include "Matrice.h"
 #include <string>
+#include <GLFW/glfw3.h>
 
 using Mat4f = Mat4<float>;
 using Vec2i = Vector2D<int>;
@@ -21,6 +22,11 @@ namespace Config
 	constexpr int ContextSettingsAntialiasingLevel = 4;
 	constexpr int ContextSettingsMajorVersion = 4;
 	constexpr int ContextSettingsMinorVersion = 6;
+
+	constexpr int CameraForward = GLFW_KEY_W;
+	constexpr int CameraBackward = GLFW_KEY_S;
+	constexpr int CameraLeft = GLFW_KEY_A;
+	constexpr int CameraRight = GLFW_KEY_D;
 
 	constexpr float CameraFov = 45.f;
 	constexpr float CameraNear = 0.1f;

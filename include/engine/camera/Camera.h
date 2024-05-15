@@ -1,25 +1,25 @@
+#ifndef CAMERA_H
+#define CAMERA_H
+
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <GL/glew.h>
 
 #include <MathIncludes.h>
 #include<cmath>
 #include <string>
 
-#include "events/Events.h"
 
 #define _USE_MATH_DEFINES
 
-class Camera : public EventSubscriber
+class Camera
 {
 
 public:
 	Camera(const Vector3f& position, const float aspect, const float fov, const float near, const float far);
-	~Camera() final = default;
+	~Camera() = default;
 
-	void MouseMoved(Vector2f pos);
-	void MouseWheelMoved(const sf::Event& event);
+	void mouseMoved(double xpos, double ypos);
+	void mouseWheelMoved(double x, double y);
 
 	inline void SetSpeed(const float& speed) { m_speed = speed; }
 	inline void SetSensivity(const float& sensivity) { m_sensivity = sensivity; }
@@ -30,15 +30,14 @@ public:
 	void VectorsFromAngles();
 	Mat4<float> GetProjectionViewMatrix() const { return Projection * View; }
 	Vector3f GetPosition() const { return m_position; }
-	void InitProjection(float aspect, float fov, float near, float far);
+	void SetProjection(float aspect, float fov, float near, float far);
 
-	void MoveLeft() { m_position += m_left * m_velocity; }
-	void MoveRight() { m_position -= m_left * m_velocity; }
-	void MoveForward() { m_position += m_forward * m_velocity; }
-	void MoveBackward() { m_position -= m_forward * m_velocity; }
+	void moveLeft(float multiplier = 1.f) { m_position += m_left * m_velocity * multiplier; }
+	void moveRight(float multiplier = 1.f) { m_position -= m_left * m_velocity * multiplier; }
+	void moveForward(float multiplier = 1.f) { m_position += m_forward * m_velocity * multiplier; }
+	void moveBackward(float multiplier = 1.f) { m_position -= m_forward * m_velocity * multiplier; }
 
-
-	void on_notify(const EventBase& _eventB) override;
+	void toggleRotation() {};
 
 private:
 	//Main values
@@ -50,7 +49,8 @@ private:
 	Vector2f old_Pos;
 
 	float m_velocity;
-	float m_speedMultiplier = 2.0f;
+
+	float m_fov;
 
 	//Vertical motion
 	double m_timeBeforeStoppingVerticalMotion;
@@ -68,3 +68,5 @@ private:
 	Vector3f m_left;
 	Vector3f m_up;
 };
+
+#endif // !CAMERA_H
