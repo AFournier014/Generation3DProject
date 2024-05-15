@@ -15,6 +15,7 @@ class Camera;
 class Skyphere;
 class DirectionalLight;
 struct OpticalProperties;
+class Chunk;
 
 class TerrainScene : public Scene
 {
@@ -44,6 +45,7 @@ public:
 		}
 	}
 
+
 	template <typename MeshT>
 	MeshT* addMesh(std::shared_ptr<RenderConfig> renderConfig)
 	{
@@ -55,6 +57,7 @@ public:
 private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
+	std::vector<std::unique_ptr<Chunk>> m_chunks;
 	std::unique_ptr<Skyphere> m_skyphere;
 	std::shared_ptr<DirectionalLight> m_directionalLight;
 	std::vector<std::shared_ptr<Texture>> m_textures;

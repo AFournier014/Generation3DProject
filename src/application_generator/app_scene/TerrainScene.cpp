@@ -7,6 +7,8 @@
 #include "Light.h"
 #include <RenderConfig.h>
 
+#include "terrain/chunk.h"
+
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)
 {
@@ -30,6 +32,10 @@ void TerrainScene::init()
     renderConfigCube->shader = m_shaderManager->getCubeShader();
     renderConfigCube->directionalLight = m_directionalLight;
 	renderConfigCube->opticalProperties = m_opticalProperties;
+
+	auto* chunk = new Chunk(241, Vec3f(0.0f, 0.0f, -10.0f));
+    m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
+
 
     auto renderConfigCube2 = std::make_shared<RenderConfig>();
 	renderConfigCube2->transform = transform2;
@@ -56,8 +62,8 @@ void TerrainScene::update(float deltaTime)
         mesh->rotate(Vec3f(1.f, 0.f, 0.f), 0.01f);
     }
 
-    if(m_camera)
-	    m_camera->update(deltaTime);
+    if (m_camera)
+        m_camera->update(deltaTime);
 }
 
 void TerrainScene::render()
@@ -73,6 +79,12 @@ void TerrainScene::render()
         mesh->render();
     }
 	m_skyphere->render(m_shaderManager->getSkyboxShader());
+
+    for (auto const& chunk : m_chunks)
+    {
+        if (chunk && chunk->getMesh())
+            chunk->getMesh()->render(*m_shaderManager->getCubeShader());
+    }
 }
 
 void TerrainScene::initShaders() const
