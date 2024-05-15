@@ -9,13 +9,22 @@ Camera::Camera(const Vector3f& position = Vector3f(0, 0, 0), const float aspect 
 	m_forward = Vector3f(0, 0, 1);
 	m_left = Vector3f(1, 0, 0);
 	m_up = Vector3f(0, 1, 0);
-	m_fov = fov;
-	SetProjection(aspect, fov, near, far);
+
+	setProjection(aspect, fov, near, far);
 }
 
-void Camera::SetProjection(float aspect, float fov, float near, float far)
+void Camera::setProjection(float aspect, float fov, float near, float far)
 {
 	Projection = Mat4<float>::Projection(aspect, fov, near, far);
+	m_aspectRatio = aspect;
+	m_fov = fov;
+	m_near = near;
+	m_far = far;
+}
+
+void Camera::updateProjectionMatrix()
+{
+	Projection = Mat4<float>::Projection(m_aspectRatio, m_fov, m_near, m_far);
 }
 
 
