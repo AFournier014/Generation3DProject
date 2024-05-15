@@ -35,9 +35,6 @@ Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
     glfwGetFramebufferSize(m_window, &width, &height);
     glViewport(0, 0, width, height);
 
-	/*m_window->setVerticalSyncEnabled(true);
-	m_window->setActive(true);*/
-
 	m_camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
 	m_inputManager = std::make_unique<InputManager>();
 
