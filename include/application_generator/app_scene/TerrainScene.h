@@ -6,11 +6,12 @@
 #include "memory"
 #include "Texture.h"
 #include "vector"
-#include <GLFW/glfw3.h>
 #include "Meshs/Mesh.h"
+#include "terrain/Chunk.h"
 
+class Chunk;
 class Shader;
-class ShaderManager;	
+class ShaderManager;
 
 class TerrainScene : public Scene
 {
@@ -51,6 +52,7 @@ public:
 private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
+	std::vector<std::unique_ptr<Chunk>> m_chunks;
 	std::vector<std::shared_ptr<Texture>> m_textures;
 };
 
