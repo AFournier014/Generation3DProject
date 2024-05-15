@@ -17,7 +17,7 @@ class ShaderManager;
 class TerrainScene : public Scene
 {
 public:
-	TerrainScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
+	TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera);
 	~TerrainScene() override = default;
 
 	void init() override;

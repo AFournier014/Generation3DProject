@@ -30,8 +30,8 @@ Application::Application() : m_shaderManager(std::make_unique<ShaderManager>()),
     glfwGetFramebufferSize(m_window, &width, &height);
     glViewport(0, 0, width, height);
 
-	m_window->setVerticalSyncEnabled(true);
-	m_window->setActive(true);
+	/*m_window->setVerticalSyncEnabled(true);
+	m_window->setActive(true);*/
 
 	m_camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
 	m_inputManager = std::make_unique<InputManager>();
@@ -73,20 +73,17 @@ void Application::Initialize()
 
 void Application::ProcessEvents()
 {
-	sf::Event event;
-	while (m_window->pollEvent(event))
+	glfwPollEvents();
+	if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
-		if (event.type == sf::Event::Closed)
-		{
-			m_isRunning = false;
-		}
-		if (event.type == sf::Event::Resized)
-		{
-			glViewport(0, 0, event.size.width, event.size.height);
-			m_camera->InitProjection(static_cast<float>(event.size.width) / event.size.height, Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
-		}
-		m_inputManager->handle(event);
+		m_isRunning = false;
 	}
+	/*if (event.type == sf::Event::Resized)
+	{
+		glViewport(0, 0, event.size.width, event.size.height);
+		m_camera->InitProjection(static_cast<float>(event.size.width) / event.size.height, Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+	}
+	m_inputManager->handle(event);*/
 }
 
 void Application::Update(float deltaTime) const

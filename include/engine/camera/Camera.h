@@ -36,7 +36,7 @@ public:
 	void MoveBackward() { m_position -= m_forward * m_velocity; }
 
 
-	void on_notify(const EventBase& _eventB) override;
+	void on_notify(const EventBase& _eventB);
 
 private:
 	//Main values

@@ -1,5 +1,7 @@
 #include "camera/Camera.h"
 
+#include <algorithm>
+
 Camera::Camera(const Vector3f& position = Vector3f(0, 0, 0), const float aspect = 1.f, const float fov = 70.0f, const float near = 0.1f, const float far = 1000.f)
 	: m_speed(100.f), m_sensivity(0.01f), m_alpha(.0f), m_beta(.0f), m_position(position)
 {
@@ -20,8 +22,9 @@ void Camera::on_notify(const EventBase& _eventB)
 {
 	if (_eventB.id == "MouseMoved")
 	{
-		Vector2f pos = { static_cast<float>(sf::Mouse::getPosition().x), static_cast<float>(sf::Mouse::getPosition().y) };
-		MouseMoved(pos);
+		// TODO: add a value to the event to get the position
+		//Vector2f pos = _eventB.value<Vector2f>();
+		//MouseMoved(pos);
 	}
 	else if (_eventB.id == "Z_KeyPressed")
 	{
@@ -101,7 +104,7 @@ void Camera::update(float timestep)
 		m_timeBeforeStoppingVerticalMotion = 0.100;
 		m_verticalMotionDirection = -1;
 	}
-}
+}*/
 
 
 void Camera::SetPosition(const Vector3f& position)
@@ -127,4 +130,5 @@ void Camera::VectorsFromAngles()
 
 	m_up = m_forward.CrossProduct(m_left);
 	m_up.Normalize();
+
 }

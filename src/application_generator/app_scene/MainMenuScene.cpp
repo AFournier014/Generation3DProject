@@ -2,7 +2,7 @@
 #include <sstream>
 #include "SFML/Graphics.hpp"
 
-MainMenuScene::MainMenuScene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
+MainMenuScene::MainMenuScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 	: Scene(window, shaderManager, camera)
 {
 	if (!m_font.loadFromFile(Config::ArialFontPath))

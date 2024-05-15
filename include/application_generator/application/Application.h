@@ -31,7 +31,6 @@ private:
 	void initTextures();
 	void bindInputs();
 
-	std::unique_ptr<Camera> m_camera;
 	std::shared_ptr<ShaderManager> m_shaderManager = nullptr;
 	std::unique_ptr<SceneManager> m_sceneManager = nullptr;
 	//std::unique_ptr<InputManager> m_inputManager;

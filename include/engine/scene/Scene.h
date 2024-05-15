@@ -5,11 +5,12 @@
 //#include <GLFW/glfw3.h>
 #include "managers/ShaderManager.h"
 
+struct GLFWwindow;
 class Camera;
 
 class Scene {
 public:
-	Scene(const std::shared_ptr<sf::Window> window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
+	Scene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 		: m_window(window), m_shaderManager(shaderManager), m_camera(camera)
 	{
 	}
