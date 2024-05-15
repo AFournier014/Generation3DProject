@@ -7,7 +7,8 @@
 #include "Light.h"
 #include <RenderConfig.h>
 
-#include "terrain/chunk.h"
+#include "Renderer.h"
+#include "terrain/Chunk.h"
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)
@@ -83,7 +84,7 @@ void TerrainScene::render()
     for (auto const& chunk : m_chunks)
     {
         if (chunk && chunk->getMesh())
-            chunk->getMesh()->render(*m_shaderManager->getCubeShader());
+            chunk->getMesh()->render(m_shaderManager->getCubeShader());
     }
 }
 

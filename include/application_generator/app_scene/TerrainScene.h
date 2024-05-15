@@ -6,9 +6,10 @@
 #include "memory"
 #include "Texture.h"
 #include "vector"
-#include <GLFW/glfw3.h>
 #include "Meshs/Mesh.h"
+#include "terrain/Chunk.h"
 
+class Chunk;
 class Shader;
 class ShaderManager;
 class Camera;

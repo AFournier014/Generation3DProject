@@ -4,7 +4,6 @@
 #include "inputs/InputObserver.h"
 #include <memory>
 #include "Camera.h"
-#include <GLFW/glfw3.h>
 #include <unordered_set>
 #include <map>
 
@@ -36,14 +35,14 @@ public:
 	{
 		if (m_toggleRotation)
 		{
-			//on calcule l'offset depuis la dernière position connue de la souris 
+			//on calcule l'offset depuis la derniï¿½re position connue de la souris 
 			double xOffset = xpos - m_lastX;
 			double yOffset = ypos - m_lastY;
 
-			//On met à jour l'orientation de la cam en fonction de l'offset
+			//On met ï¿½ jour l'orientation de la cam en fonction de l'offset
 			m_camera->mouseMoved(xOffset, yOffset);
 
-			//On met à jour les dernières positions connues de la souris
+			//On met ï¿½ jour les derniï¿½res positions connues de la souris
 			m_lastX = xpos;
 			m_lastY = ypos;
 		}
@@ -58,7 +57,7 @@ public:
 			m_toggleRotation = true;
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-			//On reset la dernière position de la souris
+			//On reset la derniï¿½re position de la souris
 			double xpos, ypos;
 			glfwGetCursorPos(window, &xpos, &ypos);
 			m_lastX = xpos;
