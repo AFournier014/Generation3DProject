@@ -11,6 +11,7 @@ class Camera;
 class SceneManager;
 class InputManager;
 class ShaderManager;
+class ImGuiManager;
 
 class Application
 {
@@ -42,6 +43,7 @@ private:
 
 	std::shared_ptr<Camera> m_camera;
 	std::unique_ptr<InputManager> m_inputManager;
+	std::unique_ptr<ImGuiManager> m_imGuiManager;
 };
 
 #endif // APPLICATION_H

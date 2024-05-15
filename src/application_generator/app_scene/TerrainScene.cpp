@@ -78,7 +78,7 @@ void TerrainScene::initShader(const std::shared_ptr<Shader> shader) const
     if (shader && shader->GetRendererID() != 0 && m_camera)
     {
         shader->Bind();
-        shader->SetUniformMat4f("ViewProjection", m_camera->GetProjectionViewMatrix());
-        shader->SetUniform3f("cameraPositionWorld", m_camera->GetPosition());
+        shader->SetUniformMat4f("ViewProjection", m_camera->getProjectionViewMatrix());
+        shader->SetUniform3f("cameraPositionWorld", m_camera->getPosition());
     }
 }

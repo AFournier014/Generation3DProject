@@ -10,7 +10,7 @@ class InputManager
 {
 public:
     InputManager() = default;
-	void Init(GLFWwindow* window);
+	void Initialize(GLFWwindow* window);
     void subscribe(std::shared_ptr<InputObserver> observer);
     void unsubscribe(std::shared_ptr<InputObserver> observer);
 

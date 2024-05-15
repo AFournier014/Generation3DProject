@@ -28,14 +28,20 @@ public:
 	void update(float timestep);
 
 	void VectorsFromAngles();
-	Mat4<float> GetProjectionViewMatrix() const { return Projection * View; }
-	Vector3f GetPosition() const { return m_position; }
+
+
 	void SetProjection(float aspect, float fov, float near, float far);
 
 	void moveLeft(float multiplier = 1.f) { m_position += m_left * m_velocity * multiplier; }
 	void moveRight(float multiplier = 1.f) { m_position -= m_left * m_velocity * multiplier; }
 	void moveForward(float multiplier = 1.f) { m_position += m_forward * m_velocity * multiplier; }
 	void moveBackward(float multiplier = 1.f) { m_position -= m_forward * m_velocity * multiplier; }
+
+	Mat4<float> getProjectionViewMatrix() const { return Projection * View; }
+	Vector3f getPosition() const { return m_position; }
+	float& getSpeed() { return m_speed; }
+	float& getSensitivity() { return m_sensivity; }
+	float& getFov() { return m_fov; }
 
 	void toggleRotation() {};
 
