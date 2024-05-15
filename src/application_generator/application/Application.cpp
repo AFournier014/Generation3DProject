@@ -5,6 +5,11 @@
 #include <memory>
 #include <stdexcept>
 #include <camera/Camera.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <inputs/InputManager.h>
+#include <handler/CameraInputHandler.h>
 
 Application::Application() : m_shaderManager(std::make_unique<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())
@@ -46,10 +51,12 @@ Application::~Application()
 
 void Application::Run()
 {
-    double time = glfwGetTime();
+    float lastFrameTime = static_cast<float>(glfwGetTime());
     while (m_isRunning && !glfwWindowShouldClose(m_window))
     {
-        float deltaTime = static_cast<float>(glfwGetTime() - time);
+        float currentTime = static_cast<float>(glfwGetTime());
+        float deltaTime = currentTime - lastFrameTime;
+		lastFrameTime = currentTime;
         ProcessEvents();
         Update(deltaTime);
         Render();
@@ -66,9 +73,17 @@ void Application::Initialize()
     glEnable(GL_DEPTH_TEST);
 
     initShaders();
-
+    m_inputManager->Init(m_window);
 	bindInputs();
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+
 	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
+
+	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+	ImGui_ImplOpenGL3_Init("#version 130");
 }
 
 void Application::ProcessEvents()
@@ -78,12 +93,6 @@ void Application::ProcessEvents()
 	{
 		m_isRunning = false;
 	}
-	/*if (event.type == sf::Event::Resized)
-	{
-		glViewport(0, 0, event.size.width, event.size.height);
-		m_camera->InitProjection(static_cast<float>(event.size.width) / event.size.height, Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
-	}
-	m_inputManager->handle(event);*/
 }
 
 void Application::Update(float deltaTime) const
@@ -100,6 +109,25 @@ void Application::Render()
 
     glFlush();
 
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    {
+        ImGui::Begin("Controls");                          // Create a window called "Controls" and append into it.
+        ImGui::Text("This is some useful text.");
+        ImGui::Checkbox("Demo Window", &m_isRunning);
+
+        if (ImGui::Button("Generate mesh"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+        {
+            m_isRunning = false;
+        }
+
+        ImGui::End();
+    }
+
+    // Rendering
+    ImGui::Render();
+
     glfwSwapBuffers(m_window);
     glfwSwapInterval(1);
 }
@@ -108,6 +136,11 @@ void Application::Cleanup() const
 {
     glfwDestroyWindow(m_window);
     glfwTerminate();
+
+    //ImGui Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void Application::initShaders()
@@ -129,9 +162,6 @@ void Application::initTextures()
 
 void Application::bindInputs()
 {
-	m_inputManager->subscribe("MouseMoved", m_camera);
-	m_inputManager->subscribe("Z_KeyPressed", m_camera);
-	m_inputManager->subscribe("Q_KeyPressed", m_camera);
-	m_inputManager->subscribe("S_KeyPressed", m_camera);
-	m_inputManager->subscribe("D_KeyPressed", m_camera);
+	std::shared_ptr<CameraInputHandler> cameraInputHandler = std::make_shared<CameraInputHandler>(m_camera);
+	m_inputManager->subscribe(cameraInputHandler);
 }

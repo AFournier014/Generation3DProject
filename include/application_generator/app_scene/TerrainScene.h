@@ -8,7 +8,6 @@
 #include "vector"
 #include <GLFW/glfw3.h>
 
-#include "managers/InputManager.h"
 
 class Mesh;
 class Shader;
