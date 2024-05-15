@@ -10,7 +10,8 @@
 #include "Meshs/Mesh.h"
 
 class Shader;
-class ShaderManager;	
+class ShaderManager;
+class Chunk;
 
 class TerrainScene : public Scene
 {
@@ -51,6 +52,7 @@ public:
 private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
+	std::vector<std::unique_ptr<Chunk>> m_chunks;
 	std::vector<std::shared_ptr<Texture>> m_textures;
 };
 
