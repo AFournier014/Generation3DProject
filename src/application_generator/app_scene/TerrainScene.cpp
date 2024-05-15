@@ -5,7 +5,8 @@
 #include <Transform.h>
 #include <Camera.h>
 
-#include "terrain/chunk.h"
+#include "Renderer.h"
+#include "terrain/Chunk.h"
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)
@@ -50,8 +51,6 @@ void TerrainScene::render()
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     GLCall(glClearColor(0.f, 0.f, 0.f, 1.f));
 
-    m_viewMatrix = Mat4f::RotationX(-m_beta) * Mat4f::RotationY(-m_alpha) * Mat4f::Translation(cameraPosition);
-
     initShaders();
 
     for (auto const& mesh : m_meshes)
@@ -62,7 +61,7 @@ void TerrainScene::render()
     for (auto const& chunk : m_chunks)
     {
         if (chunk && chunk->getMesh())
-            chunk->getMesh()->render(*m_shaderManager->getCubeShader());
+            chunk->getMesh()->render(m_shaderManager->getCubeShader());
     }
 }
 

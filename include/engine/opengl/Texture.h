@@ -1,10 +1,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <GL/glew.h>
 #include <SFML/Graphics/Image.hpp>
 #include <filesystem>
-#include <Renderer.h>
 
 class Texture
 {
@@ -23,7 +21,7 @@ public:
 	inline std::filesystem::path GetFilePath() const { return m_filePath; }
 
 private:
-	GLuint m_rendererID;
+	unsigned int m_rendererID;
 	std::filesystem::path m_filePath;
 	sf::Image image;
 	int m_width = 0;
