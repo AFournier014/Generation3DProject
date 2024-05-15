@@ -14,7 +14,7 @@ public:
 	using Mat4f = Mat4<float>;
 	using vertex_type = Vertex<float>;
 
-	Cube(const Transform<float>& transform, const Texture& texture)
+	Cube(const Transform<float>& transform, const std::shared_ptr<Texture> texture)
 		: RectangleShape(transform, texture)
 	{
 	}

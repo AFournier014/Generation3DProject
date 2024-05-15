@@ -14,7 +14,12 @@ void TerrainScene::init()
 {
     // Temporaire pour tester
     Transform transform(Vec3f(0.0f, 0.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
-    addMesh<Cube>(transform, Texture(Config::TEXTURES_PATH + "texture.png"));
+	Transform transform2(Vec3f(2.0f, 3.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
+
+	auto texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
+	m_textures.push_back(texture);
+	addMesh<Cube>(transform, texture);
+	addMesh<Cube>(transform2, texture);
 
     
     //sf::Mouse::setPosition(sf::Vector2i(Config::WindowSize().x / 2, Config::WindowSize().y / 2), *m_window);
@@ -45,7 +50,7 @@ void TerrainScene::render()
 
     for (auto const& mesh : m_meshes)
     {
-        mesh->render(*m_shaderManager->getCubeShader());
+        mesh->render(m_shaderManager->getCubeShader());
     }
 }
 

@@ -14,6 +14,7 @@ public:
 	void changeScene(std::unique_ptr<Scene> scene);
 	void update(float deltaTime);
 	void render();
+	void release();
 
 private:
 	std::stack<std::unique_ptr<Scene>> m_scenes;

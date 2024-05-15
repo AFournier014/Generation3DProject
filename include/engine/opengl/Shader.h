@@ -21,6 +21,8 @@ public:
 	void Bind() const;
 	void Unbind() const;
 
+	void Release() const;
+
 	// Set uniforms
 	void SetUniform1i(const std::string& name, int value) const;
 	void SetUniform1f(const std::string& name, float value) const;
