@@ -17,6 +17,7 @@ public:
     int& get_octaves() { return octaves; }
     float& get_persistance() { return persistance; }
     float& get_lacunarity() { return lacunarity; }
+    int& get_seed() { return seed; }
     
     void generate_chunk_preview() const;
     void render_preview_chunk();
@@ -32,6 +33,7 @@ private:
     int octaves = 8;
     float persistance = 0.5f;
     float lacunarity = 1.5f;
+    int seed = 0;
 #pragma endregion // TerrainSettings
 };
 
