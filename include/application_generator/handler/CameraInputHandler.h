@@ -98,22 +98,26 @@ public:
 
 	void updateCameraMovement()
 	{
+		Vector3f movement(0.f, 0.f, 0.f);
+
 		if (m_keyStates[forward])
 		{
-			m_camera->moveForward(m_multiplier);
+			movement += m_camera->getFront();
 		}
 		if (m_keyStates[backward])
 		{
-			m_camera->moveBackward(m_multiplier);
+			movement -= m_camera->getFront();
 		}
 		if (m_keyStates[left])
 		{
-			m_camera->moveLeft(m_multiplier);
+			movement += m_camera->getLeft();
 		}
 		if (m_keyStates[right])
 		{
-			m_camera->moveRight(m_multiplier);
+			movement -= m_camera->getLeft();
 		}
+
+		m_camera->setDirection(movement * m_multiplier);
 	}
 
 private:

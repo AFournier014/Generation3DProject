@@ -6,7 +6,7 @@ void CameraWidget::CreateCameraWidgets(std::shared_ptr<Camera> camera) {
 
     // Camera control widgets
     ImGui::Text("Position: (%.2f, %.2f, %.2f)", camera->getPosition().x(), camera->getPosition().y(), camera->getPosition().z());
-    ImGui::Text("Front: (%.2f, %.2f, %.2f)", camera->getForward().x(), camera->getForward().y(), camera->getForward().z());
+    ImGui::Text("Front: (%.2f, %.2f, %.2f)", camera->getFront().x(), camera->getFront().y(), camera->getFront().z());
     ImGui::Text("Pitch: %.2f | Yaw: %.2f%", camera->getPitch(), camera->getYaw());
 
     ImGui::SliderFloat("Speed", &camera->getSpeed(), 10.f, 150.f);

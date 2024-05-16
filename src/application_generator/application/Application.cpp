@@ -50,6 +50,7 @@ Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
 
 	// Configuration de la caméra et de l'inputManager
     m_camera = std::make_shared<Camera>(Vec3f(Config::CameraInitialPosition()), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+    m_camera->setRotation(Config::CameraInitialRotation());
 	m_inputManager = std::make_unique<InputManager>();
 
 	Initialize();
