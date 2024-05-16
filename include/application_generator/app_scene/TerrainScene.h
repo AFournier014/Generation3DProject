@@ -7,17 +7,16 @@
 #include "Texture.h"
 #include "vector"
 #include "Meshs/Mesh.h"
-#include "terrain/Chunk.h"
+#include "terrain/MapGenerator.h"
 
-class Chunk;
+class TerrainWidget;
 class Shader;
 class ShaderManager;
 class Camera;
 class Skyphere;
 class DirectionalLight;
 struct OpticalProperties;
-class Chunk;
-class TerrainWidget;
+
 class TerrainScene : public Scene
 {
 public:
@@ -56,9 +55,8 @@ public:
 	}
 
 private:
-	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
-	std::vector<std::unique_ptr<Chunk>> m_chunks;
+	std::unique_ptr<MapGenerator> m_mapGenerator;
 	std::unique_ptr<Skyphere> m_skyphere;
 	std::shared_ptr<DirectionalLight> m_directionalLight;
 	std::vector<std::shared_ptr<Texture>> m_textures;

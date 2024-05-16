@@ -6,10 +6,10 @@
 #include "sky_sphere/Skyphere.h"
 #include "lights/Light.h"
 #include <RenderConfig.h>
+#include "terrain/Chunk.h"
 
 #include "Renderer.h"
-#include "terrain/Chunk.h"
-#include <TerrainWidget.h>
+#include "TerrainWidget.h"
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 	: Scene(window, shaderManager, camera)
@@ -53,8 +53,8 @@ void TerrainScene::init()
 	renderConfigTerrain->directionalLight = m_directionalLight;
 	renderConfigTerrain->opticalProperties = m_opticalProperties;
 
-	auto* chunk = new Chunk(241, renderConfigTerrain);
-	m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
+	m_mapGenerator = std::make_unique<MapGenerator>(renderConfigTerrain);
+	m_mapGenerator->generate_chunk_preview();
 
 	m_textures.push_back(renderConfigCube->texture);
 	m_textures.push_back(terrainTexture);
@@ -93,11 +93,7 @@ void TerrainScene::render()
 	}
 	m_skyphere->render(m_shaderManager->getSkyboxShader());
 
-	for (auto const& chunk : m_chunks)
-	{
-		if (chunk && chunk->getMesh())
-			chunk->getMesh()->render();
-	}
+	m_mapGenerator->render_preview_chunk();
 }
 
 void TerrainScene::initShaders() const
