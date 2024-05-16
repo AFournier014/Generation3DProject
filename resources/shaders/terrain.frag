@@ -37,7 +37,7 @@ void main()
 
 	vec3 viewDirection = normalize(cameraPositionWorld - positionWorld);
 	vec3 reflectDirection = reflect(-viewDirection, normalWorld);
-	float spec = pow(max(0, dot(reflectDirection, lightDirection)), material.shininess);
+	float spec = pow(max(0, -dot(reflectDirection, lightDirection)), material.shininess);
 	vec4 specular = material.specular * spec * directionalLights.color;
 
 	outFragColor = ambiant + diffuse + specular;

@@ -10,9 +10,6 @@
 #include "Renderer.h"
 #include "terrain/Chunk.h"
 
-#include "Renderer.h"
-#include "terrain/Chunk.h"
-
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 	: Scene(window, shaderManager, camera)
 {
@@ -25,7 +22,7 @@ void TerrainScene::init()
 
 	auto terrainTexture = std::make_shared<Texture>(Config::TEXTURES_PATH + "terrain.png");
 
-	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(1.f, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
+	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(1, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
 	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 1.f, 32.f);
 
 	// Temporaire pour tester
