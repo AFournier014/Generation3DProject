@@ -14,6 +14,7 @@
 #include <CameraWidget.h>
 #include <TerrainWidget.h>
 #include "sky_sphere/Skyphere.h"
+#include <AppWidget.h>
 
 Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())
@@ -48,7 +49,8 @@ Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
     glViewport(0, 0, width, height);
 
 	// Configuration de la caméra et de l'inputManager
-	m_camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+    m_camera = std::make_shared<Camera>(Vec3f(Config::CameraInitialPosition()), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+    m_camera->setRotation(Config::CameraInitialRotation());
 	m_inputManager = std::make_unique<InputManager>();
 
 	Initialize();
@@ -70,10 +72,10 @@ void Application::Run()
     while (m_isRunning && !glfwWindowShouldClose(m_window))
     {
         float currentTime = static_cast<float>(glfwGetTime());
-        float deltaTime = currentTime - lastFrameTime;
+        m_deltaTime = currentTime - lastFrameTime;
 		lastFrameTime = currentTime;
         ProcessEvents();
-        Update(deltaTime);
+        Update(m_deltaTime);
         Render();
     }
 }
@@ -93,6 +95,9 @@ void Application::Initialize()
     m_inputManager->Initialize(m_window);
     m_imGuiManager->Initialize();
 	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
+
+    m_cameraWidget = std::make_unique<CameraWidget>(m_camera);
+    m_appWidget = std::make_unique<AppWidget>();
 
     bindInputs();
 }
@@ -116,17 +121,16 @@ void Application::Render()
     // Nettoyage de la fen�tre
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_sceneManager->render();
+
 
     glFlush();
 
     m_imGuiManager->BeginFrame();
 
-    CameraWidget cameraWidget = CameraWidget();
-	TerrainWidget terrainWidget = TerrainWidget();
+    m_sceneManager->render();
 
-	terrainWidget.CreateTerrainWidgets();
-	cameraWidget.CreateCameraWidgets(m_camera);
+	m_cameraWidget->CreateCameraWidgets(m_camera);
+    m_appWidget->CreateAppWidgets(m_deltaTime);
 
     m_imGuiManager->EndFrame();
 
@@ -168,6 +172,13 @@ void Application::initTextures()
 
 void Application::bindInputs()
 {
-	std::shared_ptr<CameraInputHandler> cameraInputHandler = std::make_shared<CameraInputHandler>(m_camera);
-	m_inputManager->subscribe(cameraInputHandler);
+	std::unique_ptr<CameraInputHandler> cameraInputHandler = std::make_unique<CameraInputHandler>(m_camera);
+	m_inputManager->subscribe(std::move(cameraInputHandler));
 }
+
+void Application::setCameraRatio(int width, int height)
+{
+    m_camera->setAspectRatio(static_cast<float>(width) / static_cast<float>(height));
+}
+
+

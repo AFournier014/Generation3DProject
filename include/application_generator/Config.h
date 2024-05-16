@@ -35,9 +35,12 @@ namespace Config
 	constexpr float CameraSpeed = 0.1f;
 	constexpr float CameraRotationSpeed = 0.1f;
 	
-	constexpr float CameraInitialPositionX = 0.f;
-	constexpr float CameraInitialPositionY = 0.f;
-	constexpr float CameraInitialPositionZ = 0.f;
+	constexpr float CameraInitialPositionX = 5.f;
+	constexpr float CameraInitialPositionY = 50.f;
+	constexpr float CameraInitialPositionZ = -5.f;
+
+	constexpr float CameraInitialYaw = -0.5f;
+	constexpr float CameraInitialPitch = 7.f;
 
 	inline const std::string SHADERS_PATH = "resources/shaders/";
 	inline const std::string ASSETS_PATH = "resources/assets/";
@@ -63,6 +66,11 @@ namespace Config
 	inline Vec3f CameraInitialPosition()
 	{
 		return Vec3f(CameraInitialPositionX, CameraInitialPositionY, CameraInitialPositionZ);
+	}
+
+	inline Vec2f CameraInitialRotation()
+	{
+		return Vec2f(CameraInitialPitch, CameraInitialYaw);
 	}
 
 	inline float GetAspectRatio()

@@ -1,5 +1,13 @@
 #include "inputs/InputManager.h"
 
+
+InputManager* s_instance = nullptr;
+
+InputManager::InputManager()
+{
+    s_instance = this;
+}
+
 void InputManager::Initialize(GLFWwindow* window)
 {
     glfwSetWindowUserPointer(window, this);
@@ -7,19 +15,12 @@ void InputManager::Initialize(GLFWwindow* window)
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 }
 
-void InputManager::subscribe(std::shared_ptr<InputObserver> observer)
+void InputManager::subscribe(std::unique_ptr<InputObserver> observer)
 {
 	//Add observer to the observers vector
-    m_observers.push_back(observer);
+    m_observers.push_back(std::move(observer));
 }
 
-void InputManager::unsubscribe(std::shared_ptr<InputObserver> observer)
-{
-    // Find and remove the observer from the observers vector
-    auto it = std::find(m_observers.begin(), m_observers.end(), observer);
-    if (it != m_observers.end()) {
-        m_observers.erase(it);
-    }
-}

@@ -1,6 +1,7 @@
 #pragma once
 #include <imgui.h>
-//#include "Terrain.h"
+#include "terrain/Chunk.h"
+
 class TerrainWidget 
 {
 public:
@@ -8,4 +9,7 @@ public:
 	~TerrainWidget() = default;
 
 	void CreateTerrainWidgets();
+
+private:
+
 };
