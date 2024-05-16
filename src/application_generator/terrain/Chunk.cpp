@@ -1,9 +1,8 @@
 #include "terrain/Chunk.h"
-
-#include <iostream>
-
 #include "Config.h"
 #include "terrain/PerlinNoise.h"
+#include <iostream>
+
 
 Chunk::Chunk(const int size, const std::shared_ptr<RenderConfig>& renderConfig)
 	: m_size(size), m_renderConfig(renderConfig)

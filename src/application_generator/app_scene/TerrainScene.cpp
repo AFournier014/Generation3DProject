@@ -4,7 +4,7 @@
 #include "managers/ShaderManager.h"
 #include <Camera.h>
 #include "sky_sphere/Skyphere.h"
-#include "Light.h"
+#include "lights/Light.h"
 #include <RenderConfig.h>
 
 #include "Renderer.h"

@@ -1,9 +1,9 @@
-#include "Meshs/Mesh.h"
+#include "meshs/Mesh.h"
 #include "Shader.h"
 #include <MathIncludes.h>
 #include "Renderer.h"
 #include "GL/glew.h"
-#include "Light.h"
+#include "lights/Light.h"
 #include "Texture.h"
 
 void Mesh::render()
