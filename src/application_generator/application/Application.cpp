@@ -95,6 +95,8 @@ void Application::Initialize()
     m_imGuiManager->Initialize();
 	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
 
+    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
+
     bindInputs();
 }
 
@@ -171,6 +173,19 @@ void Application::initTextures()
 
 void Application::bindInputs()
 {
-	std::shared_ptr<CameraInputHandler> cameraInputHandler = std::make_shared<CameraInputHandler>(m_camera);
-	m_inputManager->subscribe(cameraInputHandler);
+	std::unique_ptr<CameraInputHandler> cameraInputHandler = std::make_unique<CameraInputHandler>(m_camera);
+	m_inputManager->subscribe(std::move(cameraInputHandler));
 }
+
+void Application::setCameraRatio(int width, int height)
+{
+    m_camera->setAspectRatio(static_cast<float>(width) / static_cast<float>(height));
+}
+
+void Application::framebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+    window;
+    glViewport(0, 0, width, height);
+    /*m_camera->setAspectRatio(static_cast<float>(width) / static_cast<float>(height));*/
+}
+

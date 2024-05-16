@@ -47,7 +47,9 @@ public:
 	float& getSensitivity() { return m_sensivity; }
 
 	float& getFov() { return m_fov; }
+
 	void setFov(float fov) { m_fov = fov; updateProjectionMatrix();}
+	void setAspectRatio(float aspect) { m_aspectRatio = aspect; updateProjectionMatrix(); }
 
 	void toggleRotation() {};
 

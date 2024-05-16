@@ -16,21 +16,13 @@ public:
 	void onKeyPressed(int key, int scancode, int action, int mods) override
 	{
 		scancode;
-		m_multiplier = 1.f;
-		if (mods == GLFW_MOD_SHIFT)
-			m_multiplier = 3.f;
+		m_multiplier = mods == GLFW_MOD_SHIFT? 3.f : 1.f;
 
-		if (action == GLFW_PRESS)
-		{
-			m_keyStates[key] = true;
-		}
-		else if (action == GLFW_RELEASE) 
-		{
-			m_keyStates[key] = false;
-		}
-		updateCameraMovement();
-		
+		m_pendingKeyChanges.push_back(std::make_pair(key, action == GLFW_PRESS || action == GLFW_REPEAT));
+
+		scheduleBatchedProcessing();
 	};
+
 	void onMouseMoved(double xpos, double ypos) override
 	{
 		if (m_toggleRotation)
@@ -46,7 +38,6 @@ public:
 			m_lastX = xpos;
 			m_lastY = ypos;
 		}
-
 	}
 
 	void onMouseButtonPressed(GLFWwindow* window, int button, int action, int mods) override
@@ -76,6 +67,35 @@ public:
 		m_camera->mouseWheelMoved(xoffset, yoffset);
 	}
 
+	void onWindowResized(int width, int height) override
+	{
+		m_camera->setAspectRatio(static_cast<float>(width) / static_cast<float>(height));
+	}
+
+	void scheduleBatchedProcessing()
+	{
+		// Implement logic to process pending changes in batches
+		processPendingChanges();
+	}
+
+	void processPendingChanges()
+	{
+		// Process all pending key state changes
+		std::for_each(m_pendingKeyChanges.begin(), m_pendingKeyChanges.end(), [&](const auto& change) {
+			int key = change.first;
+			bool state = change.second;
+
+			// Update key state in the map
+			m_keyStates[key] = state;
+			});
+
+		// Clear the pending changes buffer after processing
+		m_pendingKeyChanges.clear();
+
+		// Update camera movement based on the updated key states
+		updateCameraMovement();
+	}
+
 	void updateCameraMovement()
 	{
 		if (m_keyStates[forward])
@@ -99,6 +119,9 @@ public:
 private:
 	std::shared_ptr<Camera> m_camera;
 	std::map<int, bool> m_keyStates{ {forward, false}, {backward, false}, {left, false}, {right, false} };
+
+	std::vector<std::pair<int, bool>> m_pendingKeyChanges;
+
 	float m_multiplier = 1.f;
 	bool m_toggleRotation = false;
 

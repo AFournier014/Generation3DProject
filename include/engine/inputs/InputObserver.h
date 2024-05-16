@@ -8,6 +8,7 @@ public:
 	virtual void onMouseButtonPressed(GLFWwindow* window, int button, int action, int mods) = 0;
 	virtual void onMouseMoved( double xpos, double ypos) = 0;
 	virtual void onScroll(double xoffset, double yoffset) = 0;
+	virtual void onWindowResized(int width, int height) = 0;
 };
 
 #endif // !INPUT_OBSERVER_H

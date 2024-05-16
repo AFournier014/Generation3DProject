@@ -31,10 +31,12 @@ private:
 	void initShaders();
 	void initTextures();
 	void bindInputs();
+	void setCameraRatio(int width, int height);
+
+	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 	std::shared_ptr<ShaderManager> m_shaderManager = nullptr;
 	std::unique_ptr<SceneManager> m_sceneManager = nullptr;
-	//std::unique_ptr<InputManager> m_inputManager;
 
 	Vec2u m_windowSize;
 	std::string m_applicationName;
