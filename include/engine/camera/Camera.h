@@ -42,12 +42,18 @@ public:
 
 	float getPitch() const { return m_pitch; }
 	float getYaw() const { return m_yaw; }
+
 	float& getSpeed() { return m_speed; }
 	float& getSensitivity() { return m_sensivity; }
 	float& getFov() { return m_fov; }
+	float& getNearPlane() { return m_near; }
+	float& getFarPlane() { return m_far; }
 
 	void setFov(float fov) { m_fov = fov; updateProjectionMatrix();}
 	void setAspectRatio(float aspect) { m_aspectRatio = aspect; updateProjectionMatrix(); }
+	void setNearPlane(float near) { m_near = near; updateProjectionMatrix(); }
+	void setFarPlane(float far) { m_far = far; updateProjectionMatrix(); }
+
 	void setRotation(Vector2f rotation) { m_pitch = rotation.x; m_yaw = rotation.y; VectorsFromAngles(); }
 	void toggleRotation() {};
 
@@ -66,7 +72,6 @@ private:
 	float m_near;
 	float m_far;
 	float m_aspectRatio;
-
 
 	//Vertical motion
 	double m_timeBeforeStoppingVerticalMotion;

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Camera::Camera(const Vector3f& position = Vector3f(0, 0, 0), const float aspect = 1.f, const float fov = 70.0f, const float near = 0.1f, const float far = 1000.f)
-	: m_speed(30.f), m_sensivity(0.005f), m_pitch(.0f), m_yaw(.0f), m_position(position)
+	: m_speed(50.f), m_sensivity(0.005f), m_pitch(.0f), m_yaw(.0f), m_position(position)
 {
 	Projection = Mat4<float>::Identity();
 	m_forward = Vector3f(0, 0, 1);

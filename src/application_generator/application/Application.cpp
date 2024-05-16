@@ -96,6 +96,9 @@ void Application::Initialize()
     m_imGuiManager->Initialize();
 	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
 
+    m_cameraWidget = std::make_unique<CameraWidget>(m_camera);
+    m_appWidget = std::make_unique<AppWidget>();
+
     bindInputs();
 }
 
@@ -125,11 +128,9 @@ void Application::Render()
     m_imGuiManager->BeginFrame();
 
     m_sceneManager->render();
-    CameraWidget cameraWidget = CameraWidget();
-    AppWidget applicationWidget = AppWidget();
 
-	cameraWidget.CreateCameraWidgets(m_camera);
-    applicationWidget.CreateAppWidgets(m_deltaTime);
+	m_cameraWidget->CreateCameraWidgets(m_camera);
+    m_appWidget->CreateAppWidgets(m_deltaTime);
 
     m_imGuiManager->EndFrame();
 
