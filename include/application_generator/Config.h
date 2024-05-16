@@ -1,8 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "Vector.h"
-#include "Matrice.h"
+#include "MathIncludes.h"
 #include <string>
 #include <GLFW/glfw3.h>
 
@@ -11,6 +10,7 @@ using Vec2i = Vector2D<int>;
 using Vec2f = Vector2D<float>;
 using Vec2u = Vector2D<unsigned int>;
 using Vec3f = Vector3D<float>;
+using Transformf = Transform<float>;
 
 namespace Config
 {

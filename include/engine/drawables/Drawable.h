@@ -10,7 +10,7 @@ class Drawable
 public:
 	virtual ~Drawable() = default;
 	virtual void update() = 0;
-	virtual void render(std::shared_ptr<Shader> shader) = 0;
+	virtual void render() = 0;
 	virtual void release() = 0;
 };
 

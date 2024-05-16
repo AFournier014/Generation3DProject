@@ -6,7 +6,7 @@
 template<typename T>
 struct Transform
 {
-	Transform(const Vector3D<T>& position_ = Vector3D<T>(), const Vector3D<T>& rotation_ = Vector3D<T>(), const Vector3D<T>& scale_ = Vector3D<T>())
+	Transform(const Vector3D<T>& position_ = Vector3D<T>(), const Mat4<T>& rotation_ = Mat4<T>(), const Vector3D<T>& scale_ = Vector3D<T>())
 		: position(position_), rotation(rotation_), scale(scale_)
 	{}
 
@@ -66,7 +66,7 @@ struct Transform
 	}
 
 	Vector3D<T> position;
-	Vector3D<T> rotation;
+	Mat4<T> rotation;
 	Vector3D<T> scale;
 };
 

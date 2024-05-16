@@ -2,9 +2,10 @@
 #include "Meshs/simple_shapes/Cube.h"
 #include "Config.h"
 #include "managers/ShaderManager.h"
-#include <Transform.h>
 #include <Camera.h>
 #include "sky_sphere/Skyphere.h"
+#include "Light.h"
+#include <RenderConfig.h>
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)
@@ -15,18 +16,33 @@ void TerrainScene::init()
 {
 	auto skySphereTexture = std::make_shared<Texture>(Config::TEXTURES_PATH + "Skysphere.png");
 	m_skyphere = std::make_unique<Skyphere>(skySphereTexture);
+    
+	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(0.f, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
+	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 1.f, 32.f);
 
     // Temporaire pour tester
-    Transform transform(Vec3f(0.0f, 0.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
-	Transform transform2(Vec3f(2.0f, 3.0f, -10.0f), Vec3f(0.0f, 0.0f, 0.0f), Vec3f(1.0f, 1.0f, 1.0f));
+	Transformf transform(Vec3f(0.0f, 0.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
+	Transformf transform2(Vec3f(2.0f, 3.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
 
-	auto texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
-	m_textures.push_back(texture);
-	addMesh<Cube>(transform, texture);
-	addMesh<Cube>(transform2, texture);
+	auto renderConfigCube = std::make_shared<RenderConfig>();
+    renderConfigCube->transform = transform;
+    renderConfigCube->texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
+    renderConfigCube->shader = m_shaderManager->getCubeShader();
+    renderConfigCube->directionalLight = m_directionalLight;
+	renderConfigCube->opticalProperties = m_opticalProperties;
 
-    
-    //sf::Mouse::setPosition(sf::Vector2i(Config::WindowSize().x / 2, Config::WindowSize().y / 2), *m_window);
+    auto renderConfigCube2 = std::make_shared<RenderConfig>();
+	renderConfigCube2->transform = transform2;
+	renderConfigCube2->texture = renderConfigCube->texture;
+	renderConfigCube2->shader = m_shaderManager->getCubeShader();
+	renderConfigCube2->directionalLight = m_directionalLight;
+	renderConfigCube2->opticalProperties = m_opticalProperties;
+
+	m_textures.push_back(renderConfigCube->texture);
+
+	addMesh<Cube>(renderConfigCube);
+	addMesh<Cube>(renderConfigCube2);
+
     glfwSetCursorPos(m_window, static_cast<float>(Config::WindowSize().x) / 2, static_cast<float>(Config::WindowSize().y) / 2);
 }
 
@@ -54,7 +70,7 @@ void TerrainScene::render()
 
     for (auto const& mesh : m_meshes)
     {
-        mesh->render(m_shaderManager->getCubeShader());
+        mesh->render();
     }
 	m_skyphere->render(m_shaderManager->getSkyboxShader());
 }

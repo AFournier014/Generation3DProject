@@ -1,18 +1,24 @@
 #ifndef RENDER_CONFIG_H
 #define RENDER_CONFIG_H
 
-#include "MathIncludes.h"
-#include "Texture.h"
-#include "Shader.h"
-#include "memory"
+#include <memory>
+
+class Texture;
+class Shader;
+class DirectionalLight;
+class PointLight;
+struct OpticalProperties;
 
 struct RenderConfig
 {
 	RenderConfig() = default;
 
-	Transform<float> m_transform;
-	std::shared_ptr<Texture> m_texture;
-	std::shared_ptr<Shader> m_shader;
+	Transform<float> transform;
+	std::shared_ptr<Texture> texture;
+	std::shared_ptr<Shader> shader;
+	std::shared_ptr<DirectionalLight> directionalLight;
+	std::shared_ptr<PointLight> pointLight;
+	std::shared_ptr<OpticalProperties> opticalProperties;
 };
 
 #endif // RENDER_CONFIG_H

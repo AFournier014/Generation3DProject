@@ -5,10 +5,26 @@
 #include "MathIncludes.h"
 #include "Shader.h"
 
+struct OpticalProperties
+{
+	float ambient;
+	float diffuse;
+	float specular;
+	float shininess;
+
+	void setupUniforms(std::shared_ptr<Shader> shader) const
+	{
+		shader->SetUniform1f("material.ambient", ambient);
+		shader->SetUniform1f("material.diffuse", diffuse);
+		shader->SetUniform1f("material.specular", specular);
+		shader->SetUniform1f("material.shininess", shininess);
+	}
+};
+
 class Light
 {
 public:
-	virtual void setupUniforms(std::shared_ptr<Shader> shader, int index) = 0;
+	virtual void setupUniforms(std::shared_ptr<Shader> shader) = 0;
 };
 
 class DirectionalLight : public Light
@@ -18,7 +34,7 @@ public:
 		: direction(direction), color(color)
 	{}
 
-	void setupUniforms(std::shared_ptr<Shader> shader, int index) override
+	void setupUniforms(std::shared_ptr<Shader> shader) override
 	{
 		shader->SetUniform3f("directionalLights.direction", direction);
 		shader->SetUniform4f("directionalLights.color", color.r, color.g, color.b, color.a);
@@ -37,7 +53,7 @@ public:
 		: m_position(position), m_color(color), m_intensity(intensity)
 	{}
 
-	void setupUniforms(std::shared_ptr<Shader> shader, int index) override
+	void setupUniforms(std::shared_ptr<Shader> shader) override
 	{
 		shader->SetUniform3f("pointLights.position", m_position);
 		shader->SetUniform4f("pointLights.color", m_color.r, m_color.g, m_color.b, m_color.a);

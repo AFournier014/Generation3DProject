@@ -5,18 +5,18 @@
 #include <GL/glew.h>
 #include <MathIncludes.h>
 #include <Drawable.h>
-#include <Texture.h>
 #include <memory>
+#include <RenderConfig.h>
 
 class Shader;
 
 class Mesh : public Drawable
 {
 public:
-	explicit Mesh(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const std::shared_ptr<Texture> texture)
+	explicit Mesh(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const std::shared_ptr<RenderConfig> renderConfig)
 		: m_vertices(std::vector<Vertexf>(vertices))
 		, m_indices(std::vector<unsigned int>(indices))
-		, m_texture(texture)
+		, m_renderConfig(renderConfig)
 	{
 		load();
 	}
@@ -32,7 +32,7 @@ public:
 		// Nothing to do
 	}
 
-	void render(std::shared_ptr<Shader> shader) override;
+	void render() override;
 
 	void release() override
 	{
@@ -48,10 +48,10 @@ public:
 	void translate(const Vector3f& translation);
 	void scale(const Vector3f& scale);
 
-	void setLocation(const Vector3f& location) { m_location = location; }
-	Vector3f getLocation() const { return m_location; }
-	Vector3f getScale() const { return m_scale; }
-	Mat4f getRotation() const { return m_rotation; }
+	void setLocation(const Vector3f& location) { m_renderConfig->transform.position = location; }
+	Vector3f getLocation() const { return m_renderConfig->transform.position; }
+	Vector3f getScale() const { return m_renderConfig->transform.scale; }
+	Mat4f getRotation() const { return m_renderConfig->transform.rotation; }
 
 private:
 	void load();
@@ -62,14 +62,12 @@ private:
 
 	std::vector<Vertexf> m_vertices;
 	std::vector<unsigned int> m_indices;
-	std::shared_ptr<Texture> m_texture;
+	std::shared_ptr<RenderConfig> m_renderConfig;
+
 	GLuint m_vao = 0;
 	GLuint m_vbo = 0;
 	GLuint m_ebo = 0;
 
-	Vector3f m_location = { 0.f, 0.f, 0.f };
-	Mat4f m_rotation = Mat4f::Identity();
-	Vector3f m_scale = { 1.f, 1.f, 1.f };
 };
 
 #endif // !MESH_H

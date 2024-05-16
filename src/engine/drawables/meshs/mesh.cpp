@@ -1,39 +1,18 @@
-#include "meshs/Mesh.h"
+#include "Meshs/Mesh.h"
 #include "Shader.h"
 #include <MathIncludes.h>
 #include "Renderer.h"
 #include "GL/glew.h"
+#include "Light.h"
 
-using Mat4f = Mat4<float>;
-
-void Mesh::render(std::shared_ptr<Shader> shader)
+void Mesh::render()
 {
-	// Temporaire propriétés optiques de l'objet et de la lumière
-	struct OpticalProperties
-	{
-		float ambient = 0.3f;
-		float diffuse = 0.7f;
-		float specular = 1.f;
-		float shininess = 70.f;
-	} opticalProperties;
-
-	// Propriétés de la lumière directionnelle (temporaire)
-	struct DirectionalLight
-	{
-		Vector3f direction = { 0.f, -1.f, 0.f };
-		Color4f color = { 1.f, 1.f, 1.f, 1.f };
-	} directionalLight;
-
 	Mat4 M = getModelMatrix();
 
-	shader->Bind();
-	shader->SetUniformMat4f("model", M);
-	shader->SetUniform1f("material.ambient", opticalProperties.ambient);
-	shader->SetUniform1f("material.diffuse", opticalProperties.diffuse);
-	shader->SetUniform1f("material.specular", opticalProperties.specular);
-	shader->SetUniform1f("material.shininess", opticalProperties.shininess);
-	shader->SetUniform3f("light.direction", directionalLight.direction);
-	shader->SetUniform4f("light.color", directionalLight.color.r, directionalLight.color.g, directionalLight.color.b, directionalLight.color.a);
+	m_renderConfig->shader->Bind();
+	m_renderConfig->shader->SetUniformMat4f("model", M);
+	m_renderConfig->directionalLight->setupUniforms(m_renderConfig->shader);
+	m_renderConfig->opticalProperties->setupUniforms(m_renderConfig->shader);
 
 	GLCall(glBindVertexArray(m_vao));
 	GLCall(glDrawElements(GL_TRIANGLES, GLsizei(m_indices.size()), GL_UNSIGNED_INT, nullptr));
@@ -42,7 +21,7 @@ void Mesh::render(std::shared_ptr<Shader> shader)
 
 Mat4f Mesh::getModelMatrix() const
 {
-	return Mat4f::Translation(m_location) * m_rotation * Mat4f::Scale(m_scale);
+	return Mat4f::Translation(m_renderConfig->transform.position) * m_renderConfig->transform.rotation * Mat4f::Scale(m_renderConfig->transform.scale);
 }
 
 void Mesh::rotate(const Vector3f& axis, float angle)
@@ -50,38 +29,38 @@ void Mesh::rotate(const Vector3f& axis, float angle)
 	Vector3f normalizedAxis = axis;
 	normalizedAxis.Normalize();
 	Mat4f rotation = Mat4f::Rotation(Mat4f::Identity(), normalizedAxis, angle);
-	Mat4f toOrigin = Mat4f::Translation(-m_location);
-	Mat4f fromOrigin = Mat4f::Translation(m_location);
+	Mat4f toOrigin = Mat4f::Translation(-m_renderConfig->transform.position);
+	Mat4f fromOrigin = Mat4f::Translation(m_renderConfig->transform.position);
 
-	m_rotation = fromOrigin * rotation * toOrigin * m_rotation;
+	m_renderConfig->transform.rotation = fromOrigin * rotation * toOrigin * m_renderConfig->transform.rotation;
 }
 
 void Mesh::rotateX(float angle)
 {
 	Mat4f m = Mat4f::RotationX(angle);
-	m_rotation = m * m_rotation;
+	m_renderConfig->transform.rotation = m * m_renderConfig->transform.rotation;
 }
 
 void Mesh::rotateY(float angle)
 {
 	Mat4f m = Mat4f::RotationY(angle);
-	m_rotation = m * m_rotation;
+	m_renderConfig->transform.rotation = m * m_renderConfig->transform.rotation;
 }
 
 void Mesh::rotateZ(float angle)
 {
 	Mat4f m = Mat4f::RotationZ(angle);
-	m_rotation = m * m_rotation;
+	m_renderConfig->transform.rotation = m * m_renderConfig->transform.rotation;
 }
 
 void Mesh::translate(const Vector3f& translation)
 {
-	m_location += translation;
+	m_renderConfig->transform.position += translation;
 }
 
 void Mesh::scale(const Vector3f& scale)
 {
-	m_scale = scale;
+	m_renderConfig->transform.scale = scale;
 }
 
 void Mesh::load()
