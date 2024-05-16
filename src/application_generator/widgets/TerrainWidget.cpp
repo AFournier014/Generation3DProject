@@ -39,6 +39,10 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 	{
 		update = true;
 	}
+	if(ImGui::SliderInt("Seed", &mapGenerator->get_seed(), 0, 1000))
+	{
+		update = true;
+	}
 
 	if (m_autoGenerate && update)
 		mapGenerator->generate_chunk_preview();
