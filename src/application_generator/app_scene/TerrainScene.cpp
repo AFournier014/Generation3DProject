@@ -9,6 +9,7 @@
 #include "terrain/Chunk.h"
 
 #include "Renderer.h"
+#include "TerrainWidget.h"
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 	: Scene(window, shaderManager, camera)

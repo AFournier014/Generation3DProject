@@ -9,6 +9,7 @@
 #include "Meshs/Mesh.h"
 #include "terrain/MapGenerator.h"
 
+class TerrainWidget;
 class Shader;
 class ShaderManager;
 class Camera;
