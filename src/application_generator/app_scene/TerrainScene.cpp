@@ -9,6 +9,7 @@
 
 #include "Renderer.h"
 #include "terrain/Chunk.h"
+#include <TerrainWidget.h>
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 	: Scene(window, shaderManager, camera)
@@ -24,6 +25,7 @@ void TerrainScene::init()
 
 	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(1, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
 	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 1.f, 32.f);
+	m_terrainWidget = std::make_unique<TerrainWidget>();
 
 	// Temporaire pour tester
 	Transformf transform(Vec3f(0.0f, 0.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
@@ -84,7 +86,7 @@ void TerrainScene::render()
 	GLCall(glClearColor(0.f, 0.f, 0.f, 1.f));
 
 	initShaders();
-
+	m_terrainWidget->CreateTerrainWidgets();
 	for (auto const& mesh : m_meshes)
 	{
 		mesh->render();

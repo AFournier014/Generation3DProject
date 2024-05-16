@@ -17,7 +17,7 @@ class Skyphere;
 class DirectionalLight;
 struct OpticalProperties;
 class Chunk;
-
+class TerrainWidget;
 class TerrainScene : public Scene
 {
 public:
@@ -63,6 +63,7 @@ private:
 	std::shared_ptr<DirectionalLight> m_directionalLight;
 	std::vector<std::shared_ptr<Texture>> m_textures;
 	std::shared_ptr<OpticalProperties> m_opticalProperties;
+	std::unique_ptr<TerrainWidget> m_terrainWidget;
 };
 
 #endif // TERRAIN_SCENE_H

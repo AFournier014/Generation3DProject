@@ -60,10 +60,12 @@ private:
 	{
 		auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
 		if (inputManager) {
+			glViewport(0, 0, width, height);
 			for (const auto& observer : inputManager->m_observers) {
 				observer->onWindowResized(width, height);
 			}
 		}
+
 	}
 };
 

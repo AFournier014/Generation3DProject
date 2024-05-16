@@ -95,8 +95,6 @@ void Application::Initialize()
     m_imGuiManager->Initialize();
 	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
 
-    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
-
     bindInputs();
 }
 
@@ -119,17 +117,16 @@ void Application::Render()
     // Nettoyage de la fen�tre
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_sceneManager->render();
+
 
     glFlush();
 
     m_imGuiManager->BeginFrame();
 
+    m_sceneManager->render();
     CameraWidget cameraWidget = CameraWidget();
-	TerrainWidget terrainWidget = TerrainWidget();
     AppWidget applicationWidget = AppWidget();
 
-	terrainWidget.CreateTerrainWidgets();
 	cameraWidget.CreateCameraWidgets(m_camera);
     applicationWidget.CreateAppWidgets(m_deltaTime);
 
@@ -182,10 +179,4 @@ void Application::setCameraRatio(int width, int height)
     m_camera->setAspectRatio(static_cast<float>(width) / static_cast<float>(height));
 }
 
-void Application::framebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
-    window;
-    glViewport(0, 0, width, height);
-    /*m_camera->setAspectRatio(static_cast<float>(width) / static_cast<float>(height));*/
-}
 

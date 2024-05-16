@@ -33,8 +33,6 @@ private:
 	void bindInputs();
 	void setCameraRatio(int width, int height);
 
-	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
 	std::shared_ptr<ShaderManager> m_shaderManager = nullptr;
 	std::unique_ptr<SceneManager> m_sceneManager = nullptr;
 
