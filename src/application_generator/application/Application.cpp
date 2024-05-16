@@ -8,8 +8,11 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <imGui/ImGuiManager.h>
 #include <inputs/InputManager.h>
 #include <handler/CameraInputHandler.h>
+#include <CameraWidget.h>
+#include <TerrainWidget.h>
 
 Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())
@@ -18,26 +21,32 @@ Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
     {
         // Initialization failed
     }
+    int width, height;
+
+	// Configuration de la version d'OpenGL et ImGui
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
     m_applicationName = Config::ApplicationName;
     m_windowSize = Config::WindowSize();
 
+	// Création de la fenêtre
     m_window = glfwCreateWindow(m_windowSize.x, m_windowSize.y, m_applicationName.c_str(), nullptr, nullptr);
     if (!m_window)
     {
         glfwTerminate();
         throw std::runtime_error("Echec de la création de la fenêtre");
     }
+
+	//Contexte OpenGL et ImGui
     glfwMakeContextCurrent(m_window);
-    int width, height;
+
+    m_imGuiManager = std::make_unique<ImGuiManager>(m_window, "#version 430 core");
+
+	// Configuration de la fenêtre
     glfwGetFramebufferSize(m_window, &width, &height);
     glViewport(0, 0, width, height);
 
-	/*m_window->setVerticalSyncEnabled(true);
-	m_window->setActive(true);*/
-
+	// Configuration de la caméra et de l'inputManager
 	m_camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
 	m_inputManager = std::make_unique<InputManager>();
 
@@ -71,6 +80,7 @@ void Application::Run()
 void Application::Initialize()
 {
     glewExperimental = GL_TRUE;
+
     if (glewInit())
     {
         throw std::runtime_error("Echec de l'initialisation de GLEW");
@@ -78,17 +88,12 @@ void Application::Initialize()
     glEnable(GL_DEPTH_TEST);
 
     initShaders();
-    m_inputManager->Init(m_window);
-	bindInputs();
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-
+    m_inputManager->Initialize(m_window);
+    m_imGuiManager->Initialize();
 	m_sceneManager->pushScene(std::make_unique<TerrainScene>(m_window, m_shaderManager, m_camera));
 
-	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-	ImGui_ImplOpenGL3_Init("#version 130");
+    bindInputs();
 }
 
 void Application::ProcessEvents()
@@ -114,25 +119,17 @@ void Application::Render()
 
     glFlush();
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-    {
-        ImGui::Begin("Controls");                          // Create a window called "Controls" and append into it.
-        ImGui::Text("This is some useful text.");
-        ImGui::Checkbox("Demo Window", &m_isRunning);
+    m_imGuiManager->BeginFrame();
 
-        if (ImGui::Button("Generate mesh"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-        {
-            m_isRunning = false;
-        }
+    CameraWidget cameraWidget = CameraWidget();
+	TerrainWidget terrainWidget = TerrainWidget();
 
-        ImGui::End();
-    }
+	terrainWidget.CreateTerrainWidgets();
+	cameraWidget.CreateCameraWidgets(m_camera);
 
-    // Rendering
-    ImGui::Render();
+    m_imGuiManager->EndFrame();
 
+	// Swap buffers
     glfwSwapBuffers(m_window);
     glfwSwapInterval(1);
 }
@@ -145,9 +142,7 @@ void Application::Cleanup() const
     glfwTerminate();
 
     //ImGui Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+	m_imGuiManager->Shutdown();
 }
 
 void Application::initShaders()

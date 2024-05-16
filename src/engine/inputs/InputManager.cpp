@@ -1,6 +1,6 @@
 #include "inputs/InputManager.h"
 
-void InputManager::Init(GLFWwindow* window)
+void InputManager::Initialize(GLFWwindow* window)
 {
     glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, key_callback);
