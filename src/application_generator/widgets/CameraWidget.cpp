@@ -1,4 +1,4 @@
-#include "CameraWidget.h"
+#include "widgets/CameraWidget.h"
 #include "Config.h"
 
 CameraWidget::CameraWidget(std::shared_ptr<Camera> camera)

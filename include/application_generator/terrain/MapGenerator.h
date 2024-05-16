@@ -11,19 +11,24 @@ class MapGenerator
 public:
     MapGenerator(std::shared_ptr<RenderConfig> renderConfig);
     
-    bool& get_auto_update() { return auto_update; }
     float& get_height_multiplier() { return heightMultiplier; }
     float& get_scale() { return scale; }
     int& get_octaves() { return octaves; }
     float& get_persistance() { return persistance; }
     float& get_lacunarity() { return lacunarity; }
     int& get_seed() { return seed; }
+
+    void set_height_multiplier(float value) { heightMultiplier = value; }
+    void set_scale(float value) { scale = value; }
+    void set_octaves(int value) { octaves = value; }
+    void set_persistance(float value) { persistance = value; }
+    void set_lacunarity(float value) { lacunarity = value; }
     
     void generate_chunk_preview() const;
     void render_preview_chunk();
 
 private:
-    std::unique_ptr<Chunk> m_chunk_previw;
+    std::unique_ptr<Chunk> m_chunk_preview;
     std::shared_ptr<RenderConfig> renderConfig;
     
 #pragma region TerrainSettings

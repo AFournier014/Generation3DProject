@@ -8,6 +8,7 @@
 #include "vector"
 #include "Meshs/Mesh.h"
 #include "terrain/MapGenerator.h"
+#include <widgets/LightWidget.h>
 
 class TerrainWidget;
 class Shader;
@@ -56,12 +57,14 @@ public:
 
 private:
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
-	std::unique_ptr<MapGenerator> m_mapGenerator;
+	std::shared_ptr<MapGenerator> m_mapGenerator;
 	std::unique_ptr<Skyphere> m_skyphere;
 	std::shared_ptr<DirectionalLight> m_directionalLight;
 	std::vector<std::shared_ptr<Texture>> m_textures;
 	std::shared_ptr<OpticalProperties> m_opticalProperties;
+
 	std::unique_ptr<TerrainWidget> m_terrainWidget;
+	std::unique_ptr<LightWidget> m_lightWidget;
 };
 
 #endif // TERRAIN_SCENE_H
