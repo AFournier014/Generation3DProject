@@ -18,7 +18,7 @@ struct HeightMap
 class Chunk
 {
 public:
-    Chunk(int size, const Vector3D<float>& position);
+    Chunk(int size, const std::shared_ptr<RenderConfig>& renderConfig);
     Mesh* getMesh() const { return m_mesh; }
     
     bool& get_auto_update() { return auto_update; }
@@ -38,6 +38,7 @@ private:
     Mesh* m_mesh;
     int m_size;
     Vector3D<float> m_position;
+    std::shared_ptr<RenderConfig> m_renderConfig;
 
 #pragma region TerrainSettings
     bool auto_update = true;

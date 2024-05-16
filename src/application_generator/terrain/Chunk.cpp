@@ -30,12 +30,14 @@ void Chunk::generate_mesh(int chunkSize, Vector3D<float> pos)
                     static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX,
                     static_cast<float>(rand()) / RAND_MAX
                 };
+            float u = static_cast<float>(i) / static_cast<float>(chunkSize) * 5;
+            float v = static_cast<float>(j) / static_cast<float>(chunkSize) * 5;
             float height = height_map[i][j];
             // TODO: remove log
             // std::cout << "Height: " << height << std::endl;
             Vertexf vertex = {
                 {pos.x() + i, pos.y() + height, pos.z() - j}, {0, 1, 0}, color,
-                {0, 0}
+                {u, v}
             };
             vertices.push_back(vertex);
         }
@@ -62,7 +64,7 @@ void Chunk::generate_mesh(int chunkSize, Vector3D<float> pos)
         }
     }
 
-    //recalculate_normals(vertices, indices);
+    recalculate_normals(vertices, indices);
 
 
 	  m_mesh = new Mesh(vertices, indices, m_renderConfig);
@@ -76,7 +78,7 @@ void Chunk::recalculate_normals(std::vector<Vertexf>& vertices, const std::vecto
         Vector3D<float> v1 = vertices[indices[i + 1]].position;
         Vector3D<float> v2 = vertices[indices[i + 2]].position;
 
-        Vector3D<float> normal = (v1 - v0).CrossProduct(v2 - v0).Normalize();
+        Vector3D<float> normal = -(v1 - v0).CrossProduct(v2 - v0).Normalize();
 
         vertices[indices[i]].normal = normal;
         vertices[indices[i + 1]].normal = normal;
