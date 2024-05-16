@@ -44,6 +44,8 @@ private:
 	std::shared_ptr<Camera> m_camera;
 	std::unique_ptr<InputManager> m_inputManager;
 	std::unique_ptr<ImGuiManager> m_imGuiManager;
+
+	float m_deltaTime = 0.0f;
 };
 
 #endif // APPLICATION_H

@@ -5,17 +5,20 @@ void CameraWidget::CreateCameraWidgets(std::shared_ptr<Camera> camera) {
     ImGui::Begin("Camera Controls");
 
     // Camera control widgets
-    ImGui::Text("Camera Position: (%.2f, %.2f, %.2f)", camera->getPosition().x(), camera->getPosition().y(), camera->getPosition().z());
+    ImGui::Text("Position: (%.2f, %.2f, %.2f)", camera->getPosition().x(), camera->getPosition().y(), camera->getPosition().z());
+    ImGui::Text("Front: (%.2f, %.2f, %.2f)", camera->getForward().x(), camera->getForward().y(), camera->getForward().z());
+    ImGui::Text("Pitch: %.2f | Yaw: %.2f%", camera->getPitch(), camera->getYaw());
 
-    ImGui::SliderFloat("Camera Speed", &camera->getSpeed(), 10.f, 100.f);
-	ImGui::SliderFloat("Camera Sensitivity", &camera->getSensitivity(), 0.001f, .01f);
-
-	ImGui::Text("Camera FOV", camera->getFov());
+    ImGui::SliderFloat("Speed", &camera->getSpeed(), 10.f, 150.f);
+	ImGui::SliderFloat("Sensitivity", &camera->getSensitivity(), 0.001f, .01f);
 
     if (ImGui::SliderFloat("FOV", &camera->getFov(), 10.f*3.14f/180.f, 120.f * 3.14f / 180.f))
     {
         camera->updateProjectionMatrix();
     }
+    ImGui::SameLine();
+    ImGui::Text("%.1f", camera->getFov() * 180.f / 3.14f);
+
 	if (ImGui::Button("Reset Default"))
     {
 		float defaultFOV = Config::GetCameraFov();

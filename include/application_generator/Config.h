@@ -35,9 +35,12 @@ namespace Config
 	constexpr float CameraSpeed = 0.1f;
 	constexpr float CameraRotationSpeed = 0.1f;
 	
-	constexpr float CameraInitialPositionX = 0.f;
-	constexpr float CameraInitialPositionY = 0.f;
-	constexpr float CameraInitialPositionZ = 0.f;
+	constexpr float CameraInitialPositionX = 5.f;
+	constexpr float CameraInitialPositionY = 20.f;
+	constexpr float CameraInitialPositionZ = -5.f;
+
+	constexpr float CameraInitialYaw = 2.4f;
+	constexpr float CameraInitialPitch = 0.f;
 
 	inline const std::string SHADERS_PATH = "resources/shaders/";
 	inline const std::string ASSETS_PATH = "resources/assets/";

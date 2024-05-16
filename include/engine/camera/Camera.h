@@ -40,6 +40,9 @@ public:
 
 	Mat4<float> getProjectionViewMatrix() const { return Projection * View; }
 	Vector3f getPosition() const { return m_position; }
+	Vector3f getForward() const { return m_forward; }
+	float getPitch() const { return m_alpha; }
+	float getYaw() const { return m_beta; }
 	float& getSpeed() { return m_speed; }
 	float& getSensitivity() { return m_sensivity; }
 

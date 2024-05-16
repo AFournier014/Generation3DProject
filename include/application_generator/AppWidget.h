@@ -7,5 +7,5 @@ public:
 	AppWidget() = default;
 	~AppWidget() = default;
 
-	void CreateAppWidgets();
+	void CreateAppWidgets(float deltaTime);
 };

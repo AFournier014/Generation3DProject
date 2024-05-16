@@ -14,6 +14,7 @@
 #include <CameraWidget.h>
 #include <TerrainWidget.h>
 #include "sky_sphere/Skyphere.h"
+#include <AppWidget.h>
 
 Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())
@@ -48,7 +49,7 @@ Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
     glViewport(0, 0, width, height);
 
 	// Configuration de la caméra et de l'inputManager
-	m_camera = std::make_shared<Camera>(Vec3f(0.f, 0.f, 0.f), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
+    m_camera = std::make_shared<Camera>(Vec3f(Config::CameraInitialPosition()), Config::GetAspectRatio(), Config::GetCameraFov(), Config::CameraNear, Config::CameraFar);
 	m_inputManager = std::make_unique<InputManager>();
 
 	Initialize();
@@ -70,10 +71,10 @@ void Application::Run()
     while (m_isRunning && !glfwWindowShouldClose(m_window))
     {
         float currentTime = static_cast<float>(glfwGetTime());
-        float deltaTime = currentTime - lastFrameTime;
+        m_deltaTime = currentTime - lastFrameTime;
 		lastFrameTime = currentTime;
         ProcessEvents();
-        Update(deltaTime);
+        Update(m_deltaTime);
         Render();
     }
 }
@@ -124,9 +125,11 @@ void Application::Render()
 
     CameraWidget cameraWidget = CameraWidget();
 	TerrainWidget terrainWidget = TerrainWidget();
+    AppWidget applicationWidget = AppWidget();
 
 	terrainWidget.CreateTerrainWidgets();
 	cameraWidget.CreateCameraWidgets(m_camera);
+    applicationWidget.CreateAppWidgets(m_deltaTime);
 
     m_imGuiManager->EndFrame();
 
