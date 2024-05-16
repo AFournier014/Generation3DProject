@@ -23,7 +23,9 @@ void TerrainScene::init()
 	auto skySphereTexture = std::make_shared<Texture>(Config::TEXTURES_PATH + "Skysphere.png");
 	m_skyphere = std::make_unique<Skyphere>(skySphereTexture);
 
-	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(0.f, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
+	auto terrainTexture = std::make_shared<Texture>(Config::TEXTURES_PATH + "terrain.png");
+
+	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(1.f, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
 	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 1.f, 32.f);
 
 	// Temporaire pour tester
@@ -47,8 +49,8 @@ void TerrainScene::init()
 
 	auto renderConfigTerrain = std::make_shared<RenderConfig>();
 	renderConfigTerrain->transform = transformTerrain;
-	renderConfigTerrain->texture = renderConfigCube->texture;
-	renderConfigTerrain->shader = m_shaderManager->getCubeShader();
+	renderConfigTerrain->texture = terrainTexture;
+	renderConfigTerrain->shader = m_shaderManager->getTerrainShader();
 	renderConfigTerrain->directionalLight = m_directionalLight;
 	renderConfigTerrain->opticalProperties = m_opticalProperties;
 
@@ -56,6 +58,7 @@ void TerrainScene::init()
 	m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
 
 	m_textures.push_back(renderConfigCube->texture);
+	m_textures.push_back(terrainTexture);
 
 	addMesh<Cube>(renderConfigCube);
 	addMesh<Cube>(renderConfigCube2);
@@ -103,7 +106,7 @@ void TerrainScene::initShaders() const
 	initShader(m_shaderManager->getCubeShader());
 	initShader(m_shaderManager->getTerrainShader());
 	initShader(m_shaderManager->getSkyboxShader());
-	// initShader(*m_shaderManager->getTerrainShader());
+	initShader(m_shaderManager->getTerrainShader());
 }
 
 void TerrainScene::initShader(const std::shared_ptr<Shader> shader) const

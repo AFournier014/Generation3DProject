@@ -4,15 +4,18 @@
 #include "Renderer.h"
 #include "GL/glew.h"
 #include "Light.h"
+#include "Texture.h"
 
 void Mesh::render()
 {
 	Mat4 M = getModelMatrix();
 
 	m_renderConfig->shader->Bind();
+	m_renderConfig->texture->Bind(0);
 	m_renderConfig->shader->SetUniformMat4f("model", M);
 	m_renderConfig->directionalLight->setupUniforms(m_renderConfig->shader);
 	m_renderConfig->opticalProperties->setupUniforms(m_renderConfig->shader);
+	
 
 	GLCall(glBindVertexArray(m_vao));
 	GLCall(glDrawElements(GL_TRIANGLES, GLsizei(m_indices.size()), GL_UNSIGNED_INT, nullptr));
