@@ -6,9 +6,10 @@
 #include "memory"
 #include "Texture.h"
 #include "vector"
-#include "Meshs/Mesh.h"
+#include "meshs/Mesh.h"
 #include "terrain/MapGenerator.h"
 #include <widgets/LightWidget.h>
+#include "water/WaterPlane.h"
 
 class TerrainWidget;
 class Shader;
@@ -61,6 +62,7 @@ private:
 	std::unique_ptr<Skyphere> m_skyphere;
 	std::shared_ptr<DirectionalLight> m_directionalLight;
 	std::vector<std::shared_ptr<Texture>> m_textures;
+	std::unique_ptr<WaterPlane> m_waterPlane;
 	std::shared_ptr<OpticalProperties> m_opticalProperties;
 
 	std::unique_ptr<TerrainWidget> m_terrainWidget;

@@ -14,9 +14,9 @@ class Mesh : public Drawable
 {
 public:
 	explicit Mesh(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const std::shared_ptr<RenderConfig> renderConfig)
-		: m_vertices(std::vector<Vertexf>(vertices))
+		: m_renderConfig(renderConfig)
+		, m_vertices(std::vector<Vertexf>(vertices))
 		, m_indices(std::vector<unsigned int>(indices))
-		, m_renderConfig(renderConfig)
 	{
 		load();
 	}
@@ -53,6 +53,13 @@ public:
 	Vector3f getScale() const { return m_renderConfig->transform.scale; }
 	Mat4f getRotation() const { return m_renderConfig->transform.rotation; }
 
+protected:
+	std::shared_ptr<RenderConfig> m_renderConfig;
+
+	GLuint m_vao = 0;
+	GLuint m_vbo = 0;
+	GLuint m_ebo = 0;
+
 private:
 	void load();
 
@@ -62,11 +69,7 @@ private:
 
 	std::vector<Vertexf> m_vertices;
 	std::vector<unsigned int> m_indices;
-	std::shared_ptr<RenderConfig> m_renderConfig;
 
-	GLuint m_vao = 0;
-	GLuint m_vbo = 0;
-	GLuint m_ebo = 0;
 
 };
 

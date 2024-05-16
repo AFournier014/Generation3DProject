@@ -59,6 +59,19 @@ void TerrainScene::init()
 	m_textures.push_back(renderConfigCube->texture);
 	m_textures.push_back(terrainTexture);
 
+	auto renderConfigWaterPlane = std::make_shared<RenderConfig>();
+	renderConfigWaterPlane->transform = transformTerrain;
+	renderConfigWaterPlane->texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "water-normal.jpg");
+	renderConfigWaterPlane->dudvMap = std::make_shared<Texture>(Config::TEXTURES_PATH + "water-dudv.jpg");
+	renderConfigWaterPlane->shader = m_shaderManager->getWaterShader();
+	renderConfigWaterPlane->directionalLight = m_directionalLight;
+	renderConfigWaterPlane->opticalProperties = m_opticalProperties;
+
+	m_waterPlane = std::make_unique<WaterPlane>(renderConfigWaterPlane);
+
+	m_textures.push_back(renderConfigWaterPlane->texture);
+	m_textures.push_back(renderConfigWaterPlane->dudvMap);
+
 	addMesh<Cube>(renderConfigCube);
 	addMesh<Cube>(renderConfigCube2);
 
@@ -100,6 +113,8 @@ void TerrainScene::render()
 	}
 	m_skyphere->render(m_shaderManager->getSkyboxShader());
 
+	m_waterPlane->render();
+
 	m_mapGenerator->render_preview_chunk();
 }
 
@@ -109,6 +124,7 @@ void TerrainScene::initShaders() const
 	initShader(m_shaderManager->getTerrainShader());
 	initShader(m_shaderManager->getSkyboxShader());
 	initShader(m_shaderManager->getTerrainShader());
+	initShader(m_shaderManager->getWaterShader());
 }
 
 void TerrainScene::initShader(const std::shared_ptr<Shader> shader) const

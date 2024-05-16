@@ -164,6 +164,9 @@ void Application::initShaders()
 
 	auto terrainShader = std::make_shared<Shader>(Config::SHADERS_PATH + "terrain.vert", Config::SHADERS_PATH + "terrain.frag");
 	m_shaderManager->setTerrainShader(terrainShader);
+
+	auto waterShader = std::make_shared<Shader>(Config::SHADERS_PATH + "water.vert", Config::SHADERS_PATH + "water.frag");
+	m_shaderManager->setWaterShader(waterShader);
 }
 
 void Application::initTextures()

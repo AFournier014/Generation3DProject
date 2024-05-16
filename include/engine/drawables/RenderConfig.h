@@ -19,6 +19,8 @@ struct RenderConfig
 	std::shared_ptr<DirectionalLight> directionalLight;
 	std::shared_ptr<PointLight> pointLight;
 	std::shared_ptr<OpticalProperties> opticalProperties;
+	
+	std::shared_ptr<Texture> dudvMap;
 };
 
 #endif // RENDER_CONFIG_H
