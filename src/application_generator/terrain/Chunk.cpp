@@ -4,16 +4,17 @@
 #include "terrain/PerlinNoise.h"
 
 
-Chunk::Chunk(const int size, const Vector3D<float>& position) : m_size(size), m_position(position)
+Chunk::Chunk(const int size, const std::shared_ptr<RenderConfig>& renderConfig)
+	: m_size(size), m_renderConfig(renderConfig)
 {
-    generate_mesh(size, position);
+	generate_mesh(size, m_renderConfig->transform.position);
 }
 
 void Chunk::generate_mesh(int chunkSize, Vector3D<float> pos)
 {
     std::vector<Vertexf> vertices;
     std::vector<unsigned int> indices;
-    auto texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
+	auto texture = m_renderConfig->texture;
 
 
     PerlinNoise pn(static_cast<unsigned int>(time(nullptr)));
@@ -73,7 +74,7 @@ void Chunk::generate_mesh(int chunkSize, Vector3D<float> pos)
 
     //recalculate_normals(vertices, indices);
 
-    m_mesh = new Mesh(vertices, indices, texture);
+	m_mesh = new Mesh(vertices, indices, m_renderConfig);
 }
 
 void Chunk::recalculate_normals(std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices)

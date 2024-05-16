@@ -26,6 +26,7 @@ void TerrainScene::init()
     // Temporaire pour tester
 	Transformf transform(Vec3f(0.0f, 0.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
 	Transformf transform2(Vec3f(2.0f, 3.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
+	Transformf transformTerrain(Vec3f(0.0f, 0.0f, 0.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
 
 	auto renderConfigCube = std::make_shared<RenderConfig>();
     renderConfigCube->transform = transform;
@@ -34,16 +35,22 @@ void TerrainScene::init()
     renderConfigCube->directionalLight = m_directionalLight;
 	renderConfigCube->opticalProperties = m_opticalProperties;
 
-	auto* chunk = new Chunk(241, Vec3f(0.0f, 0.0f, -10.0f));
-    m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
-
-
     auto renderConfigCube2 = std::make_shared<RenderConfig>();
 	renderConfigCube2->transform = transform2;
 	renderConfigCube2->texture = renderConfigCube->texture;
 	renderConfigCube2->shader = m_shaderManager->getCubeShader();
 	renderConfigCube2->directionalLight = m_directionalLight;
 	renderConfigCube2->opticalProperties = m_opticalProperties;
+
+	auto renderConfigTerrain = std::make_shared<RenderConfig>();
+	renderConfigTerrain->transform = transformTerrain;
+	renderConfigTerrain->texture = renderConfigCube->texture;
+	renderConfigTerrain->shader = m_shaderManager->getCubeShader();
+	renderConfigTerrain->directionalLight = m_directionalLight;
+	renderConfigTerrain->opticalProperties = m_opticalProperties;
+
+	auto* chunk = new Chunk(241, renderConfigTerrain);
+    m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
 
 	m_textures.push_back(renderConfigCube->texture);
 
@@ -84,7 +91,7 @@ void TerrainScene::render()
     for (auto const& chunk : m_chunks)
     {
         if (chunk && chunk->getMesh())
-            chunk->getMesh()->render(m_shaderManager->getCubeShader());
+            chunk->getMesh()->render();
     }
 }
 

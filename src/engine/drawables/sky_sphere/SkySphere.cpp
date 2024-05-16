@@ -2,9 +2,9 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
 #include "Shader.h"
 #include "Texture.h"
+#include "Renderer.h"
 
 Skyphere::Skyphere(const std::shared_ptr<Texture>& skyphereTexture)
 	: m_skyphereTexture(skyphereTexture)
