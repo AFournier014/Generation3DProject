@@ -20,7 +20,7 @@ Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
 {
     if (!glfwInit())
     {
-        // Initialization failed
+		throw std::runtime_error("Echec de l'initialisation de GLFW");
     }
     int width, height;
 
@@ -158,8 +158,8 @@ void Application::initShaders()
 	auto skyboxShader = std::make_shared<Shader>(Config::SHADERS_PATH + "skysphere.vert", Config::SHADERS_PATH + "skysphere.frag");
 	m_shaderManager->setSkyboxShader(skyboxShader);
 
-    /*auto* terrainShader = new Shader(Config::SHADERS_PATH + "terrain.vert", Config::SHADERS_PATH + "terrain.frag");
-    m_shaderManager->setTerrainShader(std::shared_ptr<Shader>(terrainShader));*/
+	auto terrainShader = std::make_shared<Shader>(Config::SHADERS_PATH + "terrain.vert", Config::SHADERS_PATH + "terrain.frag");
+	m_shaderManager->setTerrainShader(terrainShader);
 }
 
 void Application::initTextures()
