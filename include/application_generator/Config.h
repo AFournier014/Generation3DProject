@@ -1,8 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "Vector.h"
-#include "Matrice.h"
+#include "MathIncludes.h"
 #include <string>
 #include <GLFW/glfw3.h>
 
@@ -11,6 +10,7 @@ using Vec2i = Vector2D<int>;
 using Vec2f = Vector2D<float>;
 using Vec2u = Vector2D<unsigned int>;
 using Vec3f = Vector3D<float>;
+using Transformf = Transform<float>;
 
 namespace Config
 {
@@ -50,6 +50,8 @@ namespace Config
 	inline const std::string TriangleFragmentShaderPath = SHADERS_PATH + "triangle.frag";
 	inline const std::string CubeVertexShaderPath = SHADERS_PATH + "cube.vert";
 	inline const std::string CubeFragmentShaderPath = SHADERS_PATH + "cube.frag";
+	inline const std::string SkyphereVertexShaderPath = SHADERS_PATH + "skyphere.vert";
+	inline const std::string SkyphereFragmentShaderPath = SHADERS_PATH + "skyphere.frag";
 
 	inline const std::string ArialFontPath = FONT_PATH + "ARIAL.ttf";
 

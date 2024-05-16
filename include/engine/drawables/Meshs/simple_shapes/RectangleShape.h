@@ -1,22 +1,19 @@
-#pragma once
+#ifndef RECTANGLE_SHAPE_H
+#define RECTANGLE_SHAPE_H
 
-#include "meshs/Mesh.h"
+#include "Meshs/Mesh.h"
 #include <vector>
 #include <memory>
 #include "MathIncludes.h"
-
-class Texture;
 
 class RectangleShape : public Mesh
 {
 public:
 
-	RectangleShape(const Transform<float>& transform, const std::shared_ptr<Texture> texture)
-		: Mesh(createRectangleShapeVertices(transform.position, transform.scale.x(), transform.scale.y()), createRectangleShapeIndices(), texture)
-	{
-		setLocation(transform.position);
-		scale({ transform.scale.x(), transform.scale.y(), transform.scale.z() });
-	}
+	explicit RectangleShape(const std::shared_ptr<RenderConfig> renderConfig)
+		: Mesh(createRectangleShapeVertices(renderConfig->transform.position, renderConfig->transform.scale.x(), renderConfig->transform.scale.y()),
+			createRectangleShapeIndices(), renderConfig)
+	{}
 
 private:
 
@@ -99,3 +96,5 @@ private:
 		return indices;
 	}
 };
+
+#endif // RECTANGLE_SHAPE_H

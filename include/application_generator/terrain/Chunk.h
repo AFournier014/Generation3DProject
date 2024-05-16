@@ -3,10 +3,12 @@
 
 #include "Meshs/Mesh.h"
 
+struct RenderConfig;
+
 class Chunk
 {
 public:
-	Chunk(int size, const Vector3D<float>& position);
+	Chunk(int size, const std::shared_ptr<RenderConfig>& renderConfig);
 	Mesh* getMesh() const { return m_mesh; }
 
 private:
@@ -17,6 +19,7 @@ private:
 	Mesh* m_mesh;
 	int m_size;
 	Vector3D<float> m_position;
+	std::shared_ptr<RenderConfig> m_renderConfig;
 };
 
 inline float MapValue(float minimum, float maximum, float value)

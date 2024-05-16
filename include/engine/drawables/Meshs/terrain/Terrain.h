@@ -3,14 +3,12 @@
 
 #include <Meshs/Mesh.h>
 
-class Texture;
-
 class Terrain : public Mesh
 {
 public:
 
-	Terrain(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const std::shared_ptr<Texture> texture)
-		: Mesh(vertices, indices, texture)
+	Terrain(const std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices, const std::shared_ptr<RenderConfig> rendererConfig)
+		: Mesh(vertices, indices, rendererConfig)
 	{}
 
 private:

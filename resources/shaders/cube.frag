@@ -21,17 +21,17 @@ struct DirectionalLight
 };
 
 uniform Material material;
-uniform DirectionalLight light;
+uniform DirectionalLight directionalLights;
 uniform vec3 cameraPositionWorld;
 
 void main()
 {
 	vec4 ambiant = material.ambient * materialColor;
-	vec4 diffuse = material.diffuse * max(0, -dot(light.direction, normalWorld.xyz)) * materialColor;
+	vec4 diffuse = material.diffuse * max(0, -dot(directionalLights.direction, normalWorld.xyz)) * materialColor;
 
 	vec3 dc = normalize(positionWorld - cameraPositionWorld.xyz);
 	vec3 dcprime = 2. * dot(dc, normalWorld) * normalWorld - dc;
 
-	float specularCoef = pow(max(0, dot( light.direction, -dcprime)), material.shininess);
-	outFragColor = (1. - specularCoef) * (ambiant + diffuse) + specularCoef * light.color;
+	float specularCoef = pow(max(0, dot( directionalLights.direction, -dcprime)), material.shininess);
+	outFragColor = (1. - specularCoef) * (ambiant + diffuse) + specularCoef * directionalLights.color;
 }

@@ -12,6 +12,11 @@
 class Chunk;
 class Shader;
 class ShaderManager;
+class Camera;
+class Skyphere;
+class DirectionalLight;
+struct OpticalProperties;
+class Chunk;
 
 class TerrainScene : public Scene
 {
@@ -41,10 +46,11 @@ public:
 		}
 	}
 
-	template <typename MeshT, typename T>
-	MeshT* addMesh(Transform<T> transform, std::shared_ptr<Texture> texture)
+
+	template <typename MeshT>
+	MeshT* addMesh(std::shared_ptr<RenderConfig> renderConfig)
 	{
-		auto* mesh = new MeshT(transform, texture);
+		auto* mesh = new MeshT(renderConfig);
 		m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
 		return mesh;
 	}
@@ -53,7 +59,10 @@ private:
 	// Temporaire
 	std::vector<std::unique_ptr<Mesh>> m_meshes;
 	std::vector<std::unique_ptr<Chunk>> m_chunks;
+	std::unique_ptr<Skyphere> m_skyphere;
+	std::shared_ptr<DirectionalLight> m_directionalLight;
 	std::vector<std::shared_ptr<Texture>> m_textures;
+	std::shared_ptr<OpticalProperties> m_opticalProperties;
 };
 
 #endif // TERRAIN_SCENE_H
