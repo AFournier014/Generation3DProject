@@ -5,16 +5,16 @@
 
 MapGenerator::MapGenerator(std::shared_ptr<RenderConfig> renderConfig) : renderConfig(renderConfig)
 {
-    m_chunk_previw = std::make_unique<Chunk>(241, renderConfig);
+    m_chunk_preview = std::make_unique<Chunk>(241, renderConfig);
 }
 
 void MapGenerator::generate_chunk_preview() const
 {
     HeightMap heightMap = HeightMapGenerator::generate_height_map(242, 242, heightMultiplier, scale, octaves, persistance, lacunarity, seed);
-    m_chunk_previw->generate_mesh(heightMap, renderConfig->transform.position);
+    m_chunk_preview->generate_mesh(heightMap, renderConfig->transform.position);
 }
 
 void MapGenerator::render_preview_chunk()
 {
-    m_chunk_previw->render();
+    m_chunk_preview->render();
 }

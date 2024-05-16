@@ -11,10 +11,10 @@
 #include <imGui/ImGuiManager.h>
 #include <inputs/InputManager.h>
 #include <handler/CameraInputHandler.h>
-#include <CameraWidget.h>
-#include <TerrainWidget.h>
+#include <widgets/CameraWidget.h>
+#include <widgets/TerrainWidget.h>
 #include "sky_sphere/Skyphere.h"
-#include <AppWidget.h>
+#include <widgets/AppWidget.h>
 
 Application::Application() : m_shaderManager(std::make_shared<ShaderManager>()),
                              m_sceneManager(std::make_unique<SceneManager>())

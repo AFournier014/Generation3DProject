@@ -9,7 +9,8 @@
 #include "terrain/Chunk.h"
 
 #include "Renderer.h"
-#include "TerrainWidget.h"
+
+#include "widgets/TerrainWidget.h"
 
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
 	: Scene(window, shaderManager, camera)
@@ -25,7 +26,6 @@ void TerrainScene::init()
 
 	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(1, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
 	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 1.f, 32.f);
-	m_terrainWidget = std::make_unique<TerrainWidget>();
 
 	// Temporaire pour tester
 	Transformf transform(Vec3f(0.0f, 0.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
@@ -53,7 +53,7 @@ void TerrainScene::init()
 	renderConfigTerrain->directionalLight = m_directionalLight;
 	renderConfigTerrain->opticalProperties = m_opticalProperties;
 
-	m_mapGenerator = std::make_unique<MapGenerator>(renderConfigTerrain);
+	m_mapGenerator = std::make_shared<MapGenerator>(renderConfigTerrain);
 	m_mapGenerator->generate_chunk_preview();
 
 	m_textures.push_back(renderConfigCube->texture);
@@ -61,6 +61,9 @@ void TerrainScene::init()
 
 	addMesh<Cube>(renderConfigCube);
 	addMesh<Cube>(renderConfigCube2);
+
+	m_terrainWidget = std::make_unique<TerrainWidget>(m_mapGenerator);
+	/*m_lightWidget = std::make_unique<LightWidget>();*/
 
 	glfwSetCursorPos(m_window, static_cast<float>(Config::WindowSize().x) / 2, static_cast<float>(Config::WindowSize().y) / 2);
 }
@@ -86,7 +89,11 @@ void TerrainScene::render()
 	GLCall(glClearColor(0.f, 0.f, 0.f, 1.f));
 
 	initShaders();
-	m_terrainWidget->CreateTerrainWidgets();
+
+	m_terrainWidget->CreateTerrainWidgets(m_mapGenerator);
+	m_lightWidget->CreateDirectionalLightWidgets(m_directionalLight);
+	m_lightWidget->CreateOpticalPropertiesWidgets(m_opticalProperties);
+
 	for (auto const& mesh : m_meshes)
 	{
 		mesh->render();

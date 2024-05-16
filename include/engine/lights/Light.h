@@ -40,6 +40,9 @@ public:
 		shader->SetUniform4f("directionalLights.color", color.r, color.g, color.b, color.a);
 	}
 
+	Vector3f& getDirection() { return direction; }
+	Color4f& getColor() { return color; }
+
 private:
 	Vector3f direction;
 	Color4f color;
