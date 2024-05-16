@@ -10,6 +10,9 @@
 #include "Renderer.h"
 #include "terrain/Chunk.h"
 
+#include "Renderer.h"
+#include "terrain/Chunk.h"
+
 TerrainScene::TerrainScene(GLFWwindow* window, const std::shared_ptr<ShaderManager> shaderManager, const std::shared_ptr<Camera> camera)
     : Scene(window, shaderManager, camera)
 {
@@ -29,13 +32,13 @@ void TerrainScene::init()
 	Transformf transformTerrain(Vec3f(0.0f, 0.0f, 0.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
 
 	auto renderConfigCube = std::make_shared<RenderConfig>();
-    renderConfigCube->transform = transform;
-    renderConfigCube->texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
-    renderConfigCube->shader = m_shaderManager->getCubeShader();
-    renderConfigCube->directionalLight = m_directionalLight;
+  renderConfigCube->transform = transform;
+  renderConfigCube->texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
+  renderConfigCube->shader = m_shaderManager->getCubeShader();
+  renderConfigCube->directionalLight = m_directionalLight;
 	renderConfigCube->opticalProperties = m_opticalProperties;
 
-    auto renderConfigCube2 = std::make_shared<RenderConfig>();
+  auto renderConfigCube2 = std::make_shared<RenderConfig>();
 	renderConfigCube2->transform = transform2;
 	renderConfigCube2->texture = renderConfigCube->texture;
 	renderConfigCube2->shader = m_shaderManager->getCubeShader();
@@ -50,14 +53,14 @@ void TerrainScene::init()
 	renderConfigTerrain->opticalProperties = m_opticalProperties;
 
 	auto* chunk = new Chunk(241, renderConfigTerrain);
-    m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
+  m_chunks.push_back(std::unique_ptr<Chunk>(chunk));
 
 	m_textures.push_back(renderConfigCube->texture);
 
 	addMesh<Cube>(renderConfigCube);
 	addMesh<Cube>(renderConfigCube2);
 
-    glfwSetCursorPos(m_window, static_cast<float>(Config::WindowSize().x) / 2, static_cast<float>(Config::WindowSize().y) / 2);
+  glfwSetCursorPos(m_window, static_cast<float>(Config::WindowSize().x) / 2, static_cast<float>(Config::WindowSize().y) / 2);
 }
 
 
@@ -92,6 +95,12 @@ void TerrainScene::render()
     {
         if (chunk && chunk->getMesh())
             chunk->getMesh()->render();
+    }
+
+    for (auto const& chunk : m_chunks)
+    {
+        if (chunk && chunk->getMesh())
+            chunk->getMesh()->render(m_shaderManager->getCubeShader());
     }
 }
 
