@@ -9,6 +9,8 @@ TerrainWidget::TerrainWidget(std::shared_ptr<MapGenerator> mapGenerator)
 	m_initialPersistance = mapGenerator->get_persistance();
 	m_initialLacunarity = mapGenerator->get_lacunarity();
 	m_initialOctaves = mapGenerator->get_octaves();
+	m_initialSeed = mapGenerator->get_seed();
+	m_initialOctaveRandomness = mapGenerator->get_octave_randomness();
 }
 
 void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenerator)
@@ -43,6 +45,10 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 	{
 		update = true;
 	}
+	if (ImGui::Checkbox("Octave Randomness", &mapGenerator->get_octave_randomness()))
+	{
+		update = true;
+	}
 
 	if (m_autoGenerate && update)
 		mapGenerator->generate_chunk_preview();
@@ -62,6 +68,8 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 		mapGenerator->set_persistance(m_initialPersistance);
 		mapGenerator->set_lacunarity(m_initialLacunarity);
 		mapGenerator->set_octaves(m_initialOctaves);
+		mapGenerator->set_seed(m_initialSeed);
+		mapGenerator->set_octave_randomness(m_initialOctaveRandomness);
 		mapGenerator->generate_chunk_preview();
 	}
 

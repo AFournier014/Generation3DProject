@@ -13,10 +13,11 @@ public:
 
 private:
 	bool m_autoGenerate = false;
-	float m_seed = 0.0f;
 	float m_initialHeight = 0.0f;
 	float m_initialScale = 0.0f;
 	float m_initialLacunarity = 0.0f;
 	float m_initialPersistance = 0.0f;
 	int m_initialOctaves = 1;
+	int m_initialSeed = 0;
+	bool m_initialOctaveRandomness = false;
 };

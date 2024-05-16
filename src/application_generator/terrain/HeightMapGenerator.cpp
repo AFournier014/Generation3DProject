@@ -7,10 +7,10 @@
 #include "terrain/PerlinNoise.h"
 
 HeightMap HeightMapGenerator::generate_height_map(int width, int height, float heightMultiplier, float scale, int octaves,
-                                                  float persistance, float lacunarity, int seed)
+                                                  float persistance, float lacunarity, int seed, bool octaveRandomness)
 {
-    std::vector<std::vector<float>> values = HeightMapGenerator::generate_noise_map(width, height, scale, octaves,
-        persistance, lacunarity, seed);
+    std::vector<std::vector<float>> values = generate_noise_map(width, height, scale, octaves,
+        persistance, lacunarity, seed, octaveRandomness);
 
     float minValue = std::numeric_limits<float>::max();
     float maxValue = std::numeric_limits<float>::min();
@@ -31,7 +31,7 @@ HeightMap HeightMapGenerator::generate_height_map(int width, int height, float h
 
 std::vector<std::vector<float>> HeightMapGenerator::generate_noise_map(int width, int height, float scale, int octaves,
                                                           float persistance,
-                                                          float lacunarity, int seed)
+                                                          float lacunarity, int seed, bool octaveRandomness)
 {
     std::mt19937 prng(seed);
     std::uniform_int_distribution<int> distribution(-100000, 100000);
@@ -70,8 +70,18 @@ std::vector<std::vector<float>> HeightMapGenerator::generate_noise_map(int width
 
             for (int i = 0; i < octaves; i++)
             {
-                float sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
-                float sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
+                float sampleX;
+                float sampleY;
+                if (octaveRandomness)
+                {
+                    sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
+                    sampleY = (y - halfHeight + octaveOffsets[i].y) / scale * frequency;
+                }
+                else
+                {
+                    sampleX = (x - halfWidth) / scale * frequency;
+                    sampleY = (y - halfHeight) / scale * frequency;
+                }
 
                 float perlinValue = static_cast<float>(pn.noise(sampleX, sampleY, 0) * 2 - 1);
 

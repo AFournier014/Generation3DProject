@@ -18,9 +18,9 @@ class HeightMapGenerator
 {
 public:
     static HeightMap generate_height_map(int width, int height, float heightMultiplier, float scale, int octaves,
-                                         float persistance, float lacunarity, int seed);
+                                         float persistance, float lacunarity, int seed, bool octaveRandomness = false);
     static std::vector<std::vector<float>> generate_noise_map(int width, int height, float scale, int octaves,
-                                                              float persistance, float lacunarity, int seed);
+                                                              float persistance, float lacunarity, int seed, bool octaveRandomness);
 };
 
 inline float GetRandF(float fMin, float fMax)
