@@ -1,15 +1,16 @@
 #include "terrain/HeightMapGenerator.h"
 
 #include <ctime>
+#include <random>
 
 #include "MathIncludes.h"
 #include "terrain/PerlinNoise.h"
 
 HeightMap HeightMapGenerator::generate_height_map(int width, int height, float heightMultiplier, float scale, int octaves,
-                                                  float persistance, float lacunarity)
+                                                  float persistance, float lacunarity, int seed)
 {
     std::vector<std::vector<float>> values = HeightMapGenerator::generate_noise_map(width, height, scale, octaves,
-                                                                       persistance, lacunarity);
+        persistance, lacunarity, seed);
 
     float minValue = std::numeric_limits<float>::max();
     float maxValue = std::numeric_limits<float>::min();
@@ -30,9 +31,12 @@ HeightMap HeightMapGenerator::generate_height_map(int width, int height, float h
 
 std::vector<std::vector<float>> HeightMapGenerator::generate_noise_map(int width, int height, float scale, int octaves,
                                                           float persistance,
-                                                          float lacunarity)
+                                                          float lacunarity, int seed)
 {
-    PerlinNoise pn(static_cast<unsigned int>(time(nullptr)));
+    std::mt19937 prng(seed);
+    std::uniform_int_distribution<int> distribution(-100000, 100000);
+    
+    PerlinNoise pn(seed);
     std::vector<std::vector<float>> noiseMap(width, std::vector<float>(height));
     std::vector<Vector2f> octaveOffsets(octaves);
 
@@ -42,8 +46,8 @@ std::vector<std::vector<float>> HeightMapGenerator::generate_noise_map(int width
 
     for (int i = 0; i < octaves; i++)
     {
-        float offsetX = static_cast<float>(GetRand(-100000, 100000));
-        float offsetY = static_cast<float>(GetRand(-100000, 100000));
+        float offsetX = static_cast<float>(distribution(prng));
+        float offsetY = static_cast<float>(distribution(prng));
         octaveOffsets[i] = {offsetX, offsetY};
 
         maxPossibleHeight += amplitude;
