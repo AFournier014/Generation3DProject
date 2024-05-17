@@ -10,4 +10,5 @@ public:
 	void CreateAppWidgets(float deltaTime);
 private:
 	float m_fps = 0.0f;
+	bool m_wireframe = false;
 };

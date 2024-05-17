@@ -127,10 +127,11 @@ void Application::Render()
 
     m_imGuiManager->BeginFrame();
 
+    m_appWidget->CreateAppWidgets(m_deltaTime);
+
     m_sceneManager->render();
 
 	m_cameraWidget->CreateCameraWidgets(m_camera);
-    m_appWidget->CreateAppWidgets(m_deltaTime);
 
     m_imGuiManager->EndFrame();
 

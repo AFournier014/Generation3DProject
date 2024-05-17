@@ -24,7 +24,7 @@ namespace Config
 
 	constexpr float CameraFov = 45.f;
 	constexpr float CameraNear = 0.1f;
-	constexpr float CameraFar = 100.f;
+	constexpr float CameraFar = 300.f;
 
 	constexpr float CameraSpeed = 0.1f;
 	constexpr float CameraRotationSpeed = 0.1f;
