@@ -5,7 +5,10 @@
 void LightWidget::CreateDirectionalLightWidgets(std::shared_ptr<DirectionalLight> directionalLight)
 {
 	ImGui::Text("Directional Light");
-	ImGui::SliderFloat3("Direction", &directionalLight->getDirection().x(), -1.0f, 1.0f);
+	ImGui::Text("Direction:");
+	ImGui::SliderFloat("X", &directionalLight->getDirection().x(), -1.0f, 1.0f);
+	ImGui::SliderFloat("Y", &directionalLight->getDirection().y(), -1.0f, 1.0f);
+	ImGui::SliderFloat("Z", &directionalLight->getDirection().z(), -1.0f, 1.0f);
 
 	ImGui::Text("Color");
 	ImGui::SliderFloat("Red", &directionalLight->getColor().r, 0.0f, 255.0f);

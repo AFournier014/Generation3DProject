@@ -28,7 +28,7 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 	{
 		update = true;
 	}
-	if(ImGui::SliderFloat("Noise Scale", &mapGenerator->get_scale(), 1.f, 100.0f))
+	if(ImGui::SliderFloat("Noise Scale", &mapGenerator->get_scale(), 1.f, 300.0f))
 	{
 		update = true;
 	}
@@ -55,12 +55,7 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 
 	if (m_autoGenerate && update)
 	{
-		frameCount++;
-		if (frameCount >= generationInterval)
-		{
-			mapGenerator->generate_chunk_preview();
-			frameCount = 0;
-		}
+		mapGenerator->generate_chunk_preview();
 	}
 
 	if (!m_autoGenerate)
@@ -69,12 +64,6 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 		{
 			mapGenerator->generate_chunk_preview();
 		}
-		if (frameCount > 0)
-		{
-			mapGenerator->generate_chunk_preview();
-			frameCount = 0;
-		}
-
 	}
 
 	ImGui::SameLine();
