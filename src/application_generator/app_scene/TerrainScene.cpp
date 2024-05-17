@@ -28,23 +28,8 @@ void TerrainScene::init()
 	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 0.2f, 32.f);
 
 	// Temporaire pour tester
-	Transformf transform(Vec3f(0.0f, 0.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
-	Transformf transform2(Vec3f(2.0f, 3.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
+	Transformf transform(Vec3f(0.0f, -10.0f, -10.0f), Mat4f::Identity(), Vec3f(3.0f, 3.0f, 3.0f));
 	Transformf transformTerrain(Vec3f(0.0f, 0.0f, 0.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));
-
-	auto renderConfigCube = std::make_shared<RenderConfig>();
-	renderConfigCube->transform = transform;
-	renderConfigCube->texture = std::make_shared<Texture>(Config::TEXTURES_PATH + "texture.png");
-	renderConfigCube->shader = m_shaderManager->getCubeShader();
-	renderConfigCube->directionalLight = m_directionalLight;
-	renderConfigCube->opticalProperties = m_opticalProperties;
-
-	auto renderConfigCube2 = std::make_shared<RenderConfig>();
-	renderConfigCube2->transform = transform2;
-	renderConfigCube2->texture = renderConfigCube->texture;
-	renderConfigCube2->shader = m_shaderManager->getCubeShader();
-	renderConfigCube2->directionalLight = m_directionalLight;
-	renderConfigCube2->opticalProperties = m_opticalProperties;
 
 	auto renderConfigTerrain = std::make_shared<RenderConfig>();
 	renderConfigTerrain->transform = transformTerrain;
@@ -56,14 +41,10 @@ void TerrainScene::init()
 	m_mapGenerator = std::make_shared<MapGenerator>(renderConfigTerrain);
 	m_mapGenerator->generate_chunk_preview();
 
-	m_textures.push_back(renderConfigCube->texture);
 	m_textures.push_back(terrainTexture);
 
-	addMesh<Cube>(renderConfigCube);
-	addMesh<Cube>(renderConfigCube2);
-
 	m_terrainWidget = std::make_unique<TerrainWidget>(m_mapGenerator);
-	/*m_lightWidget = std::make_unique<LightWidget>();*/
+	m_lightWidget = std::make_unique<LightWidget>();
 
 	glfwSetCursorPos(m_window, static_cast<float>(Config::WindowSize().x) / 2, static_cast<float>(Config::WindowSize().y) / 2);
 }
