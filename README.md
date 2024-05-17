@@ -1,6 +1,8 @@
 # Generation3DProject
 
-Exemple d'accès aux ressources:
+Installation :
 
-std::string texturePath = std::string(ASSET_DIR) + "/texture.jpg";
-std::string vertexShaderPath = std::string(SHADER_DIR) + "/vertex.glsl";
+- run "setup-windows.bat"
+- if cmake is not install install it (or update it)
+- run cmake-build
+- in build folder run Generation3DProject.sln
