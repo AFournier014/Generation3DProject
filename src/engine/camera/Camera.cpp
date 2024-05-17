@@ -65,26 +65,30 @@ void Camera::update(float timestep)
 	m_position += m_direction * m_velocity;
 	m_target = m_position + m_forward;
 
-	View = Mat4<float>::RotationX(-m_yaw) * Mat4<float>::RotationY(-m_pitch) * Mat4<float>::Translation(-m_position);
+	View = Mat4<float>::RotationX(-m_yaw) * 
+			Mat4<float>::RotationY(-m_pitch) * 
+			Mat4<float>::Translation(-m_position);
 }
 
 void Camera::mouseWheelMoved(double x, double y)
 {
 	x;
 	y;
-	//if ( m_fov >= 1.0f && m_fov <= 70.0f) //coup de molette vers le haut
-	//{
-	//	m_fov -= static_cast<float>(y);
-	//}
-	//if (m_fov <= 1.0f)
-	//{
-	//	m_fov = 1.0f;
-	//}
-	//if (m_fov >= 70.0f)
-	//{
-	//	m_fov = 70.0f;
-	//}
-	//SetProjection(1.0f, m_fov, 0.1f, 1000.0f);
+	float degFov = m_fov * 180.f / 3.14f;
+
+	if (degFov >= 1.0f && degFov <= 120.f) //coup de molette vers le haut
+	{
+		m_fov -= static_cast<float>(y * 3.14f/180.f) * 2.f;
+	}
+	if (degFov <= 1.0f)
+	{
+		m_fov = 1.0f * 3.14f /180.f;
+	}
+	if (degFov >= 120.0f)
+	{
+		m_fov = 120.f * 3.14f / 180.f;
+	}
+	updateProjectionMatrix();
 }
 
 

@@ -19,6 +19,9 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 	ImGui::Begin("Terrain Editor");
 	ImGui::Checkbox("Auto Generate", &m_autoGenerate);
 
+	static int frameCount = 0;
+	static int generationInterval = 3;
+
 	bool update = false;
 
 	if(ImGui::SliderFloat("Height", &mapGenerator->get_height_multiplier(), 0.01f, 50.f))
@@ -51,7 +54,14 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 	}
 
 	if (m_autoGenerate && update)
-		mapGenerator->generate_chunk_preview();
+	{
+		frameCount++;
+		if (frameCount >= generationInterval)
+		{
+			mapGenerator->generate_chunk_preview();
+			frameCount = 0;
+		}
+	}
 
 	if (!m_autoGenerate)
 	{
@@ -59,7 +69,14 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 		{
 			mapGenerator->generate_chunk_preview();
 		}
+		if (frameCount > 0)
+		{
+			mapGenerator->generate_chunk_preview();
+			frameCount = 0;
+		}
+
 	}
+
 	ImGui::SameLine();
 	if (ImGui::Button("Reset"))
 	{
@@ -72,6 +89,8 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 		mapGenerator->set_octave_randomness(m_initialOctaveRandomness);
 		mapGenerator->generate_chunk_preview();
 	}
+
+
 
 	ImGui::End();
 }

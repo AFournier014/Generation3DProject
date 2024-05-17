@@ -8,4 +8,6 @@ public:
 	~AppWidget() = default;
 
 	void CreateAppWidgets(float deltaTime);
+private:
+	float m_fps = 0.0f;
 };
