@@ -1,7 +1,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <SFML/Graphics/Image.hpp>
 #include <filesystem>
 
 class Texture
@@ -23,9 +22,10 @@ public:
 private:
 	unsigned int m_rendererID;
 	std::filesystem::path m_filePath;
-	sf::Image image;
+	uint8_t* m_data = nullptr;
 	int m_width = 0;
 	int m_height = 0;
+	int m_channels = 0;
 };
 
 #endif // !TEXTURE_H

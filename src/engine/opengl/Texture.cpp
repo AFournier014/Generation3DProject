@@ -1,9 +1,13 @@
 #include "Texture.h"
 #include "GL/glew.h"
 #include <Renderer.h>
-#include <SFML/Graphics/Image.hpp>
+#include <Log.h>
 #include <filesystem>
 #include <iostream>
+#include <GLFW/glfw3.h>
+#include <cstdint>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 Texture::Texture(const std::filesystem::path& path)
 	: m_filePath(path)
@@ -11,17 +15,15 @@ Texture::Texture(const std::filesystem::path& path)
 	GLCall(glGenTextures(1, &m_rendererID));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_rendererID));
 
-	if (!image.loadFromFile(path.generic_string()))
+	m_data = stbi_load(path.string().c_str(), &m_width, &m_height, &m_channels, STBI_rgb_alpha);
+
+	if (!m_data)
 	{
-		std::cerr << "Failed to load texture" << std::endl;
+		LOG_ERROR("Failed to load texture: {0}" + path.string());
+		return;
 	}
-	//image.flipVertically();
 
-	auto size = image.getSize();
-	m_width = size.x;
-	m_height = size.y;
-
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()));
+	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data));
 	GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));

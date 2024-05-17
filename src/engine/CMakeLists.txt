@@ -35,22 +35,24 @@ source_group("Shaders" FILES ${SHADER_FILES})
 
 find_package(GLEW REQUIRED)
 find_package(imgui CONFIG REQUIRED)
-find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
-target_link_libraries(engine PRIVATE GLEW::GLEW imgui::imgui ImGui-SFML::ImGui-SFML)
-target_link_libraries(engine PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(engine PRIVATE GLEW::GLEW imgui::imgui)
 target_link_libraries(engine PRIVATE glfw)
+target_link_libraries(engine PRIVATE ${Stb_INCLUDE_DIR})
 
 # Inclure les fichiers d'en-tête du projet et les sous dossiers
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/opengl)
-target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/gui)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/imGui)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/utils)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/drawables)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/camera)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/inputs)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/scene)
+target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR}/include/engine/lights)
 
 # Appliquer les options de compilation
 if(MSVC)

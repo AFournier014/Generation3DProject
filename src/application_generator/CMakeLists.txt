@@ -33,13 +33,12 @@ endforeach()
 
 find_package(GLEW REQUIRED)
 find_package(imgui CONFIG REQUIRED)
-find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
-target_link_libraries(application_generator PRIVATE GLEW::GLEW imgui::imgui ImGui-SFML::ImGui-SFML)
-target_link_libraries(application_generator PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(application_generator PRIVATE GLEW::GLEW imgui::imgui)
 target_link_libraries(application_generator PRIVATE glfw)
+target_link_libraries(application_generator PRIVATE ${Stb_INCLUDE_DIR})
 
 target_include_directories(application_generator PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(application_generator PRIVATE ${CMAKE_SOURCE_DIR}/include/application_generator)

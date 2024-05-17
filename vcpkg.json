@@ -6,9 +6,8 @@
 		"name": "imgui",
 		"features": ["glfw-binding","opengl3-binding"]
 	},
-	"imgui-sfml",
     "glew",
 	"glfw3",
-	"sfml"
+	"stb"
   ]
 }
