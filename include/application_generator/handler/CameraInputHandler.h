@@ -89,10 +89,7 @@ public:
 			m_keyStates[key] = state;
 			});
 
-		// Clear the pending changes buffer after processing
 		m_pendingKeyChanges.clear();
-
-		// Update camera movement based on the updated key states
 		updateCameraMovement();
 	}
 
