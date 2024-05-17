@@ -72,6 +72,11 @@ void Chunk::render() const
         m_mesh->render();
 }
 
+void Chunk::setSize(int chunk_size)
+{
+    m_size = chunk_size;
+}
+
 void Chunk::recalculate_normals(std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices)
 {
     for (int i = 0; i < indices.size(); i += 3)

@@ -11,7 +11,8 @@ public:
     Chunk(int size, const std::shared_ptr<RenderConfig>& renderConfig);
     void generate_mesh(HeightMap height_map, Vector3D<float> pos);
     void render() const;
-    
+    void setSize(int chunk_size);
+
 private:
     static void recalculate_normals(std::vector<Vertexf>& vertices, const std::vector<unsigned int>& indices);
 

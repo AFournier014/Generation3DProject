@@ -13,6 +13,7 @@ public:
 
 private:
 	bool m_autoGenerate = false;
+	int m_initialChunkSize = 240;
 	float m_initialHeight = 0.0f;
 	float m_initialScale = 0.0f;
 	float m_initialLacunarity = 0.0f;

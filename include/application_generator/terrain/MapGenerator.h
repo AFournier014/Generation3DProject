@@ -2,15 +2,16 @@
 #define MAP_GENERATOR_H
 #include <memory>
 
-#include "Chunk.h"
 
+class Chunk;
 struct RenderConfig;
 
 class MapGenerator
 {
 public:
     MapGenerator(std::shared_ptr<RenderConfig> renderConfig);
-    
+
+    int& get_chunk_size() { return chunkSize; }
     float& get_height_multiplier() { return heightMultiplier; }
     float& get_scale() { return scale; }
     int& get_octaves() { return octaves; }
@@ -19,6 +20,7 @@ public:
     int& get_seed() { return seed; }
     bool& get_octave_randomness() { return octaveRandomness; }
 
+    void set_chunk_size(int value) { chunkSize = value; }
     void set_height_multiplier(float value) { heightMultiplier = value; }
     void set_scale(float value) { scale = value; }
     void set_octaves(int value) { octaves = value; }
@@ -36,6 +38,7 @@ private:
     
 #pragma region TerrainSettings
     bool auto_update = true;
+    int chunkSize = 240;
     float heightMultiplier = 25;
     float scale = 50;
     int octaves = 8;

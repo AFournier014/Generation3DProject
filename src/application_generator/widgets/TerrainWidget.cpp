@@ -4,6 +4,7 @@
 
 TerrainWidget::TerrainWidget(std::shared_ptr<MapGenerator> mapGenerator)
 {
+	m_initialChunkSize = mapGenerator->get_chunk_size();
 	m_initialHeight = mapGenerator->get_height_multiplier();
 	m_initialScale = mapGenerator->get_scale();
 	m_initialPersistance = mapGenerator->get_persistance();
@@ -24,6 +25,10 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 
 	bool update = false;
 
+	if(ImGui::SliderInt("Chunk Size", &mapGenerator->get_chunk_size(), 10, 500))
+	{
+		update = true;
+	}
 	if(ImGui::SliderFloat("Height", &mapGenerator->get_height_multiplier(), 0.01f, 50.f))
 	{
 		update = true;
@@ -69,6 +74,7 @@ void TerrainWidget::CreateTerrainWidgets(std::shared_ptr<MapGenerator> mapGenera
 	ImGui::SameLine();
 	if (ImGui::Button("Reset"))
 	{
+		mapGenerator->set_chunk_size(240);
 		mapGenerator->set_height_multiplier(m_initialHeight);
 		mapGenerator->set_scale(m_initialScale);
 		mapGenerator->set_persistance(m_initialPersistance);
