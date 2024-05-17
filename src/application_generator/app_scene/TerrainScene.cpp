@@ -25,7 +25,7 @@ void TerrainScene::init()
 	auto terrainTexture = std::make_shared<Texture>(Config::TEXTURES_PATH + "terrain.png");
 
 	m_directionalLight = std::make_shared<DirectionalLight>(Vector3f(1, -1.f, 0.f), Color4f(1.f, 1.f, 1.f, 1.f));
-	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 1.f, 32.f);
+	m_opticalProperties = std::make_shared<OpticalProperties>(0.3f, 0.7f, 0.2f, 32.f);
 
 	// Temporaire pour tester
 	Transformf transform(Vec3f(0.0f, 0.0f, -10.0f), Mat4f::Identity(), Vec3f(1.0f, 1.0f, 1.0f));

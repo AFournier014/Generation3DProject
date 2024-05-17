@@ -14,14 +14,8 @@ using Transformf = Transform<float>;
 
 namespace Config
 {
-	constexpr unsigned int WindowWidth = 1280;
-	constexpr unsigned int WindowHeight = 720;
-
-	constexpr int ContextSettingsDepthBits = 24;
-	constexpr int ContextSettingsStencilBits = 8;
-	constexpr int ContextSettingsAntialiasingLevel = 4;
-	constexpr int ContextSettingsMajorVersion = 4;
-	constexpr int ContextSettingsMinorVersion = 6;
+	constexpr unsigned int WindowWidth = 1920;
+	constexpr unsigned int WindowHeight = 1080;
 
 	constexpr int CameraForward = GLFW_KEY_W;
 	constexpr int CameraBackward = GLFW_KEY_S;
